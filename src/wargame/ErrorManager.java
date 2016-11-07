@@ -16,7 +16,7 @@ public class ErrorManager {
   private static ErrorManager singleton = new ErrorManager () ;
 
   /**
-   * Set internal variables to make it singleton.
+   * Getter of the singleton error manager.
    */
   public static ErrorManager get () {
     return singleton ;

@@ -16,7 +16,7 @@ public class GameScreen {
 
   /**
    * Make the screen to run.
-   * @return The id of the next window.
+   * @return The id of the next game screen.
    */
   public int run () {
 //    return GameScreen.QUIT_SCREEN ;

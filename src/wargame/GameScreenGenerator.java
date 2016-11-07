@@ -15,11 +15,11 @@ public class GameScreenGenerator {
   /**
    * Create a GameScreen instance and make it ready to run in the game context.
    *  Store the game screen in preparedGameScreen.
-   * @param window_id   The id of the window to prepare.
+   * @param game_screen_id   The id of the game screen to prepare.
    */
-  public void prepareWindow (int window_id) {
+  public void prepareGameScreen (int game_screen_id) {
     preparedGameScreen = new GameScreen (gameContext) ;
-    prepareWindow (window_id, preparedGameScreen) ;
+    prepareGameScreen (game_screen_id, preparedGameScreen) ;
   }
 
   /**
@@ -29,7 +29,7 @@ public class GameScreenGenerator {
     return preparedGameScreen ;
   }
 
-  private void prepareWindow (int window_id, GameScreen preparedGameScreen) {
+  private void prepareGameScreen (int game_screen_id, GameScreen preparedGameScreen) {
     
   }
 }

@@ -19,7 +19,7 @@ import wargame.* ;
 public class WarGame {
 
   /**
-   * Launch the mainloop giving the first window id.
+   * Launch the mainloop giving the first game screen id.
    * @param   args  Does nothing.
    * @return  nothing
    */
@@ -31,12 +31,12 @@ public class WarGame {
    * Create the game context and the error manager, load the config and create
    *  the game screen generator giving the context. <br />
    * Launch the mainloop that prepare the current screen, make
-   *  it run, get the new window id and loop again while the player does not
+   *  it run, get the new game screen id and loop again while the player does not
    *  decide to quit.
-   * @param   window_id The id of the first window to launch.
+   * @param   game_screen_id The id of the first game screen to launch.
    * @return  nothing
    */
-  public static void mainloop (int window_id) {
+  public static void mainloop (int game_screen_id) {
     GameScreenGenerator gameScreenGenerator ;
     GameScreen gameScreen ;
     GameContext gameContext ;
@@ -47,11 +47,11 @@ public class WarGame {
     gameContext.loadConf () ;
     gameScreenGenerator = new GameScreenGenerator (gameContext) ;
     do {
-      gameScreenGenerator.prepareWindow (window_id) ;
+      gameScreenGenerator.prepareGameScreen (game_screen_id) ;
       gameScreen = gameScreenGenerator.getGameScreen () ;
-      window_id = gameScreen.run () ;
-      System.out.println(window_id);
-    } while (window_id != GameScreen.QUIT_SCREEN) ;
+      game_screen_id = gameScreen.run () ;
+      System.out.println(game_screen_id);
+    } while (game_screen_id != GameScreen.QUIT_SCREEN) ;
   }
 
 }
