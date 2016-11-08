@@ -21,6 +21,9 @@ public class GameScreenGenerator {
       case GameScreen.MAIN_MENU_SCREEN:
         preparedGameScreen = new MainScreen (gameContext) ;
         break ;
+      case GameScreen.NEW_GAME_SCREEN:
+        preparedGameScreen = new NewGameScreen (gameContext) ;
+        break ;
       default:
         this.gameContext.getErrorManager ().exitError (String.format (
           "Unknown screen id: %d", gameScreenID)) ;

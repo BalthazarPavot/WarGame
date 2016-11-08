@@ -32,14 +32,14 @@ public class MainScreen extends GameScreen {
     w = gameContext.getWidth () ;
     h = gameContext.getHeight () ;
     this.addWidgets (new TextWidget ("War Game",
-      w/2-150, h/10*2, 300, 200, 50, new Color (128, 128, 128))) ;
-    for (int i = 5 ; i < 9 ; i ++ ) {
+      w/2-150, h/10*2-100, 300, 200, 50, new Color (128, 128, 128))) ;
+    for (int i=5, j=0 ; i < 9 ; j++, i ++ ) {
       ButtonWidget button ;
 
-      button = new ButtonWidget (buttonTexts[i-5],
+      button = new ButtonWidget (buttonTexts[j],
         w/2-100, h/10*i, 200, 40, 20, new Color (128, 128, 128)) ;
       button.addActionListener (this.actionManager) ;
-      button.setActionCommand (buttonTexts[i-5]) ;
+      button.setActionCommand (buttonTexts[j]) ;
       this.addWidgets (button) ;
     } 
   }

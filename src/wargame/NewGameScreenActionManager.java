@@ -11,10 +11,9 @@ public class NewGameScreenActionManager extends GameScreenActionManager {
   }
 
   public void actionPerformed(ActionEvent e) {
-    if (e.getActionCommand().equals(MainScreen.QUICK_GAME_STRING)) {
-    } else if (e.getActionCommand().equals(MainScreen.NEW_GAME_STRING)) {
-    } else if (e.getActionCommand().equals(MainScreen.LOAD_GAME_STRING)) {
-    } else if (e.getActionCommand().equals(MainScreen.QUIT_GAME_STRING)) {
+    if (e.getActionCommand().equals("Previous")) {
+      gameScreen.nextScreenID = GameScreen.MAIN_MENU_SCREEN ;
+    } else if (e.getActionCommand().equals("Quit")) {
       gameScreen.nextScreenID = GameScreen.QUIT_SCREEN ;
     } else {
       return ;

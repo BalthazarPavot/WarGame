@@ -14,6 +14,7 @@ public class MainScreenActionManager extends GameScreenActionManager {
     if (e.getActionCommand().equals(MainScreen.QUICK_GAME_STRING)) {
       gameScreen.nextScreenID = 42;
     } else if (e.getActionCommand().equals(MainScreen.NEW_GAME_STRING)) {
+      gameScreen.nextScreenID = GameScreen.NEW_GAME_SCREEN ;
     } else if (e.getActionCommand().equals(MainScreen.LOAD_GAME_STRING)) {
     } else if (e.getActionCommand().equals(MainScreen.QUIT_GAME_STRING)) {
       gameScreen.nextScreenID = GameScreen.QUIT_SCREEN ;

@@ -2,6 +2,9 @@
 
 package wargame ;
 
+import java.awt.*;
+import wargame.widgets.* ;
+
 
 public class LoadGameScreen extends GameScreen {
 
