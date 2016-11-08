@@ -11,15 +11,14 @@ import wargame.widgets.* ;
 
 public class GameScreen extends JPanel {
 
-  /**
-	 * 
-	 */
+
   private static final long serialVersionUID = 1L;
   final public static int MAIN_MENU_SCREEN = 1 ;
+  final public static int NEW_GAME_SCREEN = 10 ;
   final public static int QUIT_SCREEN = 255 ;
+  protected static JFrame mainFrame = null ;
 
   protected GameContext gameContext = null ;
-  protected JFrame mainFrame = null ;
   protected ArrayList<Component> gameWidgets = new ArrayList<Component> () ;
   protected int nextScreenID = GameScreen.MAIN_MENU_SCREEN ;
   protected boolean screenHasFinished = false ;
@@ -27,6 +26,12 @@ public class GameScreen extends JPanel {
 
   public GameScreen (GameContext gameContext) {
     this.gameContext = gameContext ;
+    if (GameScreen.mainFrame == null) {
+      GameScreen.mainFrame = new JFrame (GameContext.TITLE) ;
+      this.mainFrame = GameScreen.mainFrame ;
+      this.initGameScreen () ;
+    }
+    this.mainFrame = GameScreen.mainFrame ;
   }
 
   /**
@@ -57,11 +62,17 @@ public class GameScreen extends JPanel {
     this.gameWidgets.add (widget) ;
   }
 
+  /**
+   * Must be overwritten.
+   * TODO: export this into an interface?
+   */
   public void prepare () throws IllegalStateException {
-    throw new IllegalStateException () ;  
+    throw new IllegalStateException () ;
   }
 
   public void screenTermination () {
+    for (Component widget: gameWidgets)
+      this.remove (widget) ;
     screenHasFinished = true ;
   }
 
@@ -69,17 +80,21 @@ public class GameScreen extends JPanel {
    * Initialize the screen with a new frame, set the screen size, 
    * layout and trigger the first display.
    */
-  private void initRun () {
-    this.mainFrame = new JFrame (GameContext.TITLE) ;
+  private void initGameScreen () {
     this.mainFrame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
     this.setPreferredSize (this.gameContext.getDimension ()) ;
-    this.setLayout (null) ; // deletion of layout manager
     this.mainFrame.setBounds (0, 0, this.gameContext.getWidth (),
       this.gameContext.getHeight ()) ;
+    this.mainFrame.setResizable (false);
+  }
+
+  private void initRun () {
+
+    this.setLayout (null) ; // deletion of layout manager
     this.mainFrame.getContentPane ().add (this) ;
     this.screenHasFinished = false ;
     this.display () ;
-    this.mainFrame.setVisible (true) ;  
+    this.mainFrame.setVisible (true) ;
   }
 
   /**
@@ -100,6 +115,8 @@ public class GameScreen extends JPanel {
       this.add (widget) ;
       ((GameWidget)widget).bind () ;
     }
+    this.revalidate () ;
+    this.repaint () ;
   }
 
 }
