@@ -33,6 +33,7 @@ public class ErrorManager {
   /**
    * Exit the program in an early state, before the error manager has
    * been initialized, writting the given message.
+   * @param message The error message displayed in stderr.
    */
   public static void earlyTermination (String message) {
     ErrorManager.earlyTermination (message, EARLY_TERMINATION_ERROR) ;
@@ -41,6 +42,8 @@ public class ErrorManager {
   /**
    * Exit the program in an early state, before the error manager has
    * been initialized, writting the given message, giving the given error code.
+   * @param message The error message displayed in stderr.
+   * @param errorCode The exit code of the program.
    */
   public static void earlyTermination (String message, int errorCode) {
     System.err.println (message) ;
@@ -56,6 +59,7 @@ public class ErrorManager {
 
   /**
    * Exit the program with giving the given message.
+   * @param message The error message displayed in stderr.
    */
   public void exitError (String message) {
     exitError (message, UNKNOWN_ERROR) ;
@@ -63,6 +67,8 @@ public class ErrorManager {
 
   /**
    * Exit the program with the given error code, writting the given message.
+   * @param message The error message displayed in stderr.
+   * @param errorCode The exit code of the program.
    */
   public void exitError (String message, int errorCode) {
     System.err.println (message) ;
