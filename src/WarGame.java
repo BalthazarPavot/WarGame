@@ -33,10 +33,10 @@ public class WarGame {
    * Launch the mainloop that prepare the current screen, make
    *  it run, get the new game screen id and loop again while the player does not
    *  decide to quit.
-   * @param   game_screen_id The id of the first game screen to launch.
+   * @param   gameScreenID The id of the first game screen to launch.
    * @return  nothing
    */
-  public static void mainloop (int game_screen_id) {
+  public static void mainloop (int gameScreenID) {
     GameScreenGenerator gameScreenGenerator ;
     GameScreen gameScreen ;
     GameContext gameContext ;
@@ -47,11 +47,12 @@ public class WarGame {
     gameContext.loadConf () ;
     gameScreenGenerator = new GameScreenGenerator (gameContext) ;
     do {
-      gameScreenGenerator.prepareGameScreen (game_screen_id) ;
+      gameScreenGenerator.prepareGameScreen (gameScreenID) ;
       gameScreen = gameScreenGenerator.getGameScreen () ;
-      game_screen_id = gameScreen.run () ;
-      System.out.println(game_screen_id);
-    } while (game_screen_id != GameScreen.QUIT_SCREEN) ;
+      gameScreenID = gameScreen.run () ;
+      System.out.printf ("Screen ID: %d\n", gameScreenID);
+    } while (gameScreenID != GameScreen.QUIT_SCREEN) ;
+    System.exit (0) ;
   }
 
 }
