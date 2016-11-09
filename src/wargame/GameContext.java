@@ -8,13 +8,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-/**
- * 
- */
+
 public class GameContext {
 
-  static String TITLE = "War Game" ;
   private static String defaultConfigPath = "./config.conf" ;
+  static String TITLE = "War Game" ;
+  static int MIN_WIDTH = 800 ;
+  static int MAX_WIDTH = 1900 ;
+  static int MIN_HEIGHT = 600 ;
+  static int MAX_HEIGHT = 1200 ;
+
   private ErrorManager errorManager = null ;
   private int width = 800 ;
   private int height = 600 ;
@@ -38,7 +41,7 @@ public class GameContext {
       try {
         loadConf (confFile) ;
       } catch (IOException|IllegalArgumentException e) {
-        errorManager.exitError ("Could not load config file. Verify it, please.\n") ;
+        errorManager.exitError ("Could not load config file. Verify its content, please.\n") ;
       }
       confFile = null ;
     }
@@ -130,14 +133,22 @@ public class GameContext {
    * Check the current configuration, like the max size of the screen.
    */
   private void checkConf () {
-    if (width < 600)
-      errorManager.exitError ("The width defined in the conf file is less than 600.\n") ;
-    if (height < 400)
-      errorManager.exitError ("The height defined in the conf file is less than 400.\n") ;
-    if (width > 1900)
-      errorManager.exitError ("The width defined in the conf file is more than 1900.\n") ;
-    if (height > 1200)
-      errorManager.exitError ("The height defined in the conf file is more than 1200.\n") ;
+    if (width < GameContext.MIN_WIDTH)
+      errorManager.exitError (String.format(
+    		  "The width defined in the conf file is less than %d.\n",
+    		  GameContext.MIN_WIDTH)) ;
+    if (height < GameContext.MIN_HEIGHT)
+      errorManager.exitError (String.format(
+    		  "The height defined in the conf file is less than %d.\n",
+    		  GameContext.MIN_HEIGHT)) ;
+    if (width > GameContext.MAX_WIDTH)
+      errorManager.exitError (String.format(
+    		  "The width defined in the conf file is more than %d.\n",
+    		  GameContext.MAX_WIDTH)) ;
+    if (height > GameContext.MAX_HEIGHT)
+      errorManager.exitError (String.format(
+    		  "The height defined in the conf file is more than %d.\n",
+    		  GameContext.MAX_HEIGHT)) ;
   }
 
 }
