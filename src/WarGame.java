@@ -1,8 +1,11 @@
 
+import wargame.ErrorManager;
+import wargame.GameContext;
+import wargame.GameScreen;
+import wargame.GameScreenGenerator;
 
 //package wargame ;
 
-import wargame.* ;
 
 
 /**

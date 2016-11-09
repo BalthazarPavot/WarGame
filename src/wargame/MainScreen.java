@@ -2,7 +2,8 @@
 
 package wargame ;
 
-import java.awt.*;
+
+import java.awt.Color;
 import wargame.widgets.* ;
 
 
@@ -41,6 +42,7 @@ public class MainScreen extends GameScreen {
       button.addActionListener (this.actionManager) ;
       button.setActionCommand (buttonTexts[j]) ;
       this.addWidgets (button) ;
-    } 
-  }
+    }
+    this.addWidgets(new ImageWidget (100, 100, 100, 150, "resources/images/test_image.png")) ;
+  } 
 }

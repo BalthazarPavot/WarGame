@@ -2,7 +2,7 @@
 
 package wargame ;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

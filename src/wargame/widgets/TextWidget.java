@@ -1,16 +1,15 @@
 
 package wargame.widgets ;
 
-import java.awt.* ;
-import javax.swing.* ;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Rectangle;
 
+import javax.swing.JLabel;
 
 public class TextWidget extends JLabel implements GameWidget {
 
   
-  /**
-	 * 
-	 */
   private static final long serialVersionUID = 1L;
   protected Rectangle boundRect ;
   private int size = 14 ;

@@ -2,10 +2,12 @@
 
 package wargame ;
 
+import java.awt.Component;
 import java.lang.Thread ;
-import java.awt.*;
-import javax.swing.*;
 import java.util.ArrayList ;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import wargame.widgets.* ;
 
@@ -28,10 +30,8 @@ public class GameScreen extends JPanel {
     this.gameContext = gameContext ;
     if (GameScreen.mainFrame == null) {
       GameScreen.mainFrame = new JFrame (GameContext.TITLE) ;
-      this.mainFrame = GameScreen.mainFrame ;
       this.initGameScreen () ;
     }
-    this.mainFrame = GameScreen.mainFrame ;
   }
 
   /**
@@ -61,7 +61,7 @@ public class GameScreen extends JPanel {
   public void addWidgets (Component widget) {
     this.gameWidgets.add (widget) ;
   }
-
+ 
   /**
    * Must be overwritten.
    * TODO: export this into an interface?
@@ -81,20 +81,20 @@ public class GameScreen extends JPanel {
    * layout and trigger the first display.
    */
   private void initGameScreen () {
-    this.mainFrame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+    GameScreen.mainFrame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
     this.setPreferredSize (this.gameContext.getDimension ()) ;
-    this.mainFrame.setBounds (0, 0, this.gameContext.getWidth (),
+    GameScreen.mainFrame.setBounds (0, 0, this.gameContext.getWidth (),
       this.gameContext.getHeight ()) ;
-    this.mainFrame.setResizable (false);
+    GameScreen.mainFrame.setResizable (false);
   }
 
   private void initRun () {
 
     this.setLayout (null) ; // deletion of layout manager
-    this.mainFrame.getContentPane ().add (this) ;
+    GameScreen.mainFrame.getContentPane ().add (this) ;
     this.screenHasFinished = false ;
     this.display () ;
-    this.mainFrame.setVisible (true) ;
+    GameScreen.mainFrame.setVisible (true) ;
   }
 
   /**

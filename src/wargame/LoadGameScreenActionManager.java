@@ -2,7 +2,7 @@
 
 package wargame ;
 
-import java.awt.event.* ;
+import java.awt.event.ActionEvent;
 
 public class LoadGameScreenActionManager extends GameScreenActionManager {
 

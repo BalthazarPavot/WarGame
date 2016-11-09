@@ -2,7 +2,8 @@
 
 package wargame ;
 
-import java.awt.*;
+import java.awt.Color;
+
 import wargame.widgets.* ;
 
 
