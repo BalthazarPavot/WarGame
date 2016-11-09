@@ -14,13 +14,13 @@ public class GameContext {
   private static String defaultConfigPath = "./config.conf" ;
   public static String TITLE = "War Game" ;
   static int MIN_WIDTH = 800 ;
-  static int MAX_WIDTH = 1900 ;
+  static int MAX_WIDTH = 1600 ;
   static int MIN_HEIGHT = 600 ;
   static int MAX_HEIGHT = 1200 ;
 
   private ErrorManager errorManager = null ;
-  private int width = 800 ;
-  private int height = 600 ;
+  private int width = MIN_WIDTH ;
+  private int height = MIN_HEIGHT ;
   private boolean confLoaded = false ;
 
   public GameContext (ErrorManager errorManager) {
