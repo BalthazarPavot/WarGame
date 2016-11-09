@@ -1,6 +1,6 @@
 
 
-package wargame ;
+package wargame.screens ;
 
 import java.awt.Component;
 import java.lang.Thread ;
@@ -9,6 +9,7 @@ import java.util.ArrayList ;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import wargame.GameContext;
 import wargame.widgets.* ;
 
 public class GameScreen extends JPanel {
@@ -17,6 +18,8 @@ public class GameScreen extends JPanel {
   private static final long serialVersionUID = 1L;
   final public static int MAIN_MENU_SCREEN = 1 ;
   final public static int NEW_GAME_SCREEN = 10 ;
+  final public static int LOAD_GAME_SCREEN = 30 ;
+  final public static int CONFIGURATION_SCREEN = 50 ;
   final public static int QUIT_SCREEN = 255 ;
   protected static JFrame mainFrame = null ;
 

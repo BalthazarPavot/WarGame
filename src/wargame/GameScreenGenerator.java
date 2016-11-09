@@ -1,6 +1,10 @@
 
 package wargame ;
 
+import wargame.screens.ConfigScreen;
+import wargame.screens.GameScreen;
+import wargame.screens.MainScreen;
+import wargame.screens.NewGameScreen;
 
 public class GameScreenGenerator {
 
@@ -22,8 +26,11 @@ public class GameScreenGenerator {
         preparedGameScreen = new MainScreen (gameContext) ;
         break ;
       case GameScreen.NEW_GAME_SCREEN:
-        preparedGameScreen = new NewGameScreen (gameContext) ;
-        break ;
+          preparedGameScreen = new NewGameScreen (gameContext) ;
+          break ;
+      case GameScreen.CONFIGURATION_SCREEN:
+          preparedGameScreen = new ConfigScreen(gameContext) ;
+          break ;
       default:
         this.gameContext.getErrorManager ().exitError (String.format (
           "Unknown screen id: %d", gameScreenID)) ;

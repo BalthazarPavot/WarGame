@@ -1,12 +1,12 @@
 
 
-package wargame ;
+package wargame.screens ;
 
 import java.awt.event.ActionEvent;
 
-public class NewGameScreenActionManager extends GameScreenActionManager {
+public class ConfigScreenActionManager extends GameScreenActionManager {
 
-  public NewGameScreenActionManager (GameScreen gameScreen) {
+  public ConfigScreenActionManager (GameScreen gameScreen) {
     super (gameScreen) ;
   }
 

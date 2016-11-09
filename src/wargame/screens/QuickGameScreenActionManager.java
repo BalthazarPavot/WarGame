@@ -1,12 +1,12 @@
 
 
-package wargame ;
+package wargame.screens ;
 
 import java.awt.event.ActionEvent;
 
-public class LoadGameScreenActionManager extends GameScreenActionManager {
+public class QuickGameScreenActionManager extends GameScreenActionManager {
 
-  public LoadGameScreenActionManager (GameScreen gameScreen) {
+  public QuickGameScreenActionManager (GameScreen gameScreen) {
     super (gameScreen) ;
   }
 

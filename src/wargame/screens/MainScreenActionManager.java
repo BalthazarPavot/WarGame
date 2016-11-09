@@ -1,6 +1,6 @@
 
 
-package wargame ;
+package wargame.screens ;
 
 import java.awt.event.ActionEvent;
 
@@ -16,6 +16,8 @@ public class MainScreenActionManager extends GameScreenActionManager {
     } else if (e.getActionCommand().equals(MainScreen.NEW_GAME_STRING)) {
       gameScreen.nextScreenID = GameScreen.NEW_GAME_SCREEN ;
     } else if (e.getActionCommand().equals(MainScreen.LOAD_GAME_STRING)) {
+    } else if (e.getActionCommand().equals(MainScreen.CONFIGURATION_STRING)) {
+        gameScreen.nextScreenID = GameScreen.CONFIGURATION_SCREEN ;
     } else if (e.getActionCommand().equals(MainScreen.QUIT_GAME_STRING)) {
       gameScreen.nextScreenID = GameScreen.QUIT_SCREEN ;
     } else {

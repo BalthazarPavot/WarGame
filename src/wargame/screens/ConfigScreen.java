@@ -1,23 +1,33 @@
 
 
-package wargame ;
+package wargame.screens ;
+
 
 import java.awt.Color;
 
+import wargame.GameContext;
 import wargame.widgets.* ;
 
 
-public class NewGameScreen extends GameScreen {
-
+public class ConfigScreen extends GameScreen {
 
 
   private static final long serialVersionUID = 1L;
+  public static String QUICK_GAME_STRING = "Quick Game" ;
+  public static String NEW_GAME_STRING = "New Game" ;
+  public static String LOAD_GAME_STRING = "Load Game" ;
+  public static String CONFIGURATION_STRING = "Configuration" ;
+  public static String QUIT_GAME_STRING = "Quit" ;
 
-  public NewGameScreen (GameContext gameContext) {
+
+  public ConfigScreen (GameContext gameContext) {
     super (gameContext) ;
-    this.actionManager = new NewGameScreenActionManager (this) ;
+    this.actionManager = new ConfigScreenActionManager (this) ;
   }
 
+  /**
+   * Prepare the main screen, the one display at the launch of the game.
+   */
   public void prepare () {
     ButtonWidget button ;
 
@@ -32,5 +42,4 @@ public class NewGameScreen extends GameScreen {
     button.setActionCommand ("Quit") ;
     this.addWidgets (button) ;
   }
-
 }

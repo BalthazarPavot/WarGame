@@ -1,7 +1,8 @@
 
 
-package wargame ;
+package wargame.screens ;
 
+import wargame.GameContext;
 import wargame.widgets.* ;
 
 
