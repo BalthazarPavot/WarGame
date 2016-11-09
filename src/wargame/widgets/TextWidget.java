@@ -7,6 +7,8 @@ import java.awt.Rectangle;
 
 import javax.swing.JLabel;
 
+import wargame.basic_types.Position;
+
 public class TextWidget extends JLabel implements GameWidget {
 
   
@@ -72,6 +74,22 @@ public class TextWidget extends JLabel implements GameWidget {
    */
   public void setDimention (int w, int h) {
     this.boundRect = new Rectangle (this.boundRect.x, this.boundRect.y, w, h) ;
+  }
+
+  /**
+   * Set the position of the bound rectangle.
+   * @param position The position to go on
+   */
+  public void setPosition (Position position) {
+    this.boundRect = new Rectangle (position.getX (), position.getY (),
+    		this.boundRect.width, this.boundRect.height) ;
+  }
+
+  /**
+   * Return widget's position
+   */
+  public Position getPosition () {
+	  return new Position (this.boundRect.x, this.boundRect.y) ;
   }
 
   /**

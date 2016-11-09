@@ -7,6 +7,8 @@ import java.awt.Rectangle;
 
 import javax.swing.JButton;
 
+import wargame.basic_types.Position;
+
 public class ButtonWidget extends JButton implements GameWidget {
 
   
@@ -67,6 +69,22 @@ public class ButtonWidget extends JButton implements GameWidget {
   public void setPosition (int x, int y) {
     this.boundRect = new Rectangle (x, y, this.boundRect.width,
       this.boundRect.height) ;
+  }
+
+  /**
+   * Set the position of the bound rectangle.
+   * @param position The position to go on
+   */
+  public void setPosition (Position position) {
+    this.boundRect = new Rectangle (position.getX (), position.getY (),
+    		this.boundRect.width, this.boundRect.height) ;
+  }
+
+  /**
+   * Return widget's position
+   */
+  public Position getPosition () {
+	  return new Position (this.boundRect.x, this.boundRect.y) ;
   }
 
   /**

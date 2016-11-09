@@ -3,6 +3,8 @@ package wargame.widgets ;
 
 import java.awt.Rectangle;
 
+import wargame.basic_types.Position;
+
 public interface GameWidget {
 
 
@@ -12,11 +14,22 @@ public interface GameWidget {
   void bind () ;
 
   /**
+   * Return widget's position
+   */
+  Position getPosition () ;
+  
+  /**
    * Set the position of the bound rectangle.
    * @param x The position in the x axis
    * @param y The position in the y axis
    */
   void setPosition (int x, int y) ;
+
+  /**
+   * Set the position of the bound rectangle.
+   * @param position the position to move on
+   */
+  void setPosition (Position position) ;
 
   /**
    * Set the dimensions of the bound rectangle.
