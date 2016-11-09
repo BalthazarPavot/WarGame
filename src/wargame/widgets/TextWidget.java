@@ -2,6 +2,7 @@
 package wargame.widgets ;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
 
@@ -74,6 +75,13 @@ public class TextWidget extends JLabel implements GameWidget {
    */
   public void setDimention (int w, int h) {
     this.boundRect = new Rectangle (this.boundRect.x, this.boundRect.y, w, h) ;
+  }
+
+  /**
+   * Return the dimensions of the rectangle
+   */
+  public Dimension getDimension () {
+    return new Dimension (this.boundRect.width, this.boundRect.height) ;
   }
 
   /**

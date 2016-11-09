@@ -1,6 +1,7 @@
 
 package wargame.widgets ;
 
+import java.awt.Dimension;
 import java.awt.Rectangle;
 
 import wargame.basic_types.Position;
@@ -37,6 +38,11 @@ public interface GameWidget {
    * @param h The height of the rectangle
    */
   void setDimention (int w, int h) ;
+
+  /**
+   * Return the dimensions of the rectangle
+   */
+  Dimension getDimension () ;
 
   /**
    * Set the bound rectangle.

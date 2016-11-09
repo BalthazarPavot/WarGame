@@ -2,6 +2,7 @@
 package wargame.widgets ;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -94,6 +95,15 @@ public class ImageWidget extends JLabel implements GameWidget {
    */
   public void setDimention (int w, int h) {
     this.boundRect = new Rectangle (this.boundRect.x, this.boundRect.y, w, h) ;
+  }
+
+  /**
+   * Set the dimensions of the bound rectangle.
+   * @param w The width of the rectangle
+   * @param h The height of the rectangle
+   */
+  public Dimension getDimension () {
+    return new Dimension (this.boundRect.width, this.boundRect.height) ;
   }
 
   /**
