@@ -30,6 +30,52 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	public static int infScore = Integer.MAX_VALUE ;
 
 	/**
+	 * Add the given element the the position
+	 * @param position
+	 * @param element
+	 */
+	public void add (Position position, MapElement element) {
+		this.add (position.getX (), position.getY (), element);
+	}
+
+	/**
+	 * Add the given element the the position
+	 * @param x
+	 * @param y
+	 * @param element
+	 */
+	public void add (int x, int y, MapElement element) {
+		if (this.get (x) == null)
+			this.put (x,  new HashMap<Integer, ArrayList<MapElement>> ()) ;
+		if (this.get (x).get (y) == null)
+			this.get (x).put (y, new ArrayList<MapElement> ()) ;
+		this.get (x).get (y).add (element) ;
+	}
+
+	/**
+	 * Retrieve the list of element at the given position
+	 * @param position
+	 * @return
+	 */
+	public ArrayList<MapElement> get (Position position) {
+		return this.get (position.getX (), position.getY ());
+	}
+
+	/**
+	 * Retrieve the list of element at the given position
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public ArrayList<MapElement> get (int x, int y) {
+		if (this.get (x) == null)
+			this.put (x,  new HashMap<Integer, ArrayList<MapElement>> ()) ;
+		if (this.get (x).get (y) == null)
+			this.get (x).put (y, new ArrayList<MapElement> ()) ;
+		return this.get (x).get (y) ;
+	}
+
+	/**
 	 * Tell if a position is walkable
 	 * @param x
 	 * @param y
