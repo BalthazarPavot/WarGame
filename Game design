@@ -1,0 +1,28 @@
+Les différentes parties du jeux sont:
+  - Génération de la map: (Balthazar)
+    - Map Width ;
+    - Map Height ;
+    - Obstacles ;
+    - difficulté ;
+    - Type de visibilité
+    - Type de partie (defaite total, timer...)
+  - Interface:
+    - Side panel width = 150
+    - Map width = screen resolution - Side panel width ;
+  - Game Conf:
+    - Screen Width, Screen Height ;
+    - Sound ;
+    - Auto-save ;
+  - Datamodel des perso:
+    Perso, Monster, Player ; ((kamil)
+    IA ; (Romain)
+
+Les cases de la map sont des octogones (simplifiés en cercles, ou
+  en carrés chevauchant)
+Partie de la map visible = 30 x 25 cases
+Taille de la map total = 90 x 75 cases
+Default map size = 1440 x 960 px
+Sprite size = 16 x 16 px
+
+Path finding, sprite rotation, scaling -> package math.
+
