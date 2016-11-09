@@ -12,7 +12,7 @@ import java.util.Properties;
 public class GameContext {
 
   private static String defaultConfigPath = "./config.conf" ;
-  static String TITLE = "War Game" ;
+  public static String TITLE = "War Game" ;
   static int MIN_WIDTH = 800 ;
   static int MAX_WIDTH = 1900 ;
   static int MIN_HEIGHT = 600 ;
