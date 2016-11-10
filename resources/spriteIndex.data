@@ -1,0 +1,39 @@
+all_sprites_names = \
+  grass_textures,\
+  tree_set
+
+allSources = \
+  http://opengameart.org/content/grass-textureseamless-2d,\
+  http://opengameart.org/content/2d-lost-garden-zelda-style-tiles-winter-theme-with-additions,\
+  http://opengameart.org/content/lpc-plant-repack
+
+snow_textures_path=resources/images/grass_snow_textures.png
+snow_textures_x=0
+snow_textures_y=0
+snow_textures_width=256
+snow_textures_height=128
+snow_textures_source=http://opengameart.org/content/2d-lost-garden-zelda-style-tiles-winter-theme-with-additions
+
+grass_textures_path=resources/images/grass_grass_textures.png
+grass_textures_x=0
+grass_textures_y=128
+grass_textures_width=256
+grass_textures_height=128
+grass_textures_source=http://opengameart.org/content/grass-textureseamless-2d
+
+tree_set_path=resources/images/trees.png
+tree_set_x=0
+tree_set_y=0
+tree_set_width=256
+tree_set_height=64
+tree_set_source=http://opengameart.org/content/lpc-plant-repack
+
+tree_snow_set_path=resources/images/trees.png
+tree_snow_set_x=0
+tree_snow_set_y=64
+tree_snow_set_width=128
+tree_snow_set_height=64
+tree_snow_set_source=http://opengameart.org/content/2d-lost-garden-zelda-style-tiles-winter-theme-with-additions
+
+
+# http://gamedev.stackexchange.com/questions/53705/how-can-i-make-a-sprite-sheet-based-animation-system
