@@ -25,8 +25,8 @@ import wargame.basic_types.Position;
  */
 public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>>> {
 	private static final long serialVersionUID = 1L;
-	public static int squareWidth = 16 ;
-	public static int squareHeight= 16 ;
+	public static int squareWidth = 64 ;
+	public static int squareHeight= 64 ;
 	public static int infScore = Integer.MAX_VALUE ;
 
 	/**
