@@ -60,6 +60,10 @@ public class MapGeneratorParameter {
 		return this.dimensions.getWidth() * this.dimensions.getHeight() ;
 	}
 
+	public int getSquareNumber () {
+		return (int) (this.dimensions.getWidth() / Map.squareWidth * this.dimensions.getHeight() / Map.squareHeight);
+	}
+
 	private void generateRandomClimate () {
 		climate = rand.nextInt() % CLIMATE_NUMBER ;
 	}
