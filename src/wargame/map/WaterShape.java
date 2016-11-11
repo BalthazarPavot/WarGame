@@ -1,25 +1,23 @@
 
-
-package wargame.map ;
+package wargame.map;
 
 public class WaterShape extends Shape {
-	
-	public WaterShape () {
-		super () ;
+
+	public WaterShape() {
+		super();
 	}
 
-	public WaterShape generate (MapGeneratorParameter parameters) {
-		this.parameters = parameters ;
+	public WaterShape generate(MapGeneratorParameter parameters) {
+		this.parameters = parameters;
 		if (parameters.isolatedWaterSpots) {
-			this.spotSurface = 4 ;
-			this.spotSurfaceError = 0.5 ;
+			this.spotSurface = 4;
+			this.spotSurfaceError = 0.5;
 		} else {
-			this.spotSurface = 20 ;
-			this.spotSurfaceError = 4 ;
+			this.spotSurface = 20;
+			this.spotSurfaceError = 4;
 		}
-		this.generateSpots (parameters.waterRatio) ;
-		return this ;
+		this.generateSpots(parameters.waterRatio);
+		return this;
 	}
-
 
 }
