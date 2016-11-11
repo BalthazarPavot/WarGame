@@ -56,6 +56,10 @@ public class MapGeneratorParameter {
 		this.dimensions = dimension ;
 	}
 
+	public double getSurface () {
+		return this.dimensions.getWidth() * this.dimensions.getHeight() ;
+	}
+
 	private void generateRandomClimate () {
 		climate = rand.nextInt() % CLIMATE_NUMBER ;
 	}
