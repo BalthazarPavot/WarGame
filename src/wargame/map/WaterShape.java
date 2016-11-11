@@ -2,15 +2,23 @@
 
 package wargame.map ;
 
-
-public class WaterShape {
+public class WaterShape extends Shape {
 	
-	public WaterShape generate (MapGeneratorParameter parameters) {
-		return this ;
+	public WaterShape () {
+		super () ;
 	}
 
-	public double getSurface () {
-		return 0 ;
+	public WaterShape generate (MapGeneratorParameter parameters) {
+		this.parameters = parameters ;
+		if (parameters.isolatedWaterSpots) {
+			this.spotSurface = 4 ;
+			this.spotSurfaceError = 0.5 ;
+		} else {
+			this.spotSurface = 20 ;
+			this.spotSurfaceError = 4 ;
+		}
+		this.generate() ;
+		return this ;
 	}
 
 
