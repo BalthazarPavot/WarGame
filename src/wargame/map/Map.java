@@ -1,6 +1,7 @@
 
 package wargame.map ;
 
+import java.awt.Dimension;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,27 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	public static int squareWidth = 64 ;
 	public static int squareHeight= 64 ;
 	public static int infScore = Integer.MAX_VALUE ;
+
+	private int width ;
+	private int height ;
+	private HashMap<Integer, HashMap<Integer, ArrayList<MapElement>>> realPositions ;
+
+
+	public Map () {
+		super () ;
+		this.width = defaultWidth ;
+		this.height = defaultHeight ;
+	}
+
+	public Map (Dimension dimensions) {
+		this ((int)dimensions.getWidth (), (int)dimensions.getHeight ()) ;
+	}
+
+	public Map (int width, int height) {
+		super () ;
+		this.width = width ;
+		this.height = height ;
+	}
 
 	/**
 	 * Add the given element the the position
