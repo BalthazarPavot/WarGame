@@ -25,7 +25,7 @@ public class MapGenerator {
 		return this.map ;
 	}
 
-	public void Generate () {
+	public void generate () {
 		ArrayList<TreeShape> treeShapes = new ArrayList<TreeShape> () ;
 		ArrayList<RockShape> rockShapes = new ArrayList<RockShape> () ;
 		ArrayList<WaterShape> waterShapes = new ArrayList<WaterShape> () ;
@@ -43,15 +43,18 @@ public class MapGenerator {
 
 		while (treeRatio < this.parameters.treeRatio) {
 			treeShapes.add (new TreeShape ().generate (this.parameters)) ;
-			treeRatio += treeShapes.get (treeShapes.size () - 1).getSurface () / this.map.getSurface () ;
+			treeRatio += treeShapes.get (treeShapes.size () - 1).getSquareNumber () / this.map.getSquareNumber () ;
 		}
 		while (rockRatio < this.parameters.rockRatio) {
 			rockShapes.add (new RockShape ().generate (this.parameters)) ;
-			rockRatio += rockShapes.get (rockShapes.size () - 1).getSurface () / this.map.getSurface () ;
+			rockRatio += rockShapes.get (rockShapes.size () - 1).getSquareNumber () / this.map.getSquareNumber () ;
 		}
 		while (waterRatio < this.parameters.waterRatio) {
 			waterShapes.add (new WaterShape ().generate (this.parameters)) ;
-			waterRatio += waterShapes.get (waterShapes.size () - 1).getSurface () / this.map.getSurface () ;
+			waterRatio += waterShapes.get (waterShapes.size () - 1).getSquareNumber () / this.map.getSquareNumber() ;
 		}
+		System.out.printf("Tree ratio: %f;%f (%d)\n", this.parameters.treeRatio, treeRatio, treeShapes.size ()) ;
+		System.out.printf("Rock ratio: %f;%f (%d)\n", this.parameters.rockRatio, rockRatio, rockShapes.size ()) ;
+		System.out.printf("Water ratio: %f;%f (%d)\n", this.parameters.waterRatio, waterRatio, waterShapes.size ()) ;
 	}
 }
