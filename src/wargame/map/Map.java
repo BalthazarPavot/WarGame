@@ -56,26 +56,45 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param position
 	 * @param element
 	 */
-	public void add (Position position, MapElement element) {
+	public void add (Position position, MapElement element) throws IndexOutOfBoundsException {
 		this.add (position.getX (), position.getY (), element);
 	}
 
 	/**
-	 * Add the given element the the position
+	 * Add the given element the the good square, and store its real
+	 * position in the realPosition.
 	 * @param x
 	 * @param y
 	 * @param element
 	 */
-	public void add (int x, int y, MapElement element) {
-		if (this.get (x) == null)
-			this.put (x,  new HashMap<Integer, ArrayList<MapElement>> ()) ;
-		if (this.get (x).get (y) == null)
-			this.get (x).put (y, new ArrayList<MapElement> ()) ;
-		this.get (x).get (y).add (element) ;
+	public void add (int x, int y, MapElement element) throws IndexOutOfBoundsException {
+		int corneredX ;
+		int corneredY ;
+
+		/* 
+		 * Set the corner of the sprite on the corner of a square.
+		 * 	We use its center to know on which square it really is.
+		 **/
+		if (x < 0 || x > this.width -squareWidth ||
+				y < 0 || y > this.height - squareHeight)
+			throw new IndexOutOfBoundsException () ;
+		corneredX = (x + squareWidth / 2) / squareWidth * squareWidth - squareWidth / 2 ;
+		corneredY = (y + squareHeight / 2)  / squareHeight * squareHeight - squareHeight / 2;
+		if (this.get (corneredX) == null)
+			this.put (corneredX,  new HashMap<Integer, ArrayList<MapElement>> ()) ;
+		if (this.get (corneredX).get (corneredY) == null)
+			this.get (corneredX).put (corneredY, new ArrayList<MapElement> ()) ;
+		this.get (corneredX).get (corneredY).add (element) ;
+		// realPos[y][x]=sprite	in order to display upper sprites first.
+		if (realPositions.get (y) == null)
+			realPositions.put (y,  new HashMap<Integer, ArrayList<MapElement>> ()) ;
+		if (realPositions.get (y).get (x) == null)
+			realPositions.get (y).put (x, new ArrayList<MapElement> ()) ;
+		realPositions.get (y).get (x).add (element) ;
 	}
 
 	/**
-	 * Retrieve the list of element at the given position
+	 * Retrieve the list of element cornered at the given position.
 	 * @param position
 	 * @return
 	 */
@@ -95,6 +114,33 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 		if (this.get (x).get (y) == null)
 			this.get (x).put (y, new ArrayList<MapElement> ()) ;
 		return this.get (x).get (y) ;
+	}
+
+	/**
+	 * Retrieve the list of element having the real given position.
+	 * @param position
+	 * @return The list of element having this position
+	 */
+	public ArrayList<MapElement> getReal (Position position) {
+		return this.getReal (position.getX (), position.getY ());
+	}
+
+	/**
+	 * Retrieve the list of element having the real given position
+	 * @param x
+	 * @param y
+	 * @return The list of element having this position
+	 */
+	public ArrayList<MapElement> getReal (int x, int y) throws IndexOutOfBoundsException {
+		if (this.realPositions.get (y) == null)
+			throw new IndexOutOfBoundsException() ;
+		if (this.realPositions.get (y).get (x) == null)
+			throw new IndexOutOfBoundsException() ;
+		return this.realPositions.get (y).get (x) ;
+	}
+
+	public double getSurface () {
+		return (double) this.width * this.height ;
 	}
 
 	/**
