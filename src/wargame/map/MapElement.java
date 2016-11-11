@@ -63,6 +63,14 @@ public class MapElement {
 		return image.getDimension () ;
 	}
 
+	public void setPosition (Position position) {
+		image.setPosition (position) ;
+	}
+
+	public void setDimension (Dimension dimension) {
+		image.setDimension(dimension.width, dimension.height) ;
+	}
+
 	public void move (int x, int y) {
 		Position finalPosition ;
 
