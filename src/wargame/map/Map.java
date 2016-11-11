@@ -9,8 +9,17 @@ import wargame.basic_types.Position;
 
 
 /**
- * This class represents a set MapElement associated to their position.
- * More simply, the hash map looks like the following:
+ * This class represents two sets of MapElement associated to their position. <br />
+ * The first hash set (Map) contains the positions that are rounded to fit
+ * exactly one square. <br />
+ * The second one (contained into Map, invisible, named realPositions) contains the
+ * exact positions of each sprite. It is used to the display. x and y are stored
+ * conversely to the first map, in order to display upper sprites first.	<br />
+ * The first hash set (Map) is useful to know if a square is walkable, swimmable...
+ * so, it is used for the path finding, and to know if a character can move one a square.<br />
+ * The second one is useful for the display: sprites do not have to be on a specific
+ * square, graphically speaking. It can be under two or more squares.<br />
+ * More simply, the Map looks like the following hash map:
  *	{
  * 		pos_x : {
  *			pos_y : [ elements having position (pos_x;pos_y) ]
@@ -103,7 +112,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	}
 
 	/**
-	 * Retrieve the list of element at the given position
+	 * Retrieve the list of element cornered at the given position
 	 * @param x
 	 * @param y
 	 * @return
@@ -150,7 +159,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @return
 	 */
 	public boolean walkable (int x, int y) {
-		return testFloor (x, y, "isWalkable") ;
+		return testFloor (x, y, MapElement.isWalkableString) ;
 	}
 
 	/**
@@ -169,7 +178,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @return
 	 */
 	public boolean flyable (int x, int y) {
-		return testFloor (x, y, "isFlyable") ;
+		return testFloor (x, y, MapElement.isFlyableString) ;
 	}
 
 	/**
@@ -188,7 +197,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @return
 	 */
 	public boolean swimmable (int x, int y) {
-		return testFloor (x, y, "isSwimmable") ;
+		return testFloor (x, y, MapElement.isSwimmableString) ;
 	}
 
 	/**
@@ -201,17 +210,17 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	}
 
 	/**
-	 * Tell if a position is crossable by projectils.
+	 * Tell if a position is crossable by projectiles.
 	 * @param x
 	 * @param y
 	 * @return
 	 */
 	public boolean canShotThrough (int x, int y) {
-		return testFloor (x, y, "canShotThrough") ;
+		return testFloor (x, y, MapElement.canShotThroughString) ;
 	}
 
 	/**
-	 * Tell if a position is crossable by projectils
+	 * Tell if a position is crossable by projectiles
 	 * @param position
 	 * @return
 	 */
@@ -228,7 +237,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @return
 	 */
 	public boolean canCrossByWalking (int begin_x, int begin_y, int end_x, int end_y) {
-		return AStart (begin_x, begin_y, end_x, end_y, "isWalkable") != null ;
+		return AStart (begin_x, begin_y, end_x, end_y, MapElement.isWalkableString) != null ;
 	}
 
 	/**
@@ -238,7 +247,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @return
 	 */
 	public boolean canCrossByWalking (Position begin, Position end) {
-		return AStart (begin.getX (), begin.getY (), end.getX (), end.getY (), "isWalkable") != null ;
+		return AStart (begin.getX (), begin.getY (), end.getX (), end.getY (), MapElement.isWalkableString) != null ;
 	}
 
 	/**
@@ -282,9 +291,10 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	            	continue ; // we ignore not walkable paths
 	            currentScore = fromStartScore.get (currentNode) + 
 	            		currentNode.distance (neighbor) ;
-//	            currentScore = (testFloor (neighbor, methodName) ?
-//	            		(fromStartScore.get (currentNode) + 
-//	            		currentNode.distance (neighbor)) : Map.infScore) ;
+/*	            currentScore = (testFloor (neighbor, methodName) ?
+  	            		(fromStartScore.get (currentNode) + 
+  	            		currentNode.distance (neighbor)) : Map.infScore) ;
+*/
 	            if (!nodesToExplore.contains (neighbor))	// Discover a new node
 	            	nodesToExplore.add (neighbor) ;
 	            else if (currentScore >= fromStartScore.get(neighbor))
@@ -294,9 +304,10 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	            fromStartScore.put (neighbor, currentScore) ;
 	            fromStartToEndScore.put (neighbor, fromStartScore.get(neighbor) +
 	            		neighbor.distance (goalNode)) ;
-//	            fromStartToEndScore.put (neighbor, (testFloor (neighbor, methodName) ?
-//	            		(fromStartScore.get(neighbor) +
-//	            		neighbor.distance (goalNode)) : Map.infScore)) ;
+/*	            fromStartToEndScore.put (neighbor, (testFloor (neighbor, methodName) ?
+  	            		(fromStartScore.get(neighbor) +
+  	            		neighbor.distance (goalNode)) : Map.infScore)) ;
+*/
 	        }
 		}
 		return null ;

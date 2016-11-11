@@ -13,6 +13,13 @@ public class MapElement {
 	final public static int SWIMMABLE = 8 ;
 	final public static int SHOT_THROUGH = 16 ;
 	final public static int REMOVABLE = 32 ;
+	final public static String isWalkableString = "isWalkable" ;
+	final public static String isFlyableString = "isFlyable" ;
+	final public static String isSwimmableString = "isSwimmable" ;
+	final public static String canShotThroughString = "canShotThrough" ;
+	final public static String isRemovableString = "isRemovable" ;
+//	final public static String String = "" ;
+//	final public static String String = "" ;
 
 	private boolean walkable = false ;
 	private boolean flyable = false ;
