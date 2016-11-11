@@ -37,7 +37,7 @@ public interface GameWidget {
    * @param w The width of the rectangle
    * @param h The height of the rectangle
    */
-  void setDimention (int w, int h) ;
+  void setDimension (int w, int h) ;
 
   /**
    * Return the dimensions of the rectangle

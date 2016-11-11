@@ -93,7 +93,7 @@ public class ButtonWidget extends JButton implements GameWidget {
    * @param w The width of the rectangle
    * @param h The height of the rectangle
    */
-  public void setDimention (int w, int h) {
+  public void setDimension (int w, int h) {
     this.boundRect = new Rectangle (this.boundRect.x, this.boundRect.y, w, h) ;
   }
 
