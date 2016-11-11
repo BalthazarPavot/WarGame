@@ -37,6 +37,10 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	private static final long serialVersionUID = 1L;
 	public static int squareWidth = 64 ;
 	public static int squareHeight= 64 ;
+	public static int defaultSquareNumberWidth = 60 ;
+	public static int defaultSquareNumberHeight= 40 ;
+	public static int defaultWidth = squareWidth * defaultSquareNumberWidth ;
+	public static int defaultHeight= squareHeight * defaultSquareNumberHeight ;
 	public static int infScore = Integer.MAX_VALUE ;
 
 	private int width ;
@@ -117,11 +121,11 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param y
 	 * @return
 	 */
-	public ArrayList<MapElement> get (int x, int y) {
+	public ArrayList<MapElement> get (int x, int y) throws IndexOutOfBoundsException {
 		if (this.get (x) == null)
-			this.put (x,  new HashMap<Integer, ArrayList<MapElement>> ()) ;
+			throw new IndexOutOfBoundsException() ;
 		if (this.get (x).get (y) == null)
-			this.get (x).put (y, new ArrayList<MapElement> ()) ;
+			throw new IndexOutOfBoundsException() ;
 		return this.get (x).get (y) ;
 	}
 
