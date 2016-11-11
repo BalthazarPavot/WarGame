@@ -1,6 +1,7 @@
 
 package wargame.map ;
 
+import java.awt.Dimension;
 import java.util.Random;
 
 public class MapGeneratorParameter {
@@ -35,21 +36,31 @@ public class MapGeneratorParameter {
 	public boolean isolatedRockSets = false ;
 	public boolean isolatedWaterSpots = false ;
 	private Random rand ;
+	private Dimension dimensions = null ;
 
 	public MapGeneratorParameter () {
 		rand = new Random() ;
 	}
 
 	public void generateRandomParameters () {
+		this.setDimensions (new Dimension (Map.defaultWidth, Map.defaultHeight)) ;
 		this.generateRandomClimate () ;
-		this.generateThisClimateParams ();
+		this.generateThisClimateParams () ;
 	}
 
-	public void generateRandomClimate () {
+	public Dimension getDimensions () {
+		return this.dimensions ;
+	}
+
+	public void setDimensions (Dimension dimension) {
+		this.dimensions = dimension ;
+	}
+
+	private void generateRandomClimate () {
 		climate = rand.nextInt() % CLIMATE_NUMBER ;
 	}
 
-	public void generateThisClimateParams () {
+	private void generateThisClimateParams () {
 		switch (climate) {
 			case TOUNDRA_CLIMATE:
 				generateToundraParameters();
@@ -73,7 +84,7 @@ public class MapGeneratorParameter {
 		}
 	}
 
-	public void generateToundraParameters () {
+	private void generateToundraParameters () {
 		waterRatio = rangeDouble (0, 0.1) ;
 		isolatedWaterSpots = true ;
 		treeRatio = rangeDouble (0.05, 0.15) ;
@@ -82,7 +93,7 @@ public class MapGeneratorParameter {
 		isolatedRockSets = true ;
 	}
 
-	public void generateSandDesertParameters () {
+	private void generateSandDesertParameters () {
 		waterRatio = 0 ;
 		isolatedWaterSpots = true ;
 		treeRatio = rangeDouble (0.02, 0.05) ;
@@ -91,7 +102,7 @@ public class MapGeneratorParameter {
 		isolatedRockSets = false ;
 	}
 
-	public void generateRocksDesertParameters () {
+	private void generateRocksDesertParameters () {
 		waterRatio = rangeDouble (0.0, 0.01) ;
 		isolatedWaterSpots = true ;
 		treeRatio = rangeDouble (0.02, 0.15) ;
@@ -100,7 +111,7 @@ public class MapGeneratorParameter {
 		isolatedRockSets = false ;
 	}
 
-	public void generateDarkForestParameters () {
+	private void generateDarkForestParameters () {
 		waterRatio = rangeDouble (0.0, 0.02) ;
 		isolatedWaterSpots = true ;
 		treeRatio = rangeDouble (0.2, 0.4) ;
@@ -109,7 +120,7 @@ public class MapGeneratorParameter {
 		isolatedRockSets = true ;
 	}
 
-	public void generateSwampParameters () {
+	private void generateSwampParameters () {
 		waterRatio = rangeDouble (0.3, 0.4) ;
 		isolatedWaterSpots = rand.nextInt () % 5 != 0 ;
 		treeRatio = rangeDouble (0.75, 0.1) ;
@@ -118,7 +129,7 @@ public class MapGeneratorParameter {
 		isolatedRockSets = true ;
 	}
 
-	public void generateNoClimateParameters () {
+	private void generateNoClimateParameters () {
 		do {
 			treeRatio = rangeDouble (MIN_TREE_RATIO, MAX_TREE_RATIO) ;
 			waterRatio = rangeDouble (MIN_WATER_RATIO, MAX_WATER_RATIO) ;
