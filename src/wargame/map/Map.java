@@ -156,6 +156,10 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 		return (double) this.width * this.height ;
 	}
 
+	public int getSquareNumber () {
+		return (int) this.width / squareWidth * this.height / squareHeight ;
+	}
+
 	/**
 	 * Tell if a position is walkable
 	 * @param x
