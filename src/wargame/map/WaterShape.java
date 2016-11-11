@@ -17,7 +17,7 @@ public class WaterShape extends Shape {
 			this.spotSurface = 20 ;
 			this.spotSurfaceError = 4 ;
 		}
-		this.generate() ;
+		this.generateSpots (parameters.waterRatio) ;
 		return this ;
 	}
 
