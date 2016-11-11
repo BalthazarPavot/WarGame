@@ -2,8 +2,12 @@
 package wargame.screens;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Random;
 
 import wargame.GameContext;
+import wargame.map.Map;
 import wargame.widgets.*;
 
 public class MainScreen extends GameScreen {
@@ -42,6 +46,31 @@ public class MainScreen extends GameScreen {
 			button.setActionCommand(buttonTexts[j]);
 			this.addWidgets(button);
 		}
-		this.addWidgets(new ImageWidget(100, 100, 100, 150, "resources/images/test_image.png"));
+		this.createBackground();
+	}
+
+	private void createBackground() {
+		ArrayList<BufferedImage> backgroundImageList;
+		ArrayList<BufferedImage> treeImageList;
+		Random rand;
+		int randint ;
+
+		rand = new Random();
+		randint = rand.nextInt(2) ;
+		backgroundImageList = gameContext.getSpriteHandler()
+				.get(randint == 1 ? "snow_textures" : "grass_textures");
+		treeImageList = gameContext.getSpriteHandler()
+				.get(randint == 1 ? "tree_snow_set" : "tree_set");
+		for (int x = 0; x < gameContext.getWidth(); x+=Map.squareWidth) {
+			for (int y = 0; y < gameContext.getHeight(); y+=Map.squareHeight) {
+				if (rand.nextInt(20) == 0) {
+					this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
+						treeImageList.get(rand.nextInt(treeImageList.size()))));
+					System.out.println("ok!!");
+				}
+				this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
+						backgroundImageList.get(rand.nextInt(backgroundImageList.size()))));
+			}
+		}
 	}
 }
