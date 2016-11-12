@@ -2,7 +2,9 @@ all_sprites_names = \
   snow_textures;\
   grass_textures;\
   tree_set;\
-  tree_snow_set
+  tree_snow_set;\
+  rock_snow_set;\
+  water
   
 
 allSources = \
@@ -39,3 +41,16 @@ tree_snow_set_height=128
 tree_snow_set_source=http://opengameart.org/content/2d-lost-garden-zelda-style-tiles-winter-theme-with-additions
 
 
+rock_snow_set_path=resources/images/rocks.png
+rock_snow_set_x=0
+rock_snow_set_y=64
+rock_snow_set_width=64
+rock_snow_set_height=128
+rock_snow_set_source=http://opengameart.org/content/2d-lost-garden-zelda-style-tiles-winter-theme-with-additions
+
+water_path=resources/images/water.png
+water_x=0
+water_y=0
+water_width=128
+water_height=128
+water_source=personnal

@@ -63,10 +63,21 @@ public class MainScreen extends GameScreen {
 				.get(randint == 1 ? "tree_snow_set" : "tree_set");
 		for (int x = 0; x < gameContext.getWidth(); x+=Map.squareWidth) {
 			for (int y = 0; y < gameContext.getHeight(); y+=Map.squareHeight) {
-				if (rand.nextInt(20) == 0) {
+				if (rand.nextInt(20) == 0)
 					this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
 						treeImageList.get(rand.nextInt(treeImageList.size()))));
-					System.out.println("ok!!");
+				else if (rand.nextInt(20) == 0 && randint == 1)
+					this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
+						gameContext.getSpriteHandler().get("rock_snow_set").get(0)));
+				else if (rand.nextInt(150) == 0){// && randint == 0) {
+					this.addWidgets(new ImageWidget(x+Map.squareWidth, y+Map.squareHeight, Map.squareWidth, Map.squareHeight,
+							gameContext.getSpriteHandler().get("water").get(3)));
+					this.addWidgets(new ImageWidget(x, y+Map.squareHeight, Map.squareWidth, Map.squareHeight,
+							gameContext.getSpriteHandler().get("water").get(2)));
+					this.addWidgets(new ImageWidget(x+Map.squareWidth, y, Map.squareWidth, Map.squareHeight,
+							gameContext.getSpriteHandler().get("water").get(1)));
+					this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
+							gameContext.getSpriteHandler().get("water").get(0)));
 				}
 				this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
 						backgroundImageList.get(rand.nextInt(backgroundImageList.size()))));
