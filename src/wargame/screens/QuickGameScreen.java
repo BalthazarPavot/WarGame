@@ -2,7 +2,6 @@
 package wargame.screens;
 
 import wargame.GameContext;
-import wargame.widgets.*;
 
 public class QuickGameScreen extends GameScreen {
 

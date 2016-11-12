@@ -26,6 +26,8 @@ public class ConfigScreen extends GameScreen {
 	public void prepare() {
 		ButtonWidget button;
 
+		this.addWidgets(new TextWidget("Configuration", gameContext.getWidth() / 2 - 200,
+				gameContext.getHeight() / 10 * 2 - 100, 400, 200, 50, new Color(128, 128, 128)));
 		button = new ButtonWidget("Previous", 20, gameContext.getHeight() - 100, 100, 20, 14,
 				new Color(128, 128, 128));
 		button.addActionListener(this.actionManager);
