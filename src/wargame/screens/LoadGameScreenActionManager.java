@@ -3,6 +3,11 @@ package wargame.screens;
 
 import java.awt.event.ActionEvent;
 
+/**
+ * Action manager for the load screen.
+ * @author Balthazar Pavot
+ *
+ */
 public class LoadGameScreenActionManager extends GameScreenActionManager {
 
 	public LoadGameScreenActionManager(GameScreen gameScreen) {

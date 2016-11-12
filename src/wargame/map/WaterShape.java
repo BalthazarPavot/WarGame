@@ -1,12 +1,22 @@
 
 package wargame.map;
 
+/**
+ * Defines a water set shape.
+ * @author Balthazar Pavot
+ *
+ */
 public class WaterShape extends Shape {
 
 	public WaterShape() {
 		super();
 	}
 
+	/**
+	 * Generate a water spot in function of the given parameters.
+	 * @param parameters
+	 * @return this
+	 */
 	public WaterShape generate(MapGeneratorParameter parameters) {
 		this.parameters = parameters;
 		if (parameters.isolatedWaterSpots) {

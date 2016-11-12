@@ -6,6 +6,14 @@ import java.awt.Dimension;
 import wargame.basic_types.Position;
 import wargame.widgets.ImageWidget;
 
+
+/**
+ * This class represent an element of the map: the ground, a tree, water spot, etc <br />
+ * It also defines if we can cross it, shot through, etc. <br />
+ * It's position and dimensions are defined by the image's dimensions and position.
+ * @author Balthazar Pavot
+ *
+ */
 public class MapElement {
 
 	final public static int WALKABLE = 2;
@@ -41,36 +49,66 @@ public class MapElement {
 		removable = (flags & REMOVABLE) == REMOVABLE;
 	}
 
+	/**
+	 * Tell if a position is contained by the sprite.
+	 * @param x
+	 * @param y
+	 * @return true if the given position is into the sprite.
+	 */
 	public boolean containsPosition(int x, int y) {
 		Position position;
 		Dimension dimension;
 
 		position = getPosition();
-		dimension = getDimention();
+		dimension = getDimension();
 		return position.getX() <= x && x <= position.getX() + dimension.width && position.getY() <= y
 				&& y <= position.getY() + dimension.height;
 	}
 
+	/**
+	 * Tell if a position is contained by the sprite.
+	 * @param position
+	 * @return true if the given position is into the sprite.
+	 */
 	public boolean containsPosition(Position position) {
 		return containsPosition(position.getX(), position.getY());
 	}
 
+	/**
+	 * @return the position of the map element
+	 */
 	public Position getPosition() {
 		return image.getPosition();
 	}
 
-	public Dimension getDimention() {
+	/**
+	 * @return The dimension of the map element
+	 */
+	public Dimension getDimension() {
 		return image.getDimension();
 	}
 
+	/**
+	 * Set the image's position with the given one
+	 * @param position
+	 */
 	public void setPosition(Position position) {
 		image.setPosition(position);
 	}
 
+	/**
+	 * Set the image's dimensions with the given one
+	 * @param dimension
+	 */
 	public void setDimension(Dimension dimension) {
 		image.setDimension(dimension.width, dimension.height);
 	}
 
+	/**
+	 * Move the sprite using the given vector
+	 * @param x
+	 * @param y
+	 */
 	public void move(int x, int y) {
 		Position finalPosition;
 
@@ -79,22 +117,37 @@ public class MapElement {
 		image.setPosition(finalPosition);
 	}
 
+	/**
+	 * @return true if the map element is walkable.
+	 */
 	public boolean isWalkable() {
 		return walkable;
 	}
 
+	/**
+	 * @return true if the map element is flyable.
+	 */
 	public boolean isFlyable() {
 		return flyable;
 	}
 
+	/**
+	 * @return true if the map element is swimmable
+	 */
 	public boolean isSwimmable() {
 		return swimmable;
 	}
 
+	/**
+	 * @return true if we can shot through this element
+	 */
 	public boolean canShotThrough() {
 		return shotThrough;
 	}
 
+	/**
+	 * @return true if this element can be displaced/removed.
+	 */
 	public boolean isRemovable() {
 		return removable;
 	}

@@ -2,9 +2,12 @@
 package wargame;
 
 /**
- * Singleton class that defines error codes. <br />
+ * Singleton class. <br />
+ * Defines error codes. <br />
  * Defines methods that allow to exit the game giving an error message, or just logging them if these are not
  * fatal errors.
+ * 
+ * @author Balthazar Pavot
  */
 public class ErrorManager {
 
@@ -21,31 +24,28 @@ public class ErrorManager {
 	}
 
 	/**
-	 * Exit the program in an early state, before the error manager has been initialized.
+	 * Exit the program in an early state, before the error manager has been initialised.
 	 */
 	public static void earlyTermination() {
 		ErrorManager.earlyTermination("Unknown error");
 	}
 
 	/**
-	 * Exit the program in an early state, before the error manager has been initialized, writting the given
+	 * Exit the program in an early state, before the error manager has been initialised, writing the given
 	 * message.
 	 * 
 	 * @param message
-	 *            The error message displayed in stderr.
 	 */
 	public static void earlyTermination(String message) {
 		ErrorManager.earlyTermination(message, EARLY_TERMINATION_ERROR);
 	}
 
 	/**
-	 * Exit the program in an early state, before the error manager has been initialized, writting the given
+	 * Exit the program in an early state, before the error manager has been initialised, writing the given
 	 * message, giving the given error code.
 	 * 
 	 * @param message
-	 *            The error message displayed in stderr.
 	 * @param errorCode
-	 *            The exit code of the program.
 	 */
 	public static void earlyTermination(String message, int errorCode) {
 		System.err.println(message);
@@ -63,19 +63,16 @@ public class ErrorManager {
 	 * Exit the program with giving the given message.
 	 * 
 	 * @param message
-	 *            The error message displayed in stderr.
 	 */
 	public void exitError(String message) {
 		exitError(message, UNKNOWN_ERROR);
 	}
 
 	/**
-	 * Exit the program with the given error code, writting the given message.
+	 * Exit the program with the given error code, writing the given message.
 	 * 
 	 * @param message
-	 *            The error message displayed in stderr.
 	 * @param errorCode
-	 *            The exit code of the program.
 	 */
 	public void exitError(String message, int errorCode) {
 		System.err.println(message);

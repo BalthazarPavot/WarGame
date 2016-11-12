@@ -3,6 +3,11 @@ package wargame.screens;
 
 import java.awt.event.ActionEvent;
 
+/**
+ * Action manager for the conf screen.
+ * @author Balthazar Pavot
+ *
+ */
 public class ConfigScreenActionManager extends GameScreenActionManager {
 
 	public ConfigScreenActionManager(GameScreen gameScreen) {

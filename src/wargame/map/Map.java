@@ -107,19 +107,17 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	}
 
 	/**
-	 * Retrieve the list of element cornered at the given position.
 	 * @param position
-	 * @return
+	 * @return The list of element cornered at the given position.
 	 */
 	public ArrayList<MapElement> get (Position position) {
 		return this.get (position.getX (), position.getY ());
 	}
 
 	/**
-	 * Retrieve the list of element cornered at the given position
 	 * @param x
 	 * @param y
-	 * @return
+	 * @return The list of element cornered at the given position.
 	 */
 	public ArrayList<MapElement> get (int x, int y) throws IndexOutOfBoundsException {
 		if (this.get (x) == null)
@@ -152,10 +150,16 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 		return this.realPositions.get (y).get (x) ;
 	}
 
+	/**
+	 * @return The surface of the map in pixel².
+	 */
 	public double getSurface () {
 		return (double) this.width * this.height ;
 	}
 
+	/**
+	 * @return The total number of square in the map.
+	 */
 	public int getSquareNumber () {
 		return (int) this.width / squareWidth * this.height / squareHeight ;
 	}
@@ -164,7 +168,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * Tell if a position is walkable
 	 * @param x
 	 * @param y
-	 * @return
+	 * @return true if the position if walkable.
 	 */
 	public boolean walkable (int x, int y) {
 		return testFloor (x, y, MapElement.isWalkableString) ;
@@ -173,7 +177,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	/**
 	 * Tell if a position is walkable
 	 * @param position
-	 * @return
+	 * @return true if a position is walkable.
 	 */
 	public boolean walkable (Position position) {
 		return this.walkable(position.getX(), position.getY()) ;
@@ -183,7 +187,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * Tell if a position is flyable
 	 * @param x
 	 * @param y
-	 * @return
+	 * @return true if a position is flyable
 	 */
 	public boolean flyable (int x, int y) {
 		return testFloor (x, y, MapElement.isFlyableString) ;
@@ -192,7 +196,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	/**
 	 * Tell if a position is flyable
 	 * @param position
-	 * @return
+	 * @return true if a position is flyable
 	 */
 	public boolean flyable (Position position) {
 		return this.flyable(position.getX(), position.getY()) ;
@@ -202,7 +206,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * Tell if a position is swimmable
 	 * @param x
 	 * @param y
-	 * @return
+	 * @return true if a position is swimmable
 	 */
 	public boolean swimmable (int x, int y) {
 		return testFloor (x, y, MapElement.isSwimmableString) ;
@@ -211,7 +215,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	/**
 	 * Tell if a position is swimmable
 	 * @param position
-	 * @return
+	 * @return true if a position is swimmable
 	 */
 	public boolean swimmable (Position position) {
 		return this.swimmable(position.getX(), position.getY()) ;
@@ -221,16 +225,16 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * Tell if a position is crossable by projectiles.
 	 * @param x
 	 * @param y
-	 * @return
+	 * @return true if a position is crossable by projectiles.
 	 */
 	public boolean canShotThrough (int x, int y) {
 		return testFloor (x, y, MapElement.canShotThroughString) ;
 	}
 
 	/**
-	 * Tell if a position is crossable by projectiles
+	 * Tell if a position is crossable by projectiles.
 	 * @param position
-	 * @return
+	 * @return true if a position is crossable by projectiles
 	 */
 	public boolean canShotThrough (Position position) {
 		return this.canShotThrough (position.getX(), position.getY()) ;
@@ -242,7 +246,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param begin_y
 	 * @param end_x
 	 * @param end_y
-	 * @return
+	 * @return true if two positions can be joined by walking
 	 */
 	public boolean canCrossByWalking (int begin_x, int begin_y, int end_x, int end_y) {
 		return AStart (begin_x, begin_y, end_x, end_y, MapElement.isWalkableString) != null ;
@@ -252,21 +256,21 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * Tell if two positions can be joined by walking
 	 * @param begin
 	 * @param end
-	 * @return
+	 * @return true if two positions can be joined by walking
 	 */
 	public boolean canCrossByWalking (Position begin, Position end) {
 		return AStart (begin.getX (), begin.getY (), end.getX (), end.getY (), MapElement.isWalkableString) != null ;
 	}
 
 	/**
-	 * This method implements The A* algorithm using the methodName to know if a spot is walkable.
+	 * This method implements The A* algorithm using the methodName method to know if a spot is crossable.
 	 * It was implemented using the pseudocode from https://en.wikipedia.org/wiki/A*_search_algorithm.
 	 * @param begin_x
 	 * @param begin_y
 	 * @param end_x
 	 * @param end_y
 	 * @param methodName
-	 * @return
+	 * @return the list of position to go from the begin to the end positions.
 	 */
 	private ArrayList<Position> AStart (int begin_x, int begin_y, int end_x, int end_y, String methodName) {
 		ArrayList<Position> evaluatedNodes = new ArrayList<Position> () ; // closedSet
@@ -326,7 +330,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param fullPath
 	 * @param bestPreviousNode
 	 * @param currentNode
-	 * @return
+	 * @return The list of optimal positions 
 	 */
 	private ArrayList<Position> reconstructPath (ArrayList<Position> fullPath,
 			HashMap<Position, Position> bestPreviousNode, Position currentNode) {

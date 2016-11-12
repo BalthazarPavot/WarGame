@@ -3,6 +3,11 @@ package wargame.screens;
 
 import java.awt.event.ActionEvent;
 
+/**
+ * Action manager of the new game screen.
+ * @author Balthazar Pavot
+ *
+ */
 public class NewGameScreenActionManager extends GameScreenActionManager {
 
 	public NewGameScreenActionManager(GameScreen gameScreen) {

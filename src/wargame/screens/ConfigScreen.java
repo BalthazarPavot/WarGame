@@ -6,6 +6,11 @@ import java.awt.Color;
 import wargame.GameContext;
 import wargame.widgets.*;
 
+/**
+ * Screen configuration.
+ * @author Balthazar Pavot
+ *
+ */
 public class ConfigScreen extends GameScreen {
 
 	private static final long serialVersionUID = 1L;

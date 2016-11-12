@@ -11,7 +11,12 @@ import javax.swing.JPanel;
 import wargame.GameContext;
 import wargame.widgets.*;
 
-public class GameScreen extends JPanel {
+/**
+ * Defines a screen of the game.
+ * @author Balthazar Pavot
+ *
+ */
+public abstract class GameScreen extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	final public static int MAIN_MENU_SCREEN = 1;
@@ -61,7 +66,6 @@ public class GameScreen extends JPanel {
 	 * Add the given wiget to the widget to display list
 	 * 
 	 * @param widget
-	 *            A Component to display.
 	 */
 	public void addWidgets(Component widget) {
 		this.gameWidgets.add(widget);
@@ -71,7 +75,7 @@ public class GameScreen extends JPanel {
 	 * Must be overwritten. TODO: export this into an interface?
 	 */
 	public void prepare() throws IllegalStateException {
-		throw new IllegalStateException();
+		throw new IllegalStateException("The screen did not overwite the method prepare");
 	}
 
 	public void screenTermination() {
@@ -81,7 +85,7 @@ public class GameScreen extends JPanel {
 	}
 
 	/**
-	 * Initialize the screen with a new frame, set the screen size, layout and trigger the first display.
+	 * Set the default behaviours of every screens and the size.
 	 */
 	private void initGameScreen() {
 		GameScreen.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -90,6 +94,9 @@ public class GameScreen extends JPanel {
 		GameScreen.mainFrame.setResizable(false);
 	}
 
+	/**
+	 * Initialize the screen with a new frame, a layout and trigger the first display.
+	 */
 	private void initRun() {
 
 		this.setLayout(null); // deletion of layout manager

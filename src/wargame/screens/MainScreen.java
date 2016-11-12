@@ -10,6 +10,11 @@ import wargame.GameContext;
 import wargame.map.Map;
 import wargame.widgets.*;
 
+/**
+ * This screen is the first screen of the game, the main menu.
+ * @author Balthazar Pavot
+ *
+ */
 public class MainScreen extends GameScreen {
 
 	private static final long serialVersionUID = 1L;

@@ -3,6 +3,11 @@ package wargame.screens;
 
 import java.awt.event.ActionEvent;
 
+/**
+ * Action manager of the main menu screen.
+ * @author Balthazar Pavot
+ *
+ */
 public class MainScreenActionManager extends GameScreenActionManager {
 
 	public MainScreenActionManager(GameScreen gameScreen) {

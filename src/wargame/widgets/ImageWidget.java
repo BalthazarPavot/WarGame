@@ -65,9 +65,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * Set the position of the bound rectangle.
 	 * 
 	 * @param x
-	 *            The position in the x axis
 	 * @param y
-	 *            The position in the y axis
 	 */
 	public void setPosition(int x, int y) {
 		this.boundRect = new Rectangle(x, y, this.boundRect.width, this.boundRect.height);
@@ -77,7 +75,6 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * Set the position of the bound rectangle.
 	 * 
 	 * @param position
-	 *            The position to go on
 	 */
 	public void setPosition(Position position) {
 		this.boundRect = new Rectangle(position.getX(), position.getY(), this.boundRect.width,
@@ -95,9 +92,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * Set the dimensions of the bound rectangle.
 	 * 
 	 * @param w
-	 *            The width of the rectangle
 	 * @param h
-	 *            The height of the rectangle
 	 */
 	public void setDimension(int w, int h) {
 		this.boundRect = new Rectangle(this.boundRect.x, this.boundRect.y, w, h);
@@ -107,9 +102,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * Set the dimensions of the bound rectangle.
 	 * 
 	 * @param w
-	 *            The width of the rectangle
 	 * @param h
-	 *            The height of the rectangle
 	 */
 	public Dimension getDimension() {
 		return new Dimension(this.boundRect.width, this.boundRect.height);
@@ -119,13 +112,9 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * Set the bound rectangle.
 	 * 
 	 * @param x
-	 *            The position in the x axis
 	 * @param y
-	 *            The position in the y axis
 	 * @param w
-	 *            The width of the rectangle
 	 * @param h
-	 *            The height of the rectangle
 	 */
 	public void setBinding(int x, int y, int w, int h) {
 		this.boundRect = new Rectangle(x, y, w, h);
@@ -135,7 +124,6 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * Set the bound rectangle.
 	 * 
 	 * @param Copy
-	 *            the given rect and it as the bound rect.
 	 */
 	public void setBinding(Rectangle binds) {
 		this.boundRect = new Rectangle(binds);
@@ -152,7 +140,6 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * draw the image at its position
 	 * 
 	 * @param g
-	 *            Graphics in which display the image.
 	 */
 	public void paintComponent(Graphics g) {
 		this.paintComponent(g, 1);
@@ -162,9 +149,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * draw the image at its position
 	 * 
 	 * @param g
-	 *            Graphics in which display the image.
 	 * @param zoom
-	 *            The zoom image at which the image must be.
 	 */
 	public void paintComponent(Graphics g, int zoom) {
 		g.drawImage(image, 0, 0, this.boundRect.width * zoom, this.boundRect.height * zoom, this.bgColor,

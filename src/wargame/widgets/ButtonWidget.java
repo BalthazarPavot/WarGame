@@ -51,7 +51,6 @@ public class ButtonWidget extends JButton implements GameWidget {
 	 * Set the size of the text.
 	 * 
 	 * @param size
-	 *            The int value of the text size.
 	 */
 	public void setTextSize(int size) {
 		if (size != this.size) {
@@ -64,9 +63,7 @@ public class ButtonWidget extends JButton implements GameWidget {
 	 * Set the position of the bound rectangle.
 	 * 
 	 * @param x
-	 *            The position in the x axis
 	 * @param y
-	 *            The position in the y axis
 	 */
 	public void setPosition(int x, int y) {
 		this.boundRect = new Rectangle(x, y, this.boundRect.width, this.boundRect.height);
@@ -76,7 +73,6 @@ public class ButtonWidget extends JButton implements GameWidget {
 	 * Set the position of the bound rectangle.
 	 * 
 	 * @param position
-	 *            The position to go on
 	 */
 	public void setPosition(Position position) {
 		this.boundRect = new Rectangle(position.getX(), position.getY(), this.boundRect.width,
@@ -94,9 +90,7 @@ public class ButtonWidget extends JButton implements GameWidget {
 	 * Set the dimensions of the bound rectangle.
 	 * 
 	 * @param w
-	 *            The width of the rectangle
 	 * @param h
-	 *            The height of the rectangle
 	 */
 	public void setDimension(int w, int h) {
 		this.boundRect = new Rectangle(this.boundRect.x, this.boundRect.y, w, h);
@@ -113,13 +107,9 @@ public class ButtonWidget extends JButton implements GameWidget {
 	 * Set the bound rectangle.
 	 * 
 	 * @param x
-	 *            The position in the x axis
 	 * @param y
-	 *            The position in the y axis
 	 * @param w
-	 *            The width of the rectangle
 	 * @param h
-	 *            The height of the rectangle
 	 */
 	public void setBinding(int x, int y, int w, int h) {
 		this.boundRect = new Rectangle(x, y, w, h);
@@ -129,7 +119,6 @@ public class ButtonWidget extends JButton implements GameWidget {
 	 * Set the bound rectangle.
 	 * 
 	 * @param Copy
-	 *            the given rect and it as the bound rect.
 	 */
 	public void setBinding(Rectangle binds) {
 		this.boundRect = new Rectangle(binds);

@@ -8,6 +8,12 @@ import wargame.screens.MainScreen;
 import wargame.screens.NewGameScreen;
 import wargame.screens.QuickGameScreen;
 
+/**
+ * This class is the transition between each screens.
+ * It creates and initialise the asked screen.
+ * @author Balthazar Pavot
+ *
+ */
 public class GameScreenGenerator {
 
 	private GameContext gameContext = null;
@@ -19,10 +25,9 @@ public class GameScreenGenerator {
 
 	/**
 	 * Create a GameScreen instance and make it ready to run in the game context. Store the game screen in
-	 * preparedGameScreen.
+	 * preparedGameScreen, then, call the screen's initialiser.
 	 * 
 	 * @param gameScreenID
-	 *            The id of the game screen to prepare.
 	 */
 	public void prepareGameScreen(int gameScreenID) {
 		switch (gameScreenID) {
@@ -56,12 +61,4 @@ public class GameScreenGenerator {
 		return preparedGameScreen;
 	}
 
-	/**
-	 * Call the good screen initializer in function of the game screen id
-	 * 
-	 * @param gameScreenID
-	 *            The id of the screen to display.
-	 * @param preparedGameScreen
-	 *            The screen partialy prepared.
-	 */
 }

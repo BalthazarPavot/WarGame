@@ -6,6 +6,11 @@ import java.awt.Color;
 import wargame.GameContext;
 import wargame.widgets.*;
 
+/**
+ * The screen to load a saved game.
+ * @author Balthazar Pavot
+ *
+ */
 public class LoadGameScreen extends GameScreen {
 
 	private static final long serialVersionUID = 1L;

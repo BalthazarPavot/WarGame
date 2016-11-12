@@ -4,6 +4,11 @@ package wargame.map;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Represents a shape. Any shape, randomly generated using the parameters.
+ * @author Balthazar Pavot
+ *
+ */
 public abstract class Shape {
 
 	protected int spotNumber = 0;
@@ -17,22 +22,42 @@ public abstract class Shape {
 		rand = new Random();
 	}
 
+	/**
+	 * @return The number of squares occupied by the shape
+	 */
 	public double getSurface() {
 		return spotNumber * spotSurface;
 	}
 
+	/**
+	 * @return The number of spot (a forest is one spot)
+	 */
 	public double getSquareNumber() {
 		return spotNumber;
 	}
 
+	/**
+	 * @param min
+	 * @param max
+	 * @return A random double between min and max
+	 */
 	public double rangeDouble(double min, double max) {
 		return min + (max - min) * rand.nextDouble();
 	}
 
+	/**
+	 * @param min
+	 * @param max
+	 * @return A random int between min and max
+	 */
 	public int rangeInt(int min, int max) {
 		return rand.nextInt(max - min) + min;
 	}
 
+	/**
+	 * Generate the position of each spot of the shape.
+	 * @param ratio
+	 */
 	protected void generateSpots(double ratio) {
 		int spotNumber;
 

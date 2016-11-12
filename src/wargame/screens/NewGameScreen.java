@@ -6,6 +6,12 @@ import java.awt.Color;
 import wargame.GameContext;
 import wargame.widgets.*;
 
+/**
+ * This screen displays the parameters to generate a map, select the
+ * difficult of the game etc.
+ * @author Balthazar Pavot
+ *
+ */
 public class NewGameScreen extends GameScreen {
 
 	private static final long serialVersionUID = 1L;

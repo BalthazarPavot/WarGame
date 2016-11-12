@@ -3,6 +3,11 @@ package wargame.map;
 
 import java.util.ArrayList;
 
+/**
+ * This class generates a map, using the map generator parameter.
+ * @author Balthazar Pavot
+ *
+ */
 public class MapGenerator {
 
 	private MapGeneratorParameter parameters;
@@ -21,10 +26,16 @@ public class MapGenerator {
 		map = new Map();
 	}
 
+	/**
+	 * @return the newly generated map.
+	 */
 	public Map getMap() {
 		return this.map;
 	}
 
+	/**
+	 * Generate the map, using the parameters and store the result.
+	 */
 	public void generate() {
 		ArrayList<TreeShape> treeShapes = new ArrayList<TreeShape>();
 		ArrayList<RockShape> rockShapes = new ArrayList<RockShape>();
@@ -34,6 +45,12 @@ public class MapGenerator {
 		generateShapes(treeShapes, rockShapes, waterShapes);
 	}
 
+	/**
+	 * Generate each spot of tree, rock, water using the parameters.
+	 * @param treeShapes
+	 * @param rockShapes
+	 * @param waterShapes
+	 */
 	private void generateShapes(ArrayList<TreeShape> treeShapes, ArrayList<RockShape> rockShapes,
 			ArrayList<WaterShape> waterShapes) {
 		double treeRatio = 0;

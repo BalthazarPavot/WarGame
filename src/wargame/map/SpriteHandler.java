@@ -12,10 +12,16 @@ import java.util.Properties;
 import wargame.ErrorManager;
 import wargame.widgets.ImageWidget;
 
+/**
+ * The aim of this class is to load the sprites and contain them. <br />
+ * One can access a sprite by giving the sprite sheet name, and the number of
+ * the sprite.
+ * @author Balthazar Pavot
+ *
+ */
 public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 
 	private static final long serialVersionUID = 1L;
-	// http://gamedev.stackexchange.com/questions/53705/how-can-i-make-a-sprite-sheet-based-animation-system
 	private final static String spriteIndex = "resources/spriteIndex.data";
 
 	private boolean loaded = false;
@@ -26,6 +32,9 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		loadSprites();
 	}
 
+	/**
+	 * Load the sprites using the default path as the sprite index file path
+	 */
 	public void loadSprites() {
 		if (loaded == false) {
 			loaded = true;
@@ -33,6 +42,10 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		}
 	}
 
+	/**
+	 * Load the sprites using the given path as the sprite index file path
+	 * @param indexPath
+	 */
 	private void loadSprites(String indexPath) {
 		File confFile = null;
 
@@ -50,6 +63,12 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		confFile = null;
 	}
 
+	/**
+	 * load the sprites using the given file as the sprite index file
+	 * @param confFile
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 */
 	private void loadSprites(File confFile) throws IOException, IllegalArgumentException {
 		FileInputStream confStream = null;
 		Properties confProperties = null;
@@ -71,6 +90,12 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		confProperties = null;
 	}
 
+	/**
+	 * Load the sprites using the given properties as the sprite index file properties.
+	 * @param confProperties
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 */
 	private void loadSprites(Properties confProperties) throws IOException, IllegalArgumentException {
 		String allSpritesNames;
 		String[] spriteNames;
@@ -80,6 +105,13 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		loadSprites(confProperties, spriteNames);
 	}
 
+	/**
+	 * Place in the given array all the sprites extracted from each spriteNames
+	 * @param confProperties
+	 * @param spriteNames
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 */
 	private void loadSprites(Properties confProperties, String[] spriteNames)
 			throws IOException, IllegalArgumentException {
 
@@ -89,6 +121,13 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		}
 	}
 
+	/**
+	 * Extract all the sprite from spriteName, using the path, x, y, width and
+	 * heigh given in the sprite property file.
+	 * @param spriteName
+	 * @param spriteList
+	 * @param confProperties
+	 */
 	private void loadSprites(String spriteName, ArrayList<BufferedImage> spriteList,
 			Properties confProperties) {
 		int x = 0;

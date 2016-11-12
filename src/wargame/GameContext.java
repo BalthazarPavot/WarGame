@@ -9,6 +9,12 @@ import java.util.Properties;
 
 import wargame.map.SpriteHandler;
 
+/**
+ * Defines the context in which the game is running, like the game state,
+ * its configuration, the loaded sprites... All data that are beside the game itself.
+ * @author Balthazar Pavot
+ *
+ */
 public class GameContext {
 
 	private static String defaultConfigPath = "./config.conf";
@@ -32,7 +38,7 @@ public class GameContext {
 	}
 
 	/**
-	 * Load the default config file.
+	 * Load the default configuration file.
 	 */
 	public void loadConf() {
 		File confFile = null;
@@ -49,58 +55,66 @@ public class GameContext {
 	}
 
 	/**
-	 * @return int The value of the current width
+	 * Give the window width
+	 * @return The value of the current width
 	 */
 	public int getWidth() {
 		return width;
 	}
 
 	/**
-	 * @return int The value of the current height
+	 * Give the window height
+	 * @return The value of the current height
 	 */
 	public int getHeight() {
 		return height;
 	}
 
 	/**
-	 * Give the dimention of the screen
+	 * Give the dimension of the window
 	 * 
-	 * @return Dimension the screen dimension
+	 * @return The screen dimension
 	 */
 	public Dimension getDimension() {
 		return new Dimension(getWidth(), getHeight());
 	}
 
 	/**
-	 * @return int The middle of the width of the screen
+	 * Gives the horizontal centre of the window.
+	 * @return The middle of the width of the screen
 	 */
 	public int centerWidth() {
 		return width / 2;
 	}
 
 	/**
-	 * @return the middle of the height of the screen
+	 * Gives the vertical centre of the window.
+	 * @return middle of the height of the screen
 	 */
 	public int centerHeight() {
 		return height / 2;
 	}
 
 	/**
-	 * @return ErrorManager The error manager of the game.
+	 * Gives the error manager of the game.
+	 * @return The error manager of the game.
 	 */
 	public ErrorManager getErrorManager() {
 		return errorManager;
 	}
 
+	/**
+	 * Give the sprite handler of the game
+	 * @return The SpriteHandler instance, containing all the sprites.
+	 */
 	public SpriteHandler getSpriteHandler () {
 		return this.spriteHandler ;
 	}
 
 	/**
-	 * Open the config file and load the configuration.
+	 * Open the configuration file and load the configuration.
 	 * 
 	 * @param confFile
-	 *            The file that contains the configuration.
 	 */
 	private void loadConf(File confFile) throws IOException, IllegalArgumentException {
 		FileInputStream confStream = null;
@@ -123,10 +137,9 @@ public class GameContext {
 	}
 
 	/**
-	 * Read the properties of the conf file and extract the config.
+	 * Read the properties of the configuration file and extract the configuration.
 	 * 
 	 * @param confProperties
-	 *            The properties object of the conf file.
 	 */
 	private void loadConf(Properties confProperties) throws IOException, IllegalArgumentException {
 		width = Integer.parseInt(confProperties.getProperty("width"));
