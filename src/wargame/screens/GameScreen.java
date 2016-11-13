@@ -54,8 +54,10 @@ public abstract class GameScreen extends JPanel {
 		this.initRun();
 		while (!this.screenHasFinished) {
 			// this.display () ;
+			windowManagement () ;
+			display () ;
 			try {
-				Thread.sleep(500);
+				Thread.sleep(50);
 			} catch (InterruptedException e) {
 				this.gameTermination();
 			}
@@ -102,8 +104,16 @@ public abstract class GameScreen extends JPanel {
 		this.setLayout(null); // deletion of layout manager
 		GameScreen.mainFrame.getContentPane().add(this);
 		this.screenHasFinished = false;
+		for (Component widget : gameWidgets) {
+			this.add(widget);
+			((GameWidget) widget).bind();
+		}
 		this.display();
 		GameScreen.mainFrame.setVisible(true);
+	}
+
+	protected void windowManagement () {
+		// Do nothing here.
 	}
 
 	/**
@@ -119,11 +129,7 @@ public abstract class GameScreen extends JPanel {
 	 * Remove all widgets, add again all the widgets to their position.
 	 */
 	protected void display() {
-		this.removeAll();
-		for (Component widget : gameWidgets) {
-			this.add(widget);
-			((GameWidget) widget).bind();
-		}
+//		this.removeAll();
 		this.revalidate();
 		this.repaint();
 	}
