@@ -15,7 +15,7 @@ public abstract class Shape {
 	protected int spotSurface = 1;
 	protected double spotSurfaceError = 1;
 	protected MapGeneratorParameter parameters;
-	ArrayList<Spot> spots = new ArrayList<Spot>();
+	protected ArrayList<Spot> spots = new ArrayList<Spot>();
 	private Random rand;
 
 	public Shape() {
@@ -34,6 +34,10 @@ public abstract class Shape {
 	 */
 	public double getSquareNumber() {
 		return spotNumber;
+	}
+
+	public ArrayList<Spot> getSpots () {
+		return this.spots ;
 	}
 
 	/**
