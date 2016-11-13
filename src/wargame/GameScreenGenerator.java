@@ -6,11 +6,12 @@ import wargame.screens.GameScreen;
 import wargame.screens.LoadGameScreen;
 import wargame.screens.MainScreen;
 import wargame.screens.NewGameScreen;
+import wargame.screens.PlayGameScreen;
 import wargame.screens.QuickGameScreen;
 
 /**
- * This class is the transition between each screens.
- * It creates and initialise the asked screen.
+ * This class is the transition between each screens. It creates and initialise the asked screen.
+ * 
  * @author Balthazar Pavot
  *
  */
@@ -46,6 +47,9 @@ public class GameScreenGenerator {
 		case GameScreen.CONFIGURATION_SCREEN:
 			preparedGameScreen = new ConfigScreen(gameContext);
 			break;
+		case GameScreen.PLAY_GAME_SCREEN:
+			preparedGameScreen = new PlayGameScreen(gameContext);
+			break ;
 		default:
 			this.gameContext.getErrorManager()
 					.exitError(String.format("Unknown screen id: %d", gameScreenID));
