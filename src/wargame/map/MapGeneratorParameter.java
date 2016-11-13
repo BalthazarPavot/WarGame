@@ -175,7 +175,7 @@ public class MapGeneratorParameter {
 	private void generateSwampParameters() {
 		waterRatio = rangeDouble(0.3, 0.4);
 		isolatedWaterSpots = rand.nextInt() % 5 != 0;
-		treeRatio = rangeDouble(0.75, 0.1);
+		treeRatio = rangeDouble(0.075, 0.1);
 		isolatedTrees = true;
 		rockRatio = rangeDouble(0.02, 0.035);
 		isolatedRockSets = true;
