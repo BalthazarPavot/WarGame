@@ -88,24 +88,23 @@ public class MapWidget extends JPanel implements GameWidget {
 	 */
 	public void paintComponent(Graphics g, int zoom) {
 		for (int y = ((int) frame.getY() + (int) frame.getHeight() * zoom); y >= (int) frame.getY()
-				- Map.squareHeight; y -= 1) {
+				- Map.squareHeight; y -= 1)
 			for (int x = (int) frame.getX() - Map.squareWidth; x < (int) frame.getX()
-					+ frame.getWidth() * zoom; x += 1) {
-				for (MapElement me : map.getReal(x, y)) {
+					+ frame.getWidth() * zoom; x += 1)
+				for (MapElement me : map.getReal(x, y))
 					me.paintComponent(g, zoom, x / zoom - (int) frame.getX(), y / zoom - (int) frame.getY());
-				}
-			}
-		}
-		if (drawGrid) {
+		if (this.drawGrid) {
 			g.setColor(new Color(0, 0, 0, 96));
-			for (int x = -(int) (frame.getX() % (Map.squareWidth/ zoom)); x < frame
-					.getWidth(); x += Map.squareWidth / zoom) {
-				g.drawLine(x, 0, x, (int) frame.getHeight());
-			}
-			for (int y = -(int) (frame.getY() % (Map.squareHeight/ zoom)); y < frame
-					.getHeight(); y += Map.squareHeight / zoom) {
-				g.drawLine(0, y, (int) frame.getWidth(), y);
-			}
+			int beginX = -(int) (frame.getX() < 0 ? frame.getX() : frame.getX() % (Map.squareWidth / zoom));
+			int beginY = -(int) (frame.getY() < 0 ? frame.getY() : frame.getY() % (Map.squareHeight / zoom));
+			int overX = (int) (frame.getX() + frame.getWidth() > map.getWidth()
+					? frame.getX() + frame.getWidth() - map.getWidth() : 0);
+			int overY = (int) (frame.getY() + frame.getHeight() > map.getHeight()
+					? frame.getY() + frame.getHeight() - map.getHeight() : 0);
+			for (int x = beginX; x <= frame.getWidth() - overX; x += Map.squareWidth / zoom)
+				g.drawLine(x, beginY - overY, x, (int) frame.getHeight() - 1 - overY);
+			for (int y = beginY; y <= frame.getHeight() - overY; y += Map.squareHeight / zoom)
+				g.drawLine(beginX - overX, y, (int) frame.getWidth() - 1 - overX, y);
 		}
 	}
 
@@ -123,5 +122,15 @@ public class MapWidget extends JPanel implements GameWidget {
 			frame.x = resx;
 		if (resy > -frame.height / 4 && resy < map.getHeight() - frame.height * 3 / 4)
 			frame.y = resy;
+	}
+
+	public void increaseZoom () {
+		if (zoom > 2)
+			zoom /= 2 ;
+	}
+
+	public void decreaseZoom () {
+		if (zoom < 16)
+			zoom *= 2 ;
 	}
 }

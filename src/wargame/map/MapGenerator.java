@@ -102,8 +102,10 @@ public class MapGenerator {
 		switch (parameters.climate) {
 		case MapGeneratorParameter.TOUNDRA_CLIMATE:
 		case MapGeneratorParameter.SAND_DESERT_CLIMATE:
-		case MapGeneratorParameter.ROCKS_DESERT_CLIMATE:
 			groundImages = spriteHandler.get("snow_textures");
+			break;
+		case MapGeneratorParameter.ROCKS_DESERT_CLIMATE:
+			groundImages = spriteHandler.get("rock_textures");
 			break;
 		case MapGeneratorParameter.DARK_FOREST_CLIMATE:
 		case MapGeneratorParameter.SWAMP_CLIMATE:
@@ -114,7 +116,7 @@ public class MapGenerator {
 		for (int y = (int) mapDimensions.getHeight() / Map.squareHeight * Map.squareHeight
 				- Map.squareHeight; y > -1; y -= Map.squareHeight) {
 			for (int x = 0; x < (int) mapDimensions.getWidth() / Map.squareWidth * Map.squareWidth
-					- Map.squareWidth; x += Map.squareWidth) {
+			/*- Map.squareWidth*/; x += Map.squareWidth) {
 				map.add(x, y,
 						new MapElement(
 								new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
@@ -143,11 +145,11 @@ public class MapGenerator {
 			treeImageList = spriteHandler.get("tree_set");
 			break;
 		}
-		rockImageList = spriteHandler.get("rock_snow_set") ;
-		waterImageList = spriteHandler.get("water") ;
+		rockImageList = spriteHandler.get("rock_snow_set");
+		waterImageList = spriteHandler.get("water");
 		for (TreeShape treeShape : treeShapes) {
 			for (Spot spot : treeShape.getSpots()) {
-				System.out.printf("tree at %d;%d\n", spot.getPosition().getX(), spot.getPosition().getY()) ;
+				System.out.printf("tree at %d;%d\n", spot.getPosition().getX(), spot.getPosition().getY());
 				map.add(spot.getPosition().getX(), spot.getPosition().getY(),
 						new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
 								Map.squareWidth, Map.squareHeight,
@@ -164,7 +166,7 @@ public class MapGenerator {
 		}
 		for (WaterShape waterShape : waterShapes) {
 			for (Spot spot : waterShape.getSpots()) {
-				System.out.printf("water at %d;%d\n", spot.getPosition().getX(), spot.getPosition().getY()) ;
+				System.out.printf("water at %d;%d\n", spot.getPosition().getX(), spot.getPosition().getY());
 				map.add(spot.getPosition().getX(), spot.getPosition().getY(),
 						new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
 								Map.squareWidth, Map.squareHeight,
