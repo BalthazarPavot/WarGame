@@ -24,6 +24,7 @@ public abstract class GameScreen extends JPanel {
 	final public static int LOAD_GAME_SCREEN = 30;
 	final public static int CONFIGURATION_SCREEN = 50;
 	final public static int QUICK_GAME_SCREEN = 70;
+	final public static int PLAY_GAME_SCREEN = 90 ;
 	final public static int QUIT_SCREEN = 255;
 	protected static JFrame mainFrame = null;
 
@@ -97,8 +98,7 @@ public abstract class GameScreen extends JPanel {
 	/**
 	 * Initialize the screen with a new frame, a layout and trigger the first display.
 	 */
-	private void initRun() {
-
+	protected void initRun() {
 		this.setLayout(null); // deletion of layout manager
 		GameScreen.mainFrame.getContentPane().add(this);
 		this.screenHasFinished = false;
@@ -118,7 +118,7 @@ public abstract class GameScreen extends JPanel {
 	/**
 	 * Remove all widgets, add again all the widgets to their position.
 	 */
-	private void display() {
+	protected void display() {
 		this.removeAll();
 		for (Component widget : gameWidgets) {
 			this.add(widget);
