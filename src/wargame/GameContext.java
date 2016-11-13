@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import wargame.map.Map;
 import wargame.map.SpriteHandler;
 
 /**
@@ -29,12 +30,21 @@ public class GameContext {
 	private int height = MIN_HEIGHT;
 	private boolean confLoaded = false;
 	private SpriteHandler spriteHandler ;
+	private Map map ;
 
 	public GameContext(ErrorManager errorManager) {
 		if (errorManager == null)
 			ErrorManager.earlyTermination("Could not create the game context without the error manager.");
 		this.errorManager = errorManager;
 		this.spriteHandler = new SpriteHandler(this.errorManager) ;
+	}
+
+	public void setMap (Map map) {
+		this.map = map ;
+	}
+
+	public Map getMap () {
+		return this.map ;
 	}
 
 	/**
