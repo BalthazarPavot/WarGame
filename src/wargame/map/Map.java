@@ -49,9 +49,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 
 
 	public Map () {
-		super () ;
-		this.width = defaultWidth ;
-		this.height = defaultHeight ;
+		this (defaultWidth, defaultHeight) ;
 	}
 
 	public Map (Dimension dimensions) {
@@ -62,6 +60,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 		super () ;
 		this.width = width ;
 		this.height = height ;
+		realPositions = new HashMap<Integer, HashMap<Integer, ArrayList<MapElement>>> () ;
 	}
 
 	/**
@@ -148,6 +147,14 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 		if (this.realPositions.get (y).get (x) == null)
 			throw new IndexOutOfBoundsException() ;
 		return this.realPositions.get (y).get (x) ;
+	}
+
+	public int getWidth () {
+		return this.width ;
+	}
+
+	public int getHeight () {
+		return this.height ;
 	}
 
 	/**
