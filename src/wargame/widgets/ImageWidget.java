@@ -146,13 +146,18 @@ public class ImageWidget extends JLabel implements GameWidget {
 	}
 
 	/**
-	 * draw the image at its position
+	 * draw the image at its position zoomed.
+	 * The zoom can be 1,2,3 or 4, with 4 is the smaller.
 	 * 
 	 * @param g
 	 * @param zoom
 	 */
 	public void paintComponent(Graphics g, int zoom) {
-		g.drawImage(image, 0, 0, this.boundRect.width * zoom, this.boundRect.height * zoom, this.bgColor,
+		this.paintComponent(g, zoom, 0, 0);
+	}
+
+	public void paintComponent(Graphics g, int zoom, int x, int y) {
+		g.drawImage(image, x, y, this.boundRect.width / zoom, this.boundRect.height / zoom, this.bgColor,
 				this);
 	}
 
