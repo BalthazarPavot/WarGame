@@ -26,7 +26,7 @@ public abstract class Shape {
 	 * @return The number of squares occupied by the shape
 	 */
 	public double getSurface() {
-		return spotNumber * spotSurface;
+		return spotSurface;
 	}
 
 	/**
@@ -59,6 +59,7 @@ public abstract class Shape {
 	 * @param ratio
 	 */
 	protected void generateSpots(double ratio) {
+		/*
 		int spotNumber;
 
 		this.spotNumber = (int) (parameters.getSquareNumber() * ratio / spotSurface);
@@ -71,6 +72,44 @@ public abstract class Shape {
 					(int) (this.spotSurface * rangeDouble(1 / this.spotSurfaceError, this.spotSurfaceError))
 							/ spotSurface * spotSurface));
 		}
+		*/
+		int w ;
+		int h ;
+		w = (int)Math.sqrt(this.spotSurface * spotSurfaceError) ;
+		h = (int)Math.sqrt(this.spotSurface * spotSurfaceError) ;
+		spots.add (new Spot (rangeInt(0, (int) parameters.getDimensions().getWidth()) / Map.squareWidth*Map.squareWidth,
+				rangeInt(0, (int) parameters.getDimensions().getHeight()) / Map.squareHeight * Map.squareHeight,
+				w, h)) ;
+		spotNumber = w * h ;
+		System.out.printf("generated: %d spots\n",  spotNumber) ;
+//		for (int x = 0 ; x < Math.sqrt(this.spotSurface * spotSurfaceError); x++) {
+//			for (int y = 0 ; y < Math.sqrt(this.spotSurface * spotSurfaceError); y++) {
+//				spots.add(new Spot(x, y
+//			}
+//		}
 	}
+
+@SuppressWarnings("unchecked")
+public void distord() {
+	Random rand;
+	int minx;
+	int miny;
+	int maxx;
+	int maxy;
+	ArrayList<Spot> originalList;
+
+	originalList = (ArrayList<Spot>) spots.clone();
+	rand = new Random();
+	minx = spots.get(0).getPosition().getX();
+	miny = spots.get(0).getPosition().getY();
+	maxx = spots.get(spots.size() - 1).getPosition().getX();
+	maxy = spots.get(spots.size() - 1).getPosition().getY();
+	for (Spot spot : originalList) {
+		if (spot.getPosition().getX() == minx || spot.getPosition().getY() == miny
+				|| spot.getPosition().getY() == maxx || spot.getPosition().getY() == maxy)
+			if (rand.nextInt(3) == 0)
+				spots.remove(spot);
+	}
+}
 
 }
