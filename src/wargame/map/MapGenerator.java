@@ -1,10 +1,16 @@
 
 package wargame.map;
 
+import java.awt.Dimension;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Random;
+
+import wargame.widgets.ImageWidget;
 
 /**
  * This class generates a map, using the map generator parameter.
+ * 
  * @author Balthazar Pavot
  *
  */
@@ -12,6 +18,7 @@ public class MapGenerator {
 
 	private MapGeneratorParameter parameters;
 	private Map map;
+	private Random rand;
 
 	public MapGenerator() {
 		this(null);
@@ -24,6 +31,7 @@ public class MapGenerator {
 			this.parameters.generateRandomParameters();
 		}
 		map = new Map();
+		this.rand = new Random();
 	}
 
 	/**
@@ -36,17 +44,20 @@ public class MapGenerator {
 	/**
 	 * Generate the map, using the parameters and store the result.
 	 */
-	public void generate() {
+	public void generate(SpriteHandler spriteHandler) {
 		ArrayList<TreeShape> treeShapes = new ArrayList<TreeShape>();
 		ArrayList<RockShape> rockShapes = new ArrayList<RockShape>();
 		ArrayList<WaterShape> waterShapes = new ArrayList<WaterShape>();
 
 		this.map = new Map(this.parameters.getDimensions());
 		generateShapes(treeShapes, rockShapes, waterShapes);
+		distordShapes (treeShapes, rockShapes, waterShapes);
+		generateGround(spriteHandler);
 	}
 
 	/**
 	 * Generate each spot of tree, rock, water using the parameters.
+	 * 
 	 * @param treeShapes
 	 * @param rockShapes
 	 * @param waterShapes
@@ -70,11 +81,54 @@ public class MapGenerator {
 			waterRatio += waterShapes.get(waterShapes.size() - 1).getSquareNumber()
 					/ this.map.getSquareNumber();
 		}
-		System.out.printf("Tree ratio: %f;%f (%d)\n", this.parameters.treeRatio, treeRatio,
-				treeShapes.size());
-		System.out.printf("Rock ratio: %f;%f (%d)\n", this.parameters.rockRatio, rockRatio,
-				rockShapes.size());
-		System.out.printf("Water ratio: %f;%f (%d)\n", this.parameters.waterRatio, waterRatio,
-				waterShapes.size());
+	}
+
+	private void distordShapes (ArrayList<TreeShape> treeShapes, ArrayList<RockShape> rockShapes,
+			ArrayList<WaterShape> waterShapes) {
+		for (TreeShape treeShape: treeShapes) {
+			treeShape.distord () ;
+		}
+		for (WaterShape waterShape: waterShapes) {
+			waterShape.distord () ;
+		}
+	}
+
+	private void generateGround(SpriteHandler spriteHandler) {
+		ArrayList<BufferedImage> groundImages;
+		Dimension mapDimensions;
+
+		mapDimensions = parameters.getDimensions();
+		switch (parameters.climate) {
+		case MapGeneratorParameter.TOUNDRA_CLIMATE:
+			groundImages = spriteHandler.get("snow_textures");
+			break;
+		case MapGeneratorParameter.SAND_DESERT_CLIMATE:
+			groundImages = spriteHandler.get("snow_textures");
+			break;
+		case MapGeneratorParameter.ROCKS_DESERT_CLIMATE:
+			groundImages = spriteHandler.get("snow_textures");
+			break;
+		case MapGeneratorParameter.DARK_FOREST_CLIMATE:
+			groundImages = spriteHandler.get("grass_textures");
+			break;
+		case MapGeneratorParameter.SWAMP_CLIMATE:
+			groundImages = spriteHandler.get("grass_textures");
+			break;
+		default:
+			groundImages = spriteHandler.get("grass_textures");
+			break;
+		}
+		for (int y = (int) mapDimensions.getHeight() / Map.squareHeight * Map.squareHeight
+				- Map.squareHeight; y > -1; y -= Map.squareHeight) {
+			for (int x = 0; x < (int) mapDimensions.getWidth() / Map.squareWidth * Map.squareWidth
+					- Map.squareWidth; x += Map.squareWidth) {
+				map.add(x, y,
+						new MapElement(
+								new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
+										groundImages.get(rand.nextInt(groundImages.size()))),
+								MapElement.WALKABLE | MapElement.FLYABLE | MapElement.REMOVABLE
+										| MapElement.SHOT_THROUGH));
+			}
+		}
 	}
 }
