@@ -91,4 +91,42 @@ public class Position {
 		return neighbor;
 	}
 
+	/**
+	 * @return All the positions reachable giving the amount of moving points.
+	 */
+	public ArrayList<Position> getReachableNeighbor(int movePoints) {/*
+		ArrayList<Position> neighbor;
+
+		neighbor = new ArrayList<Position>();
+		neighbor.add(new Position(x, y - Map.squareHeight));
+		neighbor.add(new Position(x + Map.squareWidth, y - Map.squareHeight));
+		neighbor.add(new Position(x + Map.squareWidth, y));
+		neighbor.add(new Position(x + Map.squareWidth, y + Map.squareHeight));
+		neighbor.add(new Position(x, y + Map.squareHeight));
+		neighbor.add(new Position(x - Map.squareWidth, y + Map.squareHeight));
+		neighbor.add(new Position(x - Map.squareWidth, y));
+		neighbor.add(new Position(x - Map.squareWidth, y - Map.squareHeight));
+		return neighbor;*/
+		return new ArrayList<Position> () ;
+	}
+
+	/**
+	 * @return All the positions targetable by a character, giving his sight line.
+	 */
+	public ArrayList<Position> getTargetableNeighbor(int sightLigne) {/*
+		ArrayList<Position> neighbor;
+
+		neighbor = new ArrayList<Position>();
+		neighbor.add(new Position(x, y - Map.squareHeight));
+		neighbor.add(new Position(x + Map.squareWidth, y - Map.squareHeight));
+		neighbor.add(new Position(x + Map.squareWidth, y));
+		neighbor.add(new Position(x + Map.squareWidth, y + Map.squareHeight));
+		neighbor.add(new Position(x, y + Map.squareHeight));
+		neighbor.add(new Position(x - Map.squareWidth, y + Map.squareHeight));
+		neighbor.add(new Position(x - Map.squareWidth, y));
+		neighbor.add(new Position(x - Map.squareWidth, y - Map.squareHeight));
+		return neighbor;*/
+		return new ArrayList<Position> () ;
+	}
+
 }
