@@ -35,13 +35,13 @@ import wargame.basic_types.Position;
  */
 public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>>> {
 	private static final long serialVersionUID = 1L;
-	public static int squareWidth = 64 ;
-	public static int squareHeight= 64 ;
-	public static int defaultSquareNumberWidth = 60 ;
-	public static int defaultSquareNumberHeight= 40 ;
-	public static int defaultWidth = squareWidth * defaultSquareNumberWidth ;
-	public static int defaultHeight= squareHeight * defaultSquareNumberHeight ;
-	public static int infScore = Integer.MAX_VALUE ;
+	public final static int squareWidth = 64 ;
+	public final static int squareHeight= 64 ;
+	public final static int defaultSquareNumberWidth = 60 ;
+	public final static int defaultSquareNumberHeight= 40 ;
+	public final static int defaultWidth = squareWidth * defaultSquareNumberWidth ;
+	public final static int defaultHeight= squareHeight * defaultSquareNumberHeight ;
+	public final static int infScore = Integer.MAX_VALUE ;
 
 	private int width ;
 	private int height ;
@@ -141,11 +141,11 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param y
 	 * @return The list of element having this position
 	 */
-	public ArrayList<MapElement> getReal (int x, int y) throws IndexOutOfBoundsException {
+	public ArrayList<MapElement> getReal (int x, int y) {
 		if (this.realPositions.get (y) == null)
-			throw new IndexOutOfBoundsException() ;
+			return new ArrayList<MapElement> () ;
 		if (this.realPositions.get (y).get (x) == null)
-			throw new IndexOutOfBoundsException() ;
+			return new ArrayList<MapElement> () ;
 		return this.realPositions.get (y).get (x) ;
 	}
 
