@@ -2,6 +2,7 @@
 package wargame.screens;
 
 import wargame.GameContext;
+import wargame.map.MapGenerator;
 
 /**
  * This screen is never displayed.
@@ -21,7 +22,25 @@ public class QuickGameScreen extends GameScreen {
 
 
 	public void prepare() {
-		
+		MapGenerator mapGenerator ;
+
+		mapGenerator = new MapGenerator() ;
+		mapGenerator.generate (gameContext.getSpriteHandler()) ;
+		this.gameContext.setMap(mapGenerator.getMap());
+		this.nextScreenID = GameScreen.PLAY_GAME_SCREEN ;
+	}
+
+	/**
+	 * Initialize the screen with a new frame, a layout and trigger the first display.
+	 */
+	protected void initRun() {
+		super.initRun () ;
+		this.setLayout(null); // deletion of layout manager
+		GameScreen.mainFrame.getContentPane().add(this);
+		this.screenHasFinished = false;
+		this.display();
+		GameScreen.mainFrame.setVisible(true);
+		this.screenTermination();
 	}
 
 }
