@@ -1,6 +1,7 @@
 all_sprites_names = \
   snow_textures;\
   grass_textures;\
+  rock_textures;\
   tree_set;\
   tree_snow_set;\
   rock_snow_set;\
@@ -12,6 +13,13 @@ allSources = \
   http://opengameart.org/content/2d-lost-garden-zelda-style-tiles-winter-theme-with-additions,\
   http://opengameart.org/content/lpc-plant-repack
 
+grass_textures_path=resources/images/ground_textures.png
+grass_textures_x=0
+grass_textures_y=0
+grass_textures_width=256
+grass_textures_height=128
+grass_textures_source=http://opengameart.org/content/grass-textureseamless-2d
+
 snow_textures_path=resources/images/ground_textures.png
 snow_textures_x=0
 snow_textures_y=128
@@ -19,12 +27,12 @@ snow_textures_width=256
 snow_textures_height=256
 snow_textures_source=http://opengameart.org/content/2d-lost-garden-zelda-style-tiles-winter-theme-with-additions
 
-grass_textures_path=resources/images/ground_textures.png
-grass_textures_x=0
-grass_textures_y=0
-grass_textures_width=256
-grass_textures_height=128
-grass_textures_source=http://opengameart.org/content/grass-textureseamless-2d
+rock_textures_path=resources/images/ground_textures.png
+rock_textures_x=0
+rock_textures_y=256
+rock_textures_width=256
+rock_textures_height=384
+rock_textures_source=http://opengameart.org/content/grass-textureseamless-2d
 
 tree_set_path=resources/images/trees.png
 tree_set_x=0
