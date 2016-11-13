@@ -1,22 +1,26 @@
 
 package wargame.widgets;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-import javax.swing.JLabel;
-
+import javax.swing.JPanel;
 import wargame.basic_types.Position;
 import wargame.map.Map;
 import wargame.map.MapElement;
 
-public class MapWidget extends JLabel implements GameWidget {
+public class MapWidget extends JPanel implements GameWidget {
 
 	private static final long serialVersionUID = 1L;
+	private static final int scollSpeed = 16;
+
 	protected Map map;
 	protected Rectangle boundRect;
 	protected Rectangle frame;
+	protected int zoom = 1;
+	protected boolean drawGrid = true;
 
 	public MapWidget(Map map, int width, int height) {
 		this.map = map;
@@ -73,7 +77,7 @@ public class MapWidget extends JLabel implements GameWidget {
 	 * @param g
 	 */
 	public void paintComponent(Graphics g) {
-		this.paintComponent(g, 1);
+		this.paintComponent(g, zoom);
 	}
 
 	/**
@@ -83,14 +87,41 @@ public class MapWidget extends JLabel implements GameWidget {
 	 * @param zoom
 	 */
 	public void paintComponent(Graphics g, int zoom) {
-		for (int y = ((int) frame.getY() + (int) frame.getHeight() * zoom) / Map.squareHeight
-				* Map.squareHeight; y >= (int) frame.getY(); y -= Map.squareHeight) {
-			for (int x = (int) frame.getX(); x < (int) frame.getX()
-					+ frame.getWidth() * zoom; x += Map.squareWidth) {
+		for (int y = ((int) frame.getY() + (int) frame.getHeight() * zoom); y >= (int) frame.getY()
+				- Map.squareHeight; y -= 1) {
+			for (int x = (int) frame.getX() - Map.squareWidth; x < (int) frame.getX()
+					+ frame.getWidth() * zoom; x += 1) {
 				for (MapElement me : map.getReal(x, y)) {
-					me.paintComponent(g, zoom, x / zoom, y / zoom);
+					me.paintComponent(g, zoom, x / zoom - (int) frame.getX(), y / zoom - (int) frame.getY());
 				}
 			}
 		}
+		if (drawGrid) {
+			g.setColor(new Color(0, 0, 0, 96));
+			for (int x = -(int) (frame.getX() % (Map.squareWidth/ zoom)); x < frame
+					.getWidth(); x += Map.squareWidth / zoom) {
+				g.drawLine(x, 0, x, (int) frame.getHeight());
+			}
+			for (int y = -(int) (frame.getY() % (Map.squareHeight/ zoom)); y < frame
+					.getHeight(); y += Map.squareHeight / zoom) {
+				g.drawLine(0, y, (int) frame.getWidth(), y);
+			}
+		}
+	}
+
+	public Rectangle getFrame() {
+		return frame;
+	}
+
+	public void moveFrame(int x, int y) {
+		int resx;
+		int resy;
+
+		resx = frame.x + x * scollSpeed;
+		resy = frame.y + y * scollSpeed;
+		if (resx > -frame.width / 4 && resx < map.getWidth() - frame.width * 3 / 4)
+			frame.x = resx;
+		if (resy > -frame.height / 4 && resy < map.getHeight() - frame.height * 3 / 4)
+			frame.y = resy;
 	}
 }
