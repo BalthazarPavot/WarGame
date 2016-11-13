@@ -20,7 +20,6 @@ public class PlayGameScreenMouseMotionManager extends GameScreenMouseMotionManag
 	}
 
 	public void mouseDragged(ActionEvent e) {
-		System.out.println("dragged!");
 	}
 
 	public void mouseMoved(MouseEvent e) {

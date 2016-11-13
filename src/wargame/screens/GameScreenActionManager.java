@@ -19,6 +19,6 @@ public class GameScreenActionManager implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) throws IllegalStateException {
-		throw new IllegalStateException();
+//		throw new IllegalStateException();
 	}
 }

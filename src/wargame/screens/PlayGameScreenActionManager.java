@@ -11,11 +11,11 @@ import java.awt.event.ActionEvent;
  */
 public class PlayGameScreenActionManager extends GameScreenActionManager {
 
-	// protected GameScreen gameScreen = null;
 	protected PlayGameScreen gameScreen = null;
 
 	public PlayGameScreenActionManager(GameScreen gameScreen) {
 		super(gameScreen);
+		this.gameScreen = (PlayGameScreen) gameScreen ;
 	}
 
 	public void actionPerformed(ActionEvent e) {
