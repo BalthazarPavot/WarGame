@@ -51,8 +51,9 @@ public class MapGenerator {
 
 		this.map = new Map(this.parameters.getDimensions());
 		generateShapes(treeShapes, rockShapes, waterShapes);
-		distordShapes (treeShapes, rockShapes, waterShapes);
+		distordShapes(treeShapes, rockShapes, waterShapes);
 		generateGround(spriteHandler);
+		applySprites(treeShapes, rockShapes, waterShapes, spriteHandler);
 	}
 
 	/**
@@ -83,13 +84,13 @@ public class MapGenerator {
 		}
 	}
 
-	private void distordShapes (ArrayList<TreeShape> treeShapes, ArrayList<RockShape> rockShapes,
+	private void distordShapes(ArrayList<TreeShape> treeShapes, ArrayList<RockShape> rockShapes,
 			ArrayList<WaterShape> waterShapes) {
-		for (TreeShape treeShape: treeShapes) {
-			treeShape.distord () ;
+		for (TreeShape treeShape : treeShapes) {
+			treeShape.distord();
 		}
-		for (WaterShape waterShape: waterShapes) {
-			waterShape.distord () ;
+		for (WaterShape waterShape : waterShapes) {
+			waterShape.distord();
 		}
 	}
 
@@ -100,20 +101,12 @@ public class MapGenerator {
 		mapDimensions = parameters.getDimensions();
 		switch (parameters.climate) {
 		case MapGeneratorParameter.TOUNDRA_CLIMATE:
-			groundImages = spriteHandler.get("snow_textures");
-			break;
 		case MapGeneratorParameter.SAND_DESERT_CLIMATE:
-			groundImages = spriteHandler.get("snow_textures");
-			break;
 		case MapGeneratorParameter.ROCKS_DESERT_CLIMATE:
 			groundImages = spriteHandler.get("snow_textures");
 			break;
 		case MapGeneratorParameter.DARK_FOREST_CLIMATE:
-			groundImages = spriteHandler.get("grass_textures");
-			break;
 		case MapGeneratorParameter.SWAMP_CLIMATE:
-			groundImages = spriteHandler.get("grass_textures");
-			break;
 		default:
 			groundImages = spriteHandler.get("grass_textures");
 			break;
@@ -128,6 +121,54 @@ public class MapGenerator {
 										groundImages.get(rand.nextInt(groundImages.size()))),
 								MapElement.WALKABLE | MapElement.FLYABLE | MapElement.REMOVABLE
 										| MapElement.SHOT_THROUGH));
+			}
+		}
+	}
+
+	private void applySprites(ArrayList<TreeShape> treeShapes, ArrayList<RockShape> rockShapes,
+			ArrayList<WaterShape> waterShapes, SpriteHandler spriteHandler) {
+		ArrayList<BufferedImage> treeImageList;
+		ArrayList<BufferedImage> rockImageList;
+		ArrayList<BufferedImage> waterImageList;
+
+		switch (parameters.climate) {
+		case MapGeneratorParameter.TOUNDRA_CLIMATE:
+		case MapGeneratorParameter.SAND_DESERT_CLIMATE:
+		case MapGeneratorParameter.ROCKS_DESERT_CLIMATE:
+			treeImageList = spriteHandler.get("tree_snow_set");
+			break;
+		case MapGeneratorParameter.DARK_FOREST_CLIMATE:
+		case MapGeneratorParameter.SWAMP_CLIMATE:
+		default:
+			treeImageList = spriteHandler.get("tree_set");
+			break;
+		}
+		rockImageList = spriteHandler.get("rock_snow_set") ;
+		waterImageList = spriteHandler.get("water") ;
+		for (TreeShape treeShape : treeShapes) {
+			for (Spot spot : treeShape.getSpots()) {
+				System.out.printf("tree at %d;%d\n", spot.getPosition().getX(), spot.getPosition().getY()) ;
+				map.add(spot.getPosition().getX(), spot.getPosition().getY(),
+						new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
+								Map.squareWidth, Map.squareHeight,
+								treeImageList.get(rand.nextInt(treeImageList.size())))));
+			}
+		}
+		for (RockShape rockShape : rockShapes) {
+			for (Spot spot : rockShape.getSpots()) {
+				map.add(spot.getPosition().getX(), spot.getPosition().getY(),
+						new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
+								Map.squareWidth, Map.squareHeight,
+								rockImageList.get(rand.nextInt(rockImageList.size())))));
+			}
+		}
+		for (WaterShape waterShape : waterShapes) {
+			for (Spot spot : waterShape.getSpots()) {
+				System.out.printf("water at %d;%d\n", spot.getPosition().getX(), spot.getPosition().getY()) ;
+				map.add(spot.getPosition().getX(), spot.getPosition().getY(),
+						new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
+								Map.squareWidth, Map.squareHeight,
+								waterImageList.get(rand.nextInt(waterImageList.size())))));
 			}
 		}
 	}
