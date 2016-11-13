@@ -2,6 +2,7 @@
 package wargame.map;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
 
 import wargame.basic_types.Position;
 import wargame.widgets.ImageWidget;
@@ -150,5 +151,34 @@ public class MapElement {
 	 */
 	public boolean isRemovable() {
 		return removable;
+	}
+
+	/**
+	 * draw the image at its position
+	 * 
+	 * @param g
+	 */
+	public void paintComponent(Graphics g) {
+		this.paintComponent(g, 1);
+	}
+
+	/**
+	 * draw the image at its position
+	 * 
+	 * @param g
+	 * @param zoom
+	 */
+	public void paintComponent(Graphics g, int zoom) {
+		this.image.paintComponent(g, zoom);
+	}
+
+	/**
+	 * draw the image at its position
+	 * 
+	 * @param g
+	 * @param zoom
+	 */
+	public void paintComponent(Graphics g, int zoom, int x, int y) {
+		this.image.paintComponent(g, zoom, x, y);
 	}
 }
