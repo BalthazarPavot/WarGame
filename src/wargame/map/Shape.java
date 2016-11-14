@@ -81,9 +81,23 @@ public abstract class Shape {
 		int h ;
 		w = (int)Math.sqrt(this.spotSurface * spotSurfaceError) ;
 		h = (int)Math.sqrt(this.spotSurface * spotSurfaceError) ;
-		spots.add (new Spot (rangeInt(0, (int) parameters.getDimensions().getWidth()) / Map.squareWidth*Map.squareWidth,
+		/*spots.add (new Spot (rangeInt(0, (int) parameters.getDimensions().getWidth()) / Map.squareWidth*Map.squareWidth,
 				rangeInt(0, (int) parameters.getDimensions().getHeight()) / Map.squareHeight * Map.squareHeight,
 				w, h)) ;
+		*/
+		int beginX = rangeInt(0, (int) parameters.getDimensions().getWidth()) / Map.squareWidth*Map.squareWidth ;
+		int beginY = rangeInt(0, (int) parameters.getDimensions().getHeight()) / Map.squareHeight * Map.squareHeight ;
+		System.out.printf("Generation of spot %d;%d -> %d;%d\n", beginX, beginY, w, h) ;
+		for (int x=beginX;x<beginX+w*Map.squareWidth;x+=Map.squareWidth)
+			for (int y=beginY;y<beginY+w*Map.squareHeight;y+=Map.squareHeight)
+				try {
+				spots.add(new Spot (x, y, Map.squareWidth, Map.squareHeight)) ;
+				} catch (IndexOutOfBoundsException e) {
+					/**
+					 * The resource is out of the map, ignore it.
+					 */
+				}
+			
 		spotNumber = w * h ;
 		System.out.printf("generated: %d spots\n",  spotNumber) ;
 //		for (int x = 0 ; x < Math.sqrt(this.spotSurface * spotSurfaceError); x++) {

@@ -28,13 +28,18 @@ public class TreeShape extends Shape {
 			this.spotSurface = 1;
 			this.spotSurfaceError = 1;
 		} else {
-			this.spotSurface = (int) Math.pow(10, 2);
+			this.spotSurface = (int) Math.pow(5, 2);
 			this.spotSurfaceError = (int) Math.pow(2, 2);
 		}
 		this.generateSpots(parameters.treeRatio);
 		return this;
 	}
 
+
+	/**
+	 * spots is always a ArrayList<Spot>, as defined in the Shape class,
+	 * so we can supress the warnings
+	 */
 	@SuppressWarnings("unchecked")
 	public void distord() {
 		Random rand;
@@ -44,7 +49,7 @@ public class TreeShape extends Shape {
 		int maxy;
 		ArrayList<Spot> originalList;
 
-		originalList = (ArrayList<Spot>) spots.clone();
+		originalList = (ArrayList<Spot>) (spots.clone());
 		rand = new Random();
 		minx = spots.get(0).getPosition().getX();
 		miny = spots.get(0).getPosition().getY();

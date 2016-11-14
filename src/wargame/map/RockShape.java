@@ -25,7 +25,7 @@ public class RockShape extends Shape {
 			this.spotSurface = 1;
 			this.spotSurfaceError = 1;
 		} else {
-			this.spotSurface = (int) Math.pow(5, 2); // 5x5
+			this.spotSurface = (int) Math.pow(3, 2); // 5x5
 			this.spotSurfaceError = (int) Math.pow(2, 2);
 		}
 		this.generateSpots(parameters.rockRatio);
