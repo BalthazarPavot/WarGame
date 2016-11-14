@@ -78,6 +78,13 @@ public class MapElement {
 	/**
 	 * @return the position of the map element
 	 */
+	public ImageWidget getImage() {
+		return image;
+	}
+
+	/**
+	 * @return the position of the map element
+	 */
 	public Position getPosition() {
 		return image.getPosition();
 	}
