@@ -87,13 +87,13 @@ public class MapWidget extends JPanel implements GameWidget {
 	 * @param zoom
 	 */
 	public void paintComponent(Graphics g, int zoom) {
-		for (int y = ((int) frame.getY() + (int) frame.getHeight() * zoom); y >= (int) frame.getY()
-				- Map.squareHeight; y -= 1)
-			for (int x = (int) frame.getX() - Map.squareWidth; x < (int) frame.getX()
+		for (int y = (int) frame.getY() - Map.squareHeight; y
+				/ zoom < ((int) frame.getY() + (int) frame.getHeight() * zoom); y += 1)
+			for (int x = (int) frame.getX() - Map.squareWidth; x / zoom < (int) frame.getX()
 					+ frame.getWidth() * zoom; x += 1)
 				for (MapElement me : map.getReal(x, y))
 					me.paintComponent(g, zoom, x / zoom - (int) frame.getX(), y / zoom - (int) frame.getY());
-		if (this.drawGrid) {
+		if (this.drawGrid && zoom < 4) {
 			g.setColor(new Color(0, 0, 0, 96));
 			int beginX = -(int) (frame.getX() < 0 ? frame.getX() : frame.getX() % (Map.squareWidth / zoom));
 			int beginY = -(int) (frame.getY() < 0 ? frame.getY() : frame.getY() % (Map.squareHeight / zoom));
@@ -116,21 +116,33 @@ public class MapWidget extends JPanel implements GameWidget {
 		int resx;
 		int resy;
 
-		resx = frame.x + x * scollSpeed;
-		resy = frame.y + y * scollSpeed;
-		if (resx > -frame.width / 4 && resx < map.getWidth() - frame.width * 3 / 4)
+		resx = frame.x + x * scollSpeed / zoom;
+		resy = frame.y + y * scollSpeed / zoom;
+		if ((x >= 0 && resx <= map.getWidth() / zoom - frame.width * 3 / 4)
+				|| (x <= 0 && resx > -frame.width / 4))
 			frame.x = resx;
-		if (resy > -frame.height / 4 && resy < map.getHeight() - frame.height * 3 / 4)
+		if ((y >= 0 && resy <= map.getHeight() / zoom - frame.height * 3 / 4)
+				|| (y <= 0 && resy > -frame.height / 4))
 			frame.y = resy;
 	}
 
-	public void increaseZoom () {
-		if (zoom > 2)
-			zoom /= 2 ;
+	public void increaseZoom() {
+		if (zoom > 1) {
+			zoom /= 2;
+			frame.x += boundRect.width / 2 * zoom;
+			frame.y += boundRect.height / 2 * zoom;
+			frame.width *= zoom;
+			frame.height *= zoom;
+		}
 	}
 
-	public void decreaseZoom () {
-		if (zoom < 16)
-			zoom *= 2 ;
+	public void decreaseZoom() {
+		if (zoom < 2) {
+			frame.x -= boundRect.width / 2 * zoom;
+			frame.y -= boundRect.height / 2 * zoom;
+			frame.width /= zoom;
+			frame.height /= zoom;
+			zoom *= 2;
+		}
 	}
 }

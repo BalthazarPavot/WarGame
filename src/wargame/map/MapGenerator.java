@@ -92,6 +92,9 @@ public class MapGenerator {
 		for (WaterShape waterShape : waterShapes) {
 			waterShape.distord();
 		}
+		for (RockShape rockShape : rockShapes) {
+			rockShape.distord();
+		}
 	}
 
 	private void generateGround(SpriteHandler spriteHandler) {
@@ -149,28 +152,50 @@ public class MapGenerator {
 		waterImageList = spriteHandler.get("water");
 		for (TreeShape treeShape : treeShapes) {
 			for (Spot spot : treeShape.getSpots()) {
-				System.out.printf("tree at %d;%d\n", spot.getPosition().getX(), spot.getPosition().getY());
-				map.add(spot.getPosition().getX(), spot.getPosition().getY(),
-						new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-								Map.squareWidth, Map.squareHeight,
-								treeImageList.get(rand.nextInt(treeImageList.size())))));
+				if (map.getReal(spot.getPosition().getX(), spot.getPosition().getY()).size () > 1)
+					continue ;
+				try {
+					map.add(spot.getPosition().getX(), spot.getPosition().getY(),
+							new MapElement(new ImageWidget(spot.getPosition().getX(),
+									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
+									treeImageList.get(rand.nextInt(treeImageList.size())))));
+				} catch (IndexOutOfBoundsException e) {
+					/**
+					 * the resource in creation is out of the map ignore it.
+					 */
+				}
 			}
 		}
 		for (RockShape rockShape : rockShapes) {
 			for (Spot spot : rockShape.getSpots()) {
-				map.add(spot.getPosition().getX(), spot.getPosition().getY(),
-						new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-								Map.squareWidth, Map.squareHeight,
-								rockImageList.get(rand.nextInt(rockImageList.size())))));
+				if (map.getReal(spot.getPosition().getX(), spot.getPosition().getY()).size () > 1)
+					continue ;
+				try {
+					map.add(spot.getPosition().getX(), spot.getPosition().getY(),
+							new MapElement(new ImageWidget(spot.getPosition().getX(),
+									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
+									rockImageList.get(rand.nextInt(rockImageList.size())))));
+				} catch (IndexOutOfBoundsException e) {
+					/**
+					 * the resource in creation is out of the map ignore it.
+					 */
+				}
 			}
 		}
 		for (WaterShape waterShape : waterShapes) {
 			for (Spot spot : waterShape.getSpots()) {
-				System.out.printf("water at %d;%d\n", spot.getPosition().getX(), spot.getPosition().getY());
-				map.add(spot.getPosition().getX(), spot.getPosition().getY(),
-						new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-								Map.squareWidth, Map.squareHeight,
-								waterImageList.get(rand.nextInt(waterImageList.size())))));
+				if (map.getReal(spot.getPosition().getX(), spot.getPosition().getY()).size () > 1)
+					continue ;
+				try {
+					map.add(spot.getPosition().getX(), spot.getPosition().getY(),
+							new MapElement(new ImageWidget(spot.getPosition().getX(),
+									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
+									waterImageList.get(rand.nextInt(waterImageList.size())))));
+				} catch (IndexOutOfBoundsException e) {
+					/**
+					 * the resource in creation is out of the map ignore it.
+					 */
+				}
 			}
 		}
 	}
