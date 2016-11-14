@@ -4,10 +4,14 @@ package wargame.widgets;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -16,6 +20,7 @@ import wargame.basic_types.Position;
 
 public class ImageWidget extends JLabel implements GameWidget {
 
+	private static HashMap<BufferedImage, ArrayList<BufferedImage>> zoomedImageBuffer = new HashMap<BufferedImage, ArrayList<BufferedImage>>();
 	private static final long serialVersionUID = 1L;
 	protected Rectangle boundRect;
 	protected BufferedImage image;
@@ -23,12 +28,55 @@ public class ImageWidget extends JLabel implements GameWidget {
 
 	public static BufferedImage loadImage(String path) {
 		BufferedImage image;
+		BufferedImage newImage = null;
 
 		try {
 			image = ImageIO.read(new File(path));
+			newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = newImage.createGraphics();
+			g.drawImage(image, 0, 0, null);
+			g.dispose();
 		} catch (IOException ex) {
 			image = null;
 		}
+		return newImage;
+	}
+
+	/**
+	 * Return the zoomed image (1/zoom)
+	 * 
+	 * @param image
+	 * @param zoom
+	 * @return
+	 */
+	public static BufferedImage zoomImage(BufferedImage image, int zoom) {
+		BufferedImage newImage = null;
+		ArrayList<BufferedImage> imageBuffer;
+
+		imageBuffer = zoomedImageBuffer.get(image);
+		if (imageBuffer == null) {
+			System.out.println("buffer image creation for zoom");
+			imageBuffer = new ArrayList<BufferedImage>();
+			zoomedImageBuffer.put(image, imageBuffer) ;
+			for (int x = 2; x < 8; x <<= 1) {
+				newImage = new BufferedImage(image.getWidth() / x, image.getHeight() / x,
+						BufferedImage.TYPE_INT_ARGB);
+				Graphics2D g = newImage.createGraphics();
+				g.drawImage(image, 0, 0, image.getWidth() / x, image.getHeight() / x, null);
+				g.dispose();
+				imageBuffer.add(newImage);
+			}
+		}
+		switch (zoom) {
+		case 2:
+			return imageBuffer.get(0);
+		case 4:
+			return imageBuffer.get(1);
+		default:
+			break;
+		}
+		if (zoom == 1)
+			return image;
 		return image;
 	}
 
@@ -89,6 +137,13 @@ public class ImageWidget extends JLabel implements GameWidget {
 	}
 
 	/**
+	 * Return widget's position
+	 */
+	public BufferedImage getImage() {
+		return this.image;
+	}
+
+	/**
 	 * Set the dimensions of the bound rectangle.
 	 * 
 	 * @param w
@@ -146,8 +201,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 	}
 
 	/**
-	 * draw the image at its position zoomed.
-	 * The zoom can be 1,2,3 or 4, with 4 is the smaller.
+	 * draw the image at its position zoomed. The zoom can be 1,2,3 or 4, with 4 is the smaller.
 	 * 
 	 * @param g
 	 * @param zoom
@@ -157,8 +211,9 @@ public class ImageWidget extends JLabel implements GameWidget {
 	}
 
 	public void paintComponent(Graphics g, int zoom, int x, int y) {
-		g.drawImage(image, x, y, this.boundRect.width / zoom, this.boundRect.height / zoom, this.bgColor,
-				this);
+		g.drawImage(zoomImage (image, zoom), x, y, this) ;
+//		g.drawImage(image, x, y, this.boundRect.width / zoom, this.boundRect.height / zoom, this.bgColor,
+//				this);
 	}
 
 }
