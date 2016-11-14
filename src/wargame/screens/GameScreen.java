@@ -13,6 +13,7 @@ import wargame.widgets.*;
 
 /**
  * Defines a screen of the game.
+ * 
  * @author Balthazar Pavot
  *
  */
@@ -24,7 +25,7 @@ public abstract class GameScreen extends JPanel {
 	final public static int LOAD_GAME_SCREEN = 30;
 	final public static int CONFIGURATION_SCREEN = 50;
 	final public static int QUICK_GAME_SCREEN = 70;
-	final public static int PLAY_GAME_SCREEN = 90 ;
+	final public static int PLAY_GAME_SCREEN = 90;
 	final public static int QUIT_SCREEN = 255;
 	protected static JFrame mainFrame = null;
 
@@ -54,10 +55,10 @@ public abstract class GameScreen extends JPanel {
 		this.initRun();
 		while (!this.screenHasFinished) {
 			// this.display () ;
-			windowManagement () ;
-			display () ;
+			windowManagement();
+			display();
 			try {
-				Thread.sleep(50);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				this.gameTermination();
 			}
@@ -112,7 +113,7 @@ public abstract class GameScreen extends JPanel {
 		GameScreen.mainFrame.setVisible(true);
 	}
 
-	protected void windowManagement () {
+	protected void windowManagement() {
 		// Do nothing here.
 	}
 
@@ -129,7 +130,7 @@ public abstract class GameScreen extends JPanel {
 	 * Remove all widgets, add again all the widgets to their position.
 	 */
 	protected void display() {
-//		this.removeAll();
+		// this.removeAll();
 		this.revalidate();
 		this.repaint();
 	}
