@@ -7,20 +7,20 @@ public class Caracteristique {
 	
 	private boolean flying;
 	
-	private int atkSlashing;
-	private int defSlashing;
+	private double atkSlashing;
+	private double defSlashing;
 	
-	private int atkPercing;
-	private int defPercing;
+	private double atkPercing;
+	private double defPercing;
 	
-	private int atkBlunt;
-	private int defBlunt;
+	private double atkBlunt;
+	private double defBlunt;
 	
-	private int atkMagic;
-	private int defMagic;
+	private double atkMagic;
+	private double defMagic;
 	
 	private int range;
-	
+	private int nbCaseDep;
 	
 	Caracteristique()
 	{
@@ -39,6 +39,7 @@ public class Caracteristique {
 		pvMax=pv=100;
 		
 		range=1;
+		nbCaseDep=2;
 	}
 
 	public int getRange() {
@@ -49,19 +50,27 @@ public class Caracteristique {
 		this.range = range;
 	}
 
-	public int getAtkMagic() {
+	public double getAtkMagic() {
 		return atkMagic;
 	}
 
-	public void setAtkMagic(int atkMagic) {
+	public int getNbCaseDep() {
+		return nbCaseDep;
+	}
+
+	public void setNbCaseDep(int nbCaseDep) {
+		this.nbCaseDep = nbCaseDep;
+	}
+
+	public void setAtkMagic(double atkMagic) {
 		this.atkMagic = atkMagic;
 	}
 
-	public int getDefMagic() {
+	public double getDefMagic() {
 		return defMagic;
 	}
 
-	public void setDefMagic(int defMagic) {
+	public void setDefMagic(double defMagic) {
 		this.defMagic = defMagic;
 	}
 
@@ -89,51 +98,51 @@ public class Caracteristique {
 		this.flying = flying;
 	}
 
-	public int getAtkSlashing() {
+	public double getAtkSlashing() {
 		return atkSlashing;
 	}
 
-	public void setAtkSlashing(int atkSlashing) {
+	public void setAtkSlashing(double atkSlashing) {
 		this.atkSlashing = atkSlashing;
 	}
 
-	public int getDefSlashing() {
+	public double getDefSlashing() {
 		return defSlashing;
 	}
 
-	public void setDefSlashing(int defSlashing) {
+	public void setDefSlashing(double defSlashing) {
 		this.defSlashing = defSlashing;
 	}
 
-	public int getAtkPercing() {
+	public double getAtkPercing() {
 		return atkPercing;
 	}
 
-	public void setAtkPercing(int atkPercing) {
+	public void setAtkPercing(double atkPercing) {
 		this.atkPercing = atkPercing;
 	}
 
-	public int getDefPercing() {
+	public double getDefPercing() {
 		return defPercing;
 	}
 
-	public void setDefPercing(int defPercing) {
+	public void setDefPercing(double defPercing) {
 		this.defPercing = defPercing;
 	}
 
-	public int getAtkBlunt() {
+	public double getAtkBlunt() {
 		return atkBlunt;
 	}
 
-	public void setAtkBlunt(int atkBlunt) {
+	public void setAtkBlunt(double atkBlunt) {
 		this.atkBlunt = atkBlunt;
 	}
 
-	public int getDefBlunt() {
+	public double getDefBlunt() {
 		return defBlunt;
 	}
 
-	public void setDefBlunt(int defBlunt) {
+	public void setDefBlunt(double defBlunt) {
 		this.defBlunt = defBlunt;
 	}
 	
