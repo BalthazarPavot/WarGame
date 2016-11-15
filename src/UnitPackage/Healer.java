@@ -2,8 +2,8 @@ package UnitPackage;
 
 public class Healer extends Terrestre {
 
-	Healer() {
-		
+	public Healer() {
+		super();
 		this.maCara.setAtkBlunt(0.5);
 		this.maCara.setAtkPercing(0);
 		this.maCara.setAtkSlashing(0);
@@ -17,9 +17,12 @@ public class Healer extends Terrestre {
 	}
 	
 	public void makeheal(Unit u) {
-		if(this.maCara.getPv()<this.maCara.getPvMax())
+		if(u.maCara.getPv()<u.maCara.getPvMax())
 		{
+			
 			u.gainLife((int)(10*this.maCara.getAtkMagic()));
+			if (u.maCara.getPv()>u.maCara.getPvMax())
+					u.maCara.setPv(100);
 		}
 	}
 	

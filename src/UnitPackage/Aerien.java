@@ -3,8 +3,8 @@ package UnitPackage;
 public class Aerien extends Unit {
 	Aerien()
 	{
-		maCara=new Caracteristique();
-		maCara.setFlying(true);
+		setMaCara(new Caracteristique());
+		getMaCara().setFlying(true);
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class Aerien extends Unit {
 
 	@Override
 	public void gainLife(int val) {
-		this.maCara.setPv(this.maCara.getPv()+val);
+		this.getMaCara().setPv(this.getMaCara().getPv()+val);
 		
 	}
 

@@ -2,14 +2,14 @@ package UnitPackage;
 
 public class Soldier extends Terrestre {
 	
-	Soldier()
+	public Soldier()
 	{
-		this.maCara.setAtkBlunt(0);
-		this.maCara.setAtkMagic(0);
-		this.maCara.setAtkSlashing(1.5);
+		this.getMaCara().setAtkBlunt(0);
+		this.getMaCara().setAtkMagic(0);
+		this.getMaCara().setAtkSlashing(1.5);
 		
-		this.maCara.setDefBlunt(0.5);
-		this.maCara.setDefPercing(1.5);
+		this.getMaCara().setDefBlunt(0.5);
+		this.getMaCara().setDefPercing(1.5);
 		
 		
 	}

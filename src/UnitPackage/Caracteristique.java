@@ -2,7 +2,7 @@ package UnitPackage;
 
 public class Caracteristique {
 	
-	private static int pvMax;
+	private int pvMax;
 	private int pv;
 	
 	private boolean flying;
@@ -36,7 +36,8 @@ public class Caracteristique {
 		defSlashing=1;
 		defMagic=1;
 		
-		pvMax=pv=100;
+		pvMax=100;
+		pv=100;
 		
 		range=1;
 		nbCaseDep=2;
@@ -74,12 +75,12 @@ public class Caracteristique {
 		this.defMagic = defMagic;
 	}
 
-	public static int getPvMax() {
+	public  int getPvMax() {
 		return pvMax;
 	}
 
-	public static void setPvMax(int pvMax) {
-		Caracteristique.pvMax = pvMax;
+	public  void setPvMax(int pvMax) {
+		this.pvMax = pvMax;
 	}
 
 	public int getPv() {
