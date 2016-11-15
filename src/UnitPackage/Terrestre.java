@@ -25,6 +25,19 @@ public class Terrestre extends Unit {
 		
 	}
 
+	@Override
+	public void gainLife(int val) {
+		this.maCara.setPv(this.maCara.getPv()+val);
+		
+	}
+
+	@Override
+	public void takedamage(int val) {
+		
+		maCara.setPv(maCara.getPv()-val);
+		
+	}
+
 
 
 }

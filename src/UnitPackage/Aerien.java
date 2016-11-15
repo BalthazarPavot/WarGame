@@ -25,4 +25,16 @@ public class Aerien extends Unit {
 		
 	}
 
+	@Override
+	public void gainLife(int val) {
+		this.maCara.setPv(this.maCara.getPv()+val);
+		
+	}
+
+	@Override
+	public void takedamage(int val) {
+		
+		
+	}
+
 }
