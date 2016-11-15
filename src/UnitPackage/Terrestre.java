@@ -34,7 +34,7 @@ public class Terrestre extends Unit {
 	@Override
 	public void takedamage(int val) {
 		
-		getMaCara().setPv(getMaCara().getPv()-val);
+		maCara.setPv(maCara.getPv()-val);
 		
 	}
 
