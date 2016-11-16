@@ -87,13 +87,15 @@ public class MapWidget extends JPanel implements GameWidget {
 	 * @param zoom
 	 */
 	public void paintComponent(Graphics g, int zoom) {
-		for (int y = (int) frame.getY() - Map.squareHeight; y
-				/ zoom < ((int) frame.getY() + (int) frame.getHeight() * zoom); y += 1)
-			for (int x = (int) frame.getX() - Map.squareWidth; x / zoom < (int) frame.getX()
-					+ frame.getWidth() * zoom; x += 1)
+		int x = 0;
+		int y = 0;
+		for (y = Math.max((int) frame.getY() - Map.squareHeight,
+				0); y / zoom < (int) frame.getY() + (int) frame.getHeight() && y < map.getHeight(); y += 1)
+			for (x = Math.max((int) frame.getX() - Map.squareWidth,
+					0); x / zoom < (int) frame.getX() + frame.getWidth() && x < map.getWidth(); x += 1)
 				for (MapElement me : map.getReal(x, y))
 					me.paintComponent(g, zoom, x / zoom - (int) frame.getX(), y / zoom - (int) frame.getY());
-		if (this.drawGrid && zoom < 4) {
+		if (this.drawGrid && zoom == 1) {
 			g.setColor(new Color(0, 0, 0, 96));
 			int beginX = -(int) (frame.getX() < 0 ? frame.getX() : frame.getX() % (Map.squareWidth / zoom));
 			int beginY = -(int) (frame.getY() < 0 ? frame.getY() : frame.getY() % (Map.squareHeight / zoom));
@@ -101,9 +103,9 @@ public class MapWidget extends JPanel implements GameWidget {
 					? frame.getX() + frame.getWidth() - map.getWidth() : 0);
 			int overY = (int) (frame.getY() + frame.getHeight() > map.getHeight()
 					? frame.getY() + frame.getHeight() - map.getHeight() : 0);
-			for (int x = beginX; x <= frame.getWidth() - overX; x += Map.squareWidth / zoom)
+			for (x = beginX; x <= frame.getWidth() - overX; x += Map.squareWidth / zoom)
 				g.drawLine(x, beginY - overY, x, (int) frame.getHeight() - 1 - overY);
-			for (int y = beginY; y <= frame.getHeight() - overY; y += Map.squareHeight / zoom)
+			for (y = beginY; y <= frame.getHeight() - overY; y += Map.squareHeight / zoom)
 				g.drawLine(beginX - overX, y, (int) frame.getWidth() - 1 - overX, y);
 		}
 	}
