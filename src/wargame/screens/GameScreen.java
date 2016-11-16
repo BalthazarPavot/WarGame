@@ -58,7 +58,7 @@ public abstract class GameScreen extends JPanel {
 			windowManagement();
 			display();
 			try {
-				Thread.sleep(100);
+				Thread.sleep(15);
 			} catch (InterruptedException e) {
 				this.gameTermination();
 			}
