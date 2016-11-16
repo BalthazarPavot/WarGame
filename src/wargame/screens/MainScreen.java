@@ -73,16 +73,16 @@ public class MainScreen extends GameScreen {
 				else if (rand.nextInt(20) == 0 && randint == 1)
 					this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
 							gameContext.getSpriteHandler().get("rock_snow_set").get(0)));
-				else if (rand.nextInt(150) == 0) {// && randint == 0) {
+				else if (rand.nextInt(150) == 0) {
 					this.addWidgets(
 							new ImageWidget(x + Map.squareWidth, y + Map.squareHeight, Map.squareWidth,
-									Map.squareHeight, gameContext.getSpriteHandler().get("water").get(3)));
+									Map.squareHeight, gameContext.getSpriteHandler().get("water_sand_curve_out").get(3)));
 					this.addWidgets(new ImageWidget(x, y + Map.squareHeight, Map.squareWidth,
-							Map.squareHeight, gameContext.getSpriteHandler().get("water").get(2)));
+							Map.squareHeight, gameContext.getSpriteHandler().get("water_sand_curve_out").get(2)));
 					this.addWidgets(new ImageWidget(x + Map.squareWidth, y, Map.squareWidth, Map.squareHeight,
-							gameContext.getSpriteHandler().get("water").get(1)));
+							gameContext.getSpriteHandler().get("water_sand_curve_out").get(1)));
 					this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
-							gameContext.getSpriteHandler().get("water").get(0)));
+							gameContext.getSpriteHandler().get("water_sand_curve_out").get(0)));
 				}
 				this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
 						backgroundImageList.get(rand.nextInt(backgroundImageList.size()))));

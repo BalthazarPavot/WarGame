@@ -5,7 +5,14 @@ all_sprites_names = \
   tree_set;\
   tree_snow_set;\
   rock_snow_set;\
-  water
+  water_sand_curve_out;\
+  water_sand_curve_in;\
+  water_sand_straight;\
+  water_sand_full;\
+  water_deep_curve_out;\
+  water_deep_curve_in;\
+  water_deep_straight;\
+  water_deep_full
   
 
 allSources = \
@@ -56,9 +63,58 @@ rock_snow_set_width=64
 rock_snow_set_height=128
 rock_snow_set_source=http://opengameart.org/content/2d-lost-garden-zelda-style-tiles-winter-theme-with-additions
 
-water_path=resources/images/water.png
-water_x=0
-water_y=0
-water_width=128
-water_height=128
-water_source=personnal
+water_sand_curve_out_path=resources/images/water.png
+water_sand_curve_out_x=0
+water_sand_curve_out_y=0
+water_sand_curve_out_width=128
+water_sand_curve_out_height=128
+water_sand_curve_out_source=http://opengameart.org/content/topdown-tileset
+
+water_sand_curve_in_path=resources/images/water.png
+water_sand_curve_in_x=128
+water_sand_curve_in_y=0
+water_sand_curve_in_width=256
+water_sand_curve_in_height=128
+water_sand_curve_in_source=http://opengameart.org/content/topdown-tileset
+
+water_sand_straight_path=resources/images/water.png
+water_sand_straight_x=0
+water_sand_straight_y=128
+water_sand_straight_width=128
+water_sand_straight_height=256
+water_sand_straight_source=http://opengameart.org/content/topdown-tileset
+
+water_sand_full_path=resources/images/water.png
+water_sand_full_x=128
+water_sand_full_y=128
+water_sand_full_width=192
+water_sand_full_height=192
+water_sand_full_source=http://opengameart.org/content/topdown-tileset
+
+water_deep_curve_out_path=resources/images/water.png
+water_deep_curve_out_x=256
+water_deep_curve_out_y=0
+water_deep_curve_out_width=384
+water_deep_curve_out_height=128
+water_deep_curve_out_source=http://opengameart.org/content/topdown-tileset
+
+water_deep_curve_in_path=resources/images/water.png
+water_deep_curve_in_x=384
+water_deep_curve_in_y=0
+water_deep_curve_in_width=512
+water_deep_curve_in_height=128
+water_deep_curve_in_source=http://opengameart.org/content/topdown-tileset
+
+water_deep_straight_path=resources/images/water.png
+water_deep_straight_x=256
+water_deep_straight_y=128
+water_deep_straight_width=384
+water_deep_straight_height=256
+water_deep_straight_source=http://opengameart.org/content/topdown-tileset
+
+water_deep_full_path=resources/images/water.png
+water_deep_full_x=384
+water_deep_full_y=128
+water_deep_full_width=448
+water_deep_full_height=192
+water_deep_full_source=http://opengameart.org/content/topdown-tileset
