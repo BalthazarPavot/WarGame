@@ -10,7 +10,7 @@ import wargame.map.Map;
  * @author Balthazar Pavot
  *
  */
-public class Position {
+public class Position implements Comparable<Object> {
 
 	private int x = 0;
 	private int y = 0;
@@ -129,4 +129,21 @@ public class Position {
 		return new ArrayList<Position> () ;
 	}
 
+	public int compareTo (Object o) {
+		if (o.getClass() != this.getClass())
+			return -1 ;
+		return compareTo ((Position) o) ;
+	}
+
+	public int compareTo (Position p) {
+		if (this.y < p.getY())
+			return -1 ;
+		if (this.y > p.getY())
+			return 1 ;
+		if (this.x < p.getX())
+			return -1 ;
+		if (this.x > p.getX())
+			return 1 ;
+		return 0 ;
+	}
 }
