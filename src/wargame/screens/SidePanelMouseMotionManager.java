@@ -10,11 +10,11 @@ import java.awt.event.MouseEvent;
  * @author Balthazar Pavot
  *
  */
-public class PlayGameScreenMouseMotionManager extends GameScreenMouseMotionManager {
+public class SidePanelMouseMotionManager extends GameScreenMouseMotionManager {
 
 	protected PlayGameScreen gameScreen = null;
 
-	public PlayGameScreenMouseMotionManager(GameScreen gameScreen) {
+	public SidePanelMouseMotionManager(GameScreen gameScreen) {
 		super(gameScreen);
 		this.gameScreen = (PlayGameScreen) gameScreen;
 	}
@@ -23,14 +23,9 @@ public class PlayGameScreenMouseMotionManager extends GameScreenMouseMotionManag
 	}
 
 	public void mouseMoved(MouseEvent e) {
-		int x;
-		int y;
-
-		x = e.getX();
-		y = e.getY();
-		gameScreen.leftScrolling = x < 30;
-		gameScreen.rightScrolling = x > gameScreen.gameContext.getWidth() - 30 - 150 ;
-		gameScreen.upScrolling = y < 30;
-		gameScreen.downScrolling = y > gameScreen.gameContext.getHeight() - 60;
+		gameScreen.leftScrolling = false ;
+		gameScreen.rightScrolling = false ;
+		gameScreen.upScrolling = false ;
+		gameScreen.downScrolling = false ;
 	}
 }
