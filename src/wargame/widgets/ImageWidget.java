@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import wargame.basic_types.Position;
@@ -55,9 +54,9 @@ public class ImageWidget extends JLabel implements GameWidget {
 
 		imageBuffer = zoomedImageBuffer.get(image);
 		if (imageBuffer == null) {
-			System.out.println("buffer image creation for zoom");
+//			System.out.println("buffer image creation for zoom");
 			imageBuffer = new ArrayList<BufferedImage>();
-			zoomedImageBuffer.put(image, imageBuffer) ;
+			zoomedImageBuffer.put(image, imageBuffer);
 			for (int x = 2; x < 8; x <<= 1) {
 				newImage = new BufferedImage(image.getWidth() / x, image.getHeight() / x,
 						BufferedImage.TYPE_INT_ARGB);
@@ -103,8 +102,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 	}
 
 	public ImageWidget(Rectangle boundRect, BufferedImage image) {
-		super(new ImageIcon(image));
-		// this (boundRect) ;
+//		super(new ImageIcon(image));
 		this.boundRect = boundRect;
 		this.image = image;
 	}
@@ -213,8 +211,26 @@ public class ImageWidget extends JLabel implements GameWidget {
 	public void paintComponent(Graphics g, int zoom, int x, int y) {
 		super.paintComponent(g);
 		g.drawImage(zoomImage(image, zoom), x, y, this);
-//		g.drawImage(image, x, y, this.boundRect.width / zoom, this.boundRect.height / zoom, this.bgColor,
-//				this);
+	}
+
+	public int getColor() {
+		int totalR = 0;
+		int totalG = 0;
+		int totalB = 0;
+		int pixel;
+		int nbPixel;
+
+		nbPixel = image.getWidth ()* image.getHeight();
+		for (int x = 0; x < image.getWidth(); x += 1) {
+			for (int y = 0; y < image.getHeight(); y += 1) {
+				pixel = image.getRGB(x, y);
+				totalR += ((pixel >> 16) & 0xff);// * ((pixel >> 24 & 0xff)/255);
+				totalG += ((pixel >> 8) & 0xff);// * ((pixel >> 24 & 0xff)/255);
+				totalB += (pixel & 0xff);// * ((pixel >> 24 & 0xff)/255);
+			}
+		}
+
+		return totalR / nbPixel << 16 | totalG / nbPixel << 8 | totalB / nbPixel;
 	}
 
 }
