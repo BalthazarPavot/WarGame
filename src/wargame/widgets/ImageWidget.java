@@ -7,7 +7,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +29,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 		BufferedImage newImage = null;
 
 		try {
-			image = ImageIO.read(new File(path));
+			image = ImageIO.read(Thread.currentThread().getContextClassLoader().getResourceAsStream(path));
 			newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g = newImage.createGraphics();
 			g.drawImage(image, 0, 0, null);
@@ -54,7 +53,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 
 		imageBuffer = zoomedImageBuffer.get(image);
 		if (imageBuffer == null) {
-//			System.out.println("buffer image creation for zoom");
+			// System.out.println("buffer image creation for zoom");
 			imageBuffer = new ArrayList<BufferedImage>();
 			zoomedImageBuffer.put(image, imageBuffer);
 			for (int x = 2; x < 8; x <<= 1) {
@@ -102,7 +101,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 	}
 
 	public ImageWidget(Rectangle boundRect, BufferedImage image) {
-//		super(new ImageIcon(image));
+		// super(new ImageIcon(image));
 		this.boundRect = boundRect;
 		this.image = image;
 	}
@@ -220,7 +219,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 		int pixel;
 		int nbPixel;
 
-		nbPixel = image.getWidth ()* image.getHeight();
+		nbPixel = image.getWidth() * image.getHeight();
 		for (int x = 0; x < image.getWidth(); x += 1) {
 			for (int y = 0; y < image.getHeight(); y += 1) {
 				pixel = image.getRGB(x, y);

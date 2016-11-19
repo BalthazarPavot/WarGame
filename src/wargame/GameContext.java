@@ -3,7 +3,7 @@ package wargame;
 
 import java.awt.Dimension;
 import java.io.File;
-import java.io.FileInputStream;
+//import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -18,7 +18,7 @@ import wargame.map.SpriteHandler;
  */
 public class GameContext {
 
-	private static String defaultConfigPath = "./config.conf";
+	private static String defaultConfigPath = "/config.conf";
 	public static String TITLE = "War Game";
 	static int MIN_WIDTH = 800;
 	static int MAX_WIDTH = 1600;
@@ -36,6 +36,7 @@ public class GameContext {
 		if (errorManager == null)
 			ErrorManager.earlyTermination("Could not create the game context without the error manager.");
 		this.errorManager = errorManager;
+		this.loadConf();
 		this.spriteHandler = new SpriteHandler(this.errorManager) ;
 	}
 
@@ -58,6 +59,8 @@ public class GameContext {
 			try {
 				loadConf(confFile);
 			} catch (IOException | IllegalArgumentException e) {
+				System.out.println(e);
+				e.printStackTrace();
 				errorManager.exitError("Could not load config file. Verify its content, please.\n");
 			}
 			confFile = null;
@@ -127,21 +130,11 @@ public class GameContext {
 	 * @param confFile
 	 */
 	private void loadConf(File confFile) throws IOException, IllegalArgumentException {
-		FileInputStream confStream = null;
 		Properties confProperties = null;
 
-		if (!confFile.exists())
-			errorManager.exitError(String.format("The conf file \"%s\" is missing.\n", confFile.getPath()));
-		if (confFile.isDirectory())
-			errorManager
-					.exitError(String.format("The conf file \"%s\" is a directory.\n", confFile.getPath()));
-		confStream = new FileInputStream(confFile.getPath());
 		confProperties = new Properties();
-		confProperties.load(confStream);
+		confProperties.load(this.getClass().getResourceAsStream(defaultConfigPath));
 		loadConf(confProperties);
-		confStream.close();
-		confStream.close();
-		confStream = null;
 		confProperties = null;
 		confLoaded = true;
 	}

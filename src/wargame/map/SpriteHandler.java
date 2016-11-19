@@ -3,7 +3,6 @@ package wargame.map;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,15 +13,15 @@ import wargame.widgets.ImageWidget;
 
 /**
  * The aim of this class is to load the sprites and contain them. <br />
- * One can access a sprite by giving the sprite sheet name, and the number of
- * the sprite.
+ * One can access a sprite by giving the sprite sheet name, and the number of the sprite.
+ * 
  * @author Balthazar Pavot
  *
  */
 public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 
 	private static final long serialVersionUID = 1L;
-	private final static String spriteIndex = "resources/spriteIndex.data";
+	private final static String spriteIndex = "/spriteIndex.data";
 
 	private boolean loaded = false;
 	private ErrorManager errorManager;
@@ -44,6 +43,7 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 
 	/**
 	 * Load the sprites using the given path as the sprite index file path
+	 * 
 	 * @param indexPath
 	 */
 	private void loadSprites(String indexPath) {
@@ -53,6 +53,8 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		try {
 			loadSprites(confFile);
 		} catch (IOException e) {
+			System.out.println(e);
+			e.printStackTrace();
 			errorManager.exitError("Could not load sprite index file. Verify its content, please.\n");
 		} catch (IllegalArgumentException e) {
 			System.out.println(e);
@@ -65,33 +67,24 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 
 	/**
 	 * load the sprites using the given file as the sprite index file
+	 * 
 	 * @param confFile
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 */
 	private void loadSprites(File confFile) throws IOException, IllegalArgumentException {
-		FileInputStream confStream = null;
 		Properties confProperties = null;
 
-		if (!confFile.exists())
-			errorManager.exitError(
-					String.format("The sprite index file \"%s\" is missing.\n", confFile.getPath()));
-		if (confFile.isDirectory())
-			errorManager.exitError(
-					String.format("The conf sprite index \"%s\" is a directory.\n", confFile.getPath()));
-		confStream = new FileInputStream(confFile.getPath());
 		confProperties = new Properties();
-		confProperties.load(confStream);
+		confProperties.load(this.getClass().getResourceAsStream(spriteIndex));
 		loadSprites(confProperties);
 		loaded = true;
-		confStream.close();
-		confStream.close();
-		confStream = null;
 		confProperties = null;
 	}
 
 	/**
 	 * Load the sprites using the given properties as the sprite index file properties.
+	 * 
 	 * @param confProperties
 	 * @throws IOException
 	 * @throws IllegalArgumentException
@@ -107,6 +100,7 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 
 	/**
 	 * Place in the given array all the sprites extracted from each spriteNames
+	 * 
 	 * @param confProperties
 	 * @param spriteNames
 	 * @throws IOException
@@ -122,8 +116,9 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 	}
 
 	/**
-	 * Extract all the sprite from spriteName, using the path, x, y, width and
-	 * heigh given in the sprite property file.
+	 * Extract all the sprite from spriteName, using the path, x, y, width and heigh given in the sprite
+	 * property file.
+	 * 
 	 * @param spriteName
 	 * @param spriteList
 	 * @param confProperties
@@ -136,7 +131,7 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		int h = 0;
 		int imageWidth;
 		int imageHeight;
-		int initX = 0 ;
+		int initX = 0;
 		BufferedImage wholeImage;
 
 		try {
@@ -166,7 +161,7 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		try {
 			imageWidth = Integer.parseInt(confProperties.getProperty(spriteName + "_image_width"));
 		} catch (NumberFormatException e) {
-			imageWidth = Map.squareWidth ;
+			imageWidth = Map.squareWidth;
 		}
 		try {
 			imageHeight = Integer.parseInt(confProperties.getProperty(spriteName + "_image_height"));

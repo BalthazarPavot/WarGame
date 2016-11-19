@@ -14,42 +14,45 @@ all_sprites_names = \
   water_deep_straight;\
   water_deep_full;\
   side_panel_texture
-  
+
 
 allSources = \
   http://opengameart.org/content/grass-textureseamless-2d,\
   http://opengameart.org/content/2d-lost-garden-zelda-style-tiles-winter-theme-with-additions,\
-  http://opengameart.org/content/lpc-plant-repack
+  http://opengameart.org/content/lpc-plant-repack,\
+  http://opengameart.org/content/smooth-wood-texture,\
+  http://opengameart.org/content/topdown-tileset
 
-grass_textures_path=resources/images/ground_textures.png
+
+grass_textures_path=images/ground_textures.png
 grass_textures_x=0
 grass_textures_y=0
 grass_textures_width=256
 grass_textures_height=128
 grass_textures_source=http://opengameart.org/content/grass-textureseamless-2d
 
-snow_textures_path=resources/images/ground_textures.png
+snow_textures_path=images/ground_textures.png
 snow_textures_x=0
 snow_textures_y=128
 snow_textures_width=256
 snow_textures_height=256
 snow_textures_source=http://opengameart.org/content/2d-lost-garden-zelda-style-tiles-winter-theme-with-additions
 
-rock_textures_path=resources/images/ground_textures.png
+rock_textures_path=images/ground_textures.png
 rock_textures_x=0
 rock_textures_y=256
 rock_textures_width=256
 rock_textures_height=384
 rock_textures_source=http://opengameart.org/content/grass-textureseamless-2d
 
-tree_set_path=resources/images/trees.png
+tree_set_path=images/trees.png
 tree_set_x=0
 tree_set_y=0
 tree_set_width=256
 tree_set_height=64
 tree_set_source=http://opengameart.org/content/lpc-plant-repack
 
-tree_snow_set_path=resources/images/trees.png
+tree_snow_set_path=images/trees.png
 tree_snow_set_x=0
 tree_snow_set_y=64
 tree_snow_set_width=128
@@ -57,70 +60,70 @@ tree_snow_set_height=128
 tree_snow_set_source=http://opengameart.org/content/2d-lost-garden-zelda-style-tiles-winter-theme-with-additions
 
 
-rock_snow_set_path=resources/images/rocks.png
+rock_snow_set_path=images/rocks.png
 rock_snow_set_x=0
 rock_snow_set_y=64
 rock_snow_set_width=64
 rock_snow_set_height=128
 rock_snow_set_source=http://opengameart.org/content/2d-lost-garden-zelda-style-tiles-winter-theme-with-additions
 
-water_sand_curve_out_path=resources/images/water.png
+water_sand_curve_out_path=images/water.png
 water_sand_curve_out_x=0
 water_sand_curve_out_y=0
 water_sand_curve_out_width=128
 water_sand_curve_out_height=128
 water_sand_curve_out_source=http://opengameart.org/content/topdown-tileset
 
-water_sand_curve_in_path=resources/images/water.png
+water_sand_curve_in_path=images/water.png
 water_sand_curve_in_x=128
 water_sand_curve_in_y=0
 water_sand_curve_in_width=256
 water_sand_curve_in_height=128
 water_sand_curve_in_source=http://opengameart.org/content/topdown-tileset
 
-water_sand_straight_path=resources/images/water.png
+water_sand_straight_path=images/water.png
 water_sand_straight_x=0
 water_sand_straight_y=128
 water_sand_straight_width=128
 water_sand_straight_height=256
 water_sand_straight_source=http://opengameart.org/content/topdown-tileset
 
-water_sand_full_path=resources/images/water.png
+water_sand_full_path=images/water.png
 water_sand_full_x=128
 water_sand_full_y=128
 water_sand_full_width=192
 water_sand_full_height=192
 water_sand_full_source=http://opengameart.org/content/topdown-tileset
 
-water_deep_curve_out_path=resources/images/water.png
+water_deep_curve_out_path=images/water.png
 water_deep_curve_out_x=256
 water_deep_curve_out_y=0
 water_deep_curve_out_width=384
 water_deep_curve_out_height=128
 water_deep_curve_out_source=http://opengameart.org/content/topdown-tileset
 
-water_deep_curve_in_path=resources/images/water.png
+water_deep_curve_in_path=images/water.png
 water_deep_curve_in_x=384
 water_deep_curve_in_y=0
 water_deep_curve_in_width=512
 water_deep_curve_in_height=128
 water_deep_curve_in_source=http://opengameart.org/content/topdown-tileset
 
-water_deep_straight_path=resources/images/water.png
+water_deep_straight_path=images/water.png
 water_deep_straight_x=256
 water_deep_straight_y=128
 water_deep_straight_width=384
 water_deep_straight_height=256
 water_deep_straight_source=http://opengameart.org/content/topdown-tileset
 
-water_deep_full_path=resources/images/water.png
+water_deep_full_path=images/water.png
 water_deep_full_x=384
 water_deep_full_y=128
 water_deep_full_width=448
 water_deep_full_height=192
 water_deep_full_source=http://opengameart.org/content/topdown-tileset
 
-side_panel_texture_path=resources/images/sidePanelTexture.png
+side_panel_texture_path=images/sidePanelTexture.png
 side_panel_texture_x=0
 side_panel_texture_y=0
 side_panel_texture_width=128
