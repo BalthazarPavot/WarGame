@@ -96,15 +96,21 @@ public class MapWidget extends JPanel implements GameWidget {
 	 * @param g
 	 * @param zoom
 	 */
-	public void paintComponent(Graphics g, int zoom) {
-		int x = 0;
-		int y = 0;
-		for (y = Math.max((int) frame.getY() - Map.squareHeight,
-				0); y / zoom < (int) frame.getY() + (int) frame.getHeight() && y < map.getHeight(); y += 1)
-			for (x = Math.max((int) frame.getX() - Map.squareWidth,
-					0); x / zoom < (int) frame.getX() + frame.getWidth() && x < map.getWidth(); x += 1)
+	public void paintComponent(Graphics g, int zoom, int dx, int dy) {
+		super.paintComponent(g);
+		int x;
+		int y;
+		for (Position p : map.getPositions()) {
+			x = p.getX();
+			y = p.getY();
+			if (!(x / zoom < (int) frame.getX() - Map.squareWidth
+					|| y / zoom < (int) frame.getY() - Map.squareHeight
+					|| x / zoom > (int) frame.getX() + frame.getWidth()
+					|| y / zoom > (int) frame.getY() + frame.getHeight()))
 				for (MapElement me : map.getReal(x, y))
-					me.paintComponent(g, zoom, x / zoom - (int) frame.getX(), y / zoom - (int) frame.getY());
+					me.paintComponent(g, zoom, x / zoom - (int) frame.getX() + dx,
+							y / zoom - (int) frame.getY() + dy);
+		}
 		if (this.drawGrid && zoom == 1) {
 			g.setColor(new Color(0, 0, 0, 96));
 			int beginX = -(int) (frame.getX() < 0 ? frame.getX() : frame.getX() % (Map.squareWidth / zoom));
@@ -114,9 +120,9 @@ public class MapWidget extends JPanel implements GameWidget {
 			int overY = (int) (frame.getY() + frame.getHeight() > map.getHeight()
 					? frame.getY() + frame.getHeight() - map.getHeight() : 0);
 			for (x = beginX; x <= frame.getWidth() - overX; x += Map.squareWidth / zoom)
-				g.drawLine(x, beginY - overY, x, (int) frame.getHeight() - 1 - overY);
+				g.drawLine(x+dx, beginY - overY+dy, x, (int) frame.getHeight() - 1 - overY);
 			for (y = beginY; y <= frame.getHeight() - overY; y += Map.squareHeight / zoom)
-				g.drawLine(beginX - overX, y, (int) frame.getWidth() - 1 - overX, y);
+				g.drawLine(beginX - overX+dx, y+dy, (int) frame.getWidth() - 1 - overX, y);
 		}
 	}
 
