@@ -2,22 +2,35 @@
 package wargame.widgets;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
 import javax.swing.JPanel;
 
 import wargame.basic_types.Position;
+import wargame.map.Map;
 
 public class SidePanel extends JPanel implements GameWidget {
 
 	private static final long serialVersionUID = 1L;
 	protected Rectangle boundRect;
+	private ArrayList<GameWidget> widgets;
+	private BufferedImage minimap;
+	private Map map;
+	private int minimapWidth = 128;
+	private int minimapHeight = 128;
 
-	public SidePanel(int x, int y, int w, int h) {
-		this(new Rectangle(x, y, w, h));
+	public SidePanel(Map map, int x, int y, int w, int h) {
+		this(map, new Rectangle(x, y, w, h));
 	}
 
-	public SidePanel(Rectangle boundRect) {
+	public SidePanel(Map map, Rectangle boundRect) {
 		this.boundRect = boundRect;
+		widgets = new ArrayList<GameWidget>();
+		this.map = map;
+		buildImage();
 	}
 
 	/**
@@ -95,4 +108,54 @@ public class SidePanel extends JPanel implements GameWidget {
 		this.setBounds(this.boundRect);
 	}
 
+	public void paintComponent(Graphics g) {
+		paintComponent(g, 1);
+	}
+
+	public void paintComponent(Graphics g, int zoom) {
+		paintComponent(g, zoom, 0, 0);
+	}
+
+	public void paintComponent(Graphics g, int zoom, int x, int y) {
+		super.paintComponent(g);
+		g.drawImage(minimap, x + 10, y + 10, this);
+	}
+
+	public void addWidget(GameWidget widget) {
+		widgets.add(widget);
+		widget.bind();
+	}
+
+	private void buildImage() {
+		BufferedImage image = new BufferedImage(minimapWidth, minimapHeight, BufferedImage.TYPE_INT_RGB);
+		int x;
+		int y;
+		int dx = map.getWidth() / minimapWidth;
+		int dy = map.getHeight() / minimapHeight;
+		int pixel;
+
+		for (x = 0; x < minimapWidth; x += 1) {
+			for (y = 0; y < minimapHeight; y += 1) {
+				pixel = map.colorAt(x * dx / Map.squareWidth * Map.squareWidth,
+						y * dy / Map.squareHeight * Map.squareHeight);
+				/*
+				 * 13490654 : snow tree
+				 * 1842462 : rock
+				 * 462861 : fir
+				 */
+				if (pixel == 1842462 || pixel==462861) {// 462861
+					pixel = enlightColor (pixel);
+				}
+				image.setRGB(x, y, pixel);
+			}
+		}
+		this.minimap = image;
+	}
+
+	private int enlightColor (int color) {
+		return enlightColor (color, 2);
+	}
+	private int enlightColor (int color, float degree) {
+		return (int)((color >> 16 & 255)*degree) << 16 | (int)((color >> 8 & 255)*degree) << 8 | (int)((color& 255)*degree);
+	}
 }
