@@ -12,7 +12,8 @@ all_sprites_names = \
   water_deep_curve_out;\
   water_deep_curve_in;\
   water_deep_straight;\
-  water_deep_full
+  water_deep_full;\
+  side_panel_texture
   
 
 allSources = \
@@ -118,3 +119,13 @@ water_deep_full_y=128
 water_deep_full_width=448
 water_deep_full_height=192
 water_deep_full_source=http://opengameart.org/content/topdown-tileset
+
+side_panel_texture_path=resources/images/sidePanelTexture.png
+side_panel_texture_x=0
+side_panel_texture_y=0
+side_panel_texture_width=128
+side_panel_texture_height=128
+side_panel_texture_source=http://opengameart.org/content/smooth-wood-texture
+
+
+
