@@ -188,4 +188,8 @@ public class MapElement {
 	public void paintComponent(Graphics g, int zoom, int x, int y) {
 		this.image.paintComponent(g, zoom, x, y);
 	}
+
+	public int getColor() {
+		return image.getColor () ;
+	}
 }

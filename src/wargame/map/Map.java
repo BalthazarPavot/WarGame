@@ -4,7 +4,10 @@ package wargame.map ;
 import java.awt.Dimension;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+
 import wargame.basic_types.Position;
 
 
@@ -46,6 +49,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	private int width ;
 	private int height ;
 	private HashMap<Integer, HashMap<Integer, ArrayList<MapElement>>> realPositions ;
+	private ArrayList<Position> allPositions ;
 
 
 	public Map () {
@@ -61,6 +65,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 		this.width = width ;
 		this.height = height ;
 		realPositions = new HashMap<Integer, HashMap<Integer, ArrayList<MapElement>>> () ;
+		allPositions = new ArrayList<Position>() ;
 	}
 
 	/**
@@ -82,6 +87,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	public void add (int x, int y, MapElement element) throws IndexOutOfBoundsException {
 		int corneredX ;
 		int corneredY ;
+		Position position ;
 
 		/* 
 		 * Set the corner of the sprite on the corner of a square.
@@ -103,6 +109,10 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 		if (realPositions.get (y).get (x) == null)
 			realPositions.get (y).put (x, new ArrayList<MapElement> ()) ;
 		realPositions.get (y).get (x).add (element) ;
+		position = new Position(x, y) ;
+		if (!allPositions.contains(position))
+			allPositions.add(position);
+		Collections.sort ((List<Position>) allPositions) ;
 	}
 
 	/**
@@ -147,6 +157,10 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 		if (this.realPositions.get (y).get (x) == null)
 			return new ArrayList<MapElement> () ;
 		return this.realPositions.get (y).get (x) ;
+	}
+
+	public ArrayList<Position> getPositions () {
+		return allPositions ;
 	}
 
 	public int getWidth () {
@@ -394,6 +408,15 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 			return false ;
 		}
 		return true ;
+	}
+
+	public int colorAt(int x, int y) {
+		ArrayList<MapElement> mapElts ;
+
+		mapElts = getReal (x,y) ;
+		if (mapElts.size () == 0)
+			return 0 ;
+		return mapElts.get(mapElts.size ()-1).getColor () ;
 	}
 
 }
