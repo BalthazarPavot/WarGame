@@ -4,6 +4,7 @@ package wargame.widgets;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Rectangle;
 
 import javax.swing.JButton;
@@ -129,5 +130,15 @@ public class ButtonWidget extends JButton implements GameWidget {
 	 */
 	public void bind() {
 		this.setBounds(this.boundRect);
+	}
+
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+	}
+
+
+	@Override
+	public void paintComponent(Graphics g, int zoom, int x, int y) {
 	}
 }

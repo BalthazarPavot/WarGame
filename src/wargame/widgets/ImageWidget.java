@@ -211,7 +211,8 @@ public class ImageWidget extends JLabel implements GameWidget {
 	}
 
 	public void paintComponent(Graphics g, int zoom, int x, int y) {
-		g.drawImage(zoomImage (image, zoom), x, y, this) ;
+		super.paintComponent(g);
+		g.drawImage(zoomImage(image, zoom), x, y, this);
 //		g.drawImage(image, x, y, this.boundRect.width / zoom, this.boundRect.height / zoom, this.bgColor,
 //				this);
 	}

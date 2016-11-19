@@ -2,6 +2,7 @@
 package wargame.widgets;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Rectangle;
 
 import wargame.basic_types.Position;
@@ -57,5 +58,7 @@ public interface GameWidget {
 	 * @param Copy
 	 */
 	void setBinding(Rectangle binds);
+	void paintComponent(Graphics g);
+	void paintComponent(Graphics g, int zoom, int x, int y);
 
 }

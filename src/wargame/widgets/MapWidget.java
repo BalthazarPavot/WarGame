@@ -87,6 +87,16 @@ public class MapWidget extends JPanel implements GameWidget {
 	 * @param zoom
 	 */
 	public void paintComponent(Graphics g, int zoom) {
+		paintComponent(g, zoom, 0, 0);
+	}
+
+	/**
+	 * draw the image at its position
+	 * 
+	 * @param g
+	 * @param zoom
+	 */
+	public void paintComponent(Graphics g, int zoom) {
 		int x = 0;
 		int y = 0;
 		for (y = Math.max((int) frame.getY() - Map.squareHeight,
