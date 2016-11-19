@@ -28,7 +28,7 @@ public class WaterShape extends Shape {
 			this.spotSurface = (int) Math.pow(9, 2);
 			this.spotSurfaceError = (int) Math.pow(2, 2);
 		}
-		this.generateSpots(parameters.waterRatio);
+		this.generateSpots(parameters.waterRatio, parameters.isolatedWaterSpots);
 		return this;
 	}
 
