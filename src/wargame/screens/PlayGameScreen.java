@@ -59,17 +59,18 @@ public class PlayGameScreen extends GameScreen {
 		mapWidget.setBackground(Color.BLACK);
 		mapWidget.setOpaque(true);
 		this.addWidgets(mapWidget);
-		sidePanel = new SidePanel(gameContext.getMap(), this.gameContext.getWidth() - 150, 0, 150, this.gameContext.getHeight());
+		sidePanel = new SidePanel(gameContext.getMap(), this.gameContext.getWidth() - 150, 0, 150,
+				this.gameContext.getHeight(), gameContext.getSpriteHandler().get("side_panel_texture").get(0));
 		sidePanel.addMouseListener(sidePanelMouseManager);
 		sidePanel.addMouseMotionListener(sidePanelMouseMotionManager);
 		sidePanel.addKeyListener(sidePanelKeyboardManager);
-//		sidePanel.addWidget(new MiniMap(this.gameContext.getMap(), 10, 10, 120, 120));
+		// sidePanel.addWidget(new MiniMap(this.gameContext.getMap(), 10, 10, 120, 120));
 		sidePanel.setBackground(new Color(153, 108, 57));
 		sidePanel.setOpaque(true);
 		this.addWidgets(sidePanel);
-//		 this.addWidgets(new ImageWidget(0, 0, 120, 120,
-//		 new MiniMap(this.gameContext.getMap(), this.gameContext.getWidth() - 140, 10, 120, 120)
-//		 .getImage().getImage()));
+		// this.addWidgets(new ImageWidget(0, 0, 120, 120,
+		// new MiniMap(this.gameContext.getMap(), this.gameContext.getWidth() - 140, 10, 120, 120)
+		// .getImage().getImage()));
 
 	}
 

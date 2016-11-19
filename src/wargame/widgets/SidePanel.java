@@ -21,16 +21,18 @@ public class SidePanel extends JPanel implements GameWidget {
 	private Map map;
 	private int minimapWidth = 128;
 	private int minimapHeight = 128;
+	private BufferedImage background ;
 
-	public SidePanel(Map map, int x, int y, int w, int h) {
-		this(map, new Rectangle(x, y, w, h));
+	public SidePanel(Map map, int x, int y, int w, int h, BufferedImage backgroundImage) {
+		this(map, new Rectangle(x, y, w, h), backgroundImage);
 	}
 
-	public SidePanel(Map map, Rectangle boundRect) {
+	public SidePanel(Map map, Rectangle boundRect, BufferedImage backgroundImage) {
 		this.boundRect = boundRect;
 		widgets = new ArrayList<GameWidget>();
 		this.map = map;
 		buildImage();
+		background = backgroundImage ;
 	}
 
 	/**
@@ -118,6 +120,9 @@ public class SidePanel extends JPanel implements GameWidget {
 
 	public void paintComponent(Graphics g, int zoom, int x, int y) {
 		super.paintComponent(g);
+		for (int x2=0;x2<boundRect.width;x2+=128)
+			for (int y2=0;y2<boundRect.height;y2+=128)
+				g.drawImage(background, x2, y2, 128, 128, this) ;
 		g.drawImage(minimap, x + 10, y + 10, this);
 	}
 
