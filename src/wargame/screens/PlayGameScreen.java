@@ -1,6 +1,7 @@
 
 package wargame.screens;
 
+import java.awt.Color;
 import java.awt.KeyboardFocusManager;
 import wargame.GameContext;
 import wargame.widgets.*;
@@ -23,28 +24,53 @@ public class PlayGameScreen extends GameScreen {
 	protected PlayGameScreenMouseManager mouseManager;
 	protected PlayGameScreenMouseMotionManager mouseMotionManager;
 	protected PlayGameScreenKeyboardManager keyboardManager;
+	protected SidePanelActionManager sidePanelActionManager;
+	protected SidePanelMouseManager sidePanelMouseManager;
+	protected SidePanelMouseMotionManager sidePanelMouseMotionManager;
+	protected SidePanelKeyboardManager sidePanelKeyboardManager;
 
 	public PlayGameScreen(GameContext gameContext) {
 		super(gameContext);
 		this.actionManager = new PlayGameScreenActionManager(this);
 		this.mouseManager = new PlayGameScreenMouseManager(this);
 		this.mouseMotionManager = new PlayGameScreenMouseMotionManager(this);
-		this.keyboardManager = new PlayGameScreenKeyboardManager(this, KeyboardFocusManager.getCurrentKeyboardFocusManager());
+		this.keyboardManager = new PlayGameScreenKeyboardManager(this,
+				KeyboardFocusManager.getCurrentKeyboardFocusManager());
+		sidePanelActionManager = new SidePanelActionManager(this);
+		sidePanelMouseManager = new SidePanelMouseManager(this);
+		sidePanelMouseMotionManager = new SidePanelMouseMotionManager(this);
+		sidePanelKeyboardManager = new SidePanelKeyboardManager(this,
+				KeyboardFocusManager.getCurrentKeyboardFocusManager());
 	}
 
 	/**
 	 * Prepare the play game screen, displayed when the player is ... playing.
 	 */
 	public void prepare() {
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyboardManager);
+		SidePanel sidePanel;
+
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyboardManager);
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(sidePanelKeyboardManager);
 		mapWidget = new MapWidget(this.gameContext.getMap(), this.gameContext.getWidth() - 150,
 				this.gameContext.getHeight());
 		mapWidget.addMouseListener(this.mouseManager);
 		mapWidget.addMouseMotionListener(this.mouseMotionManager);
 		mapWidget.addKeyListener(keyboardManager);
+		mapWidget.setBackground(Color.BLACK);
+		mapWidget.setOpaque(true);
 		this.addWidgets(mapWidget);
-		this.addWidgets(
-				new SidePanel(this.gameContext.getWidth() - 150, 0, 150, this.gameContext.getHeight()));
+		sidePanel = new SidePanel(gameContext.getMap(), this.gameContext.getWidth() - 150, 0, 150, this.gameContext.getHeight());
+		sidePanel.addMouseListener(sidePanelMouseManager);
+		sidePanel.addMouseMotionListener(sidePanelMouseMotionManager);
+		sidePanel.addKeyListener(sidePanelKeyboardManager);
+//		sidePanel.addWidget(new MiniMap(this.gameContext.getMap(), 10, 10, 120, 120));
+		sidePanel.setBackground(new Color(153, 108, 57));
+		sidePanel.setOpaque(true);
+		this.addWidgets(sidePanel);
+//		 this.addWidgets(new ImageWidget(0, 0, 120, 120,
+//		 new MiniMap(this.gameContext.getMap(), this.gameContext.getWidth() - 140, 10, 120, 120)
+//		 .getImage().getImage()));
+
 	}
 
 	public MapWidget getMapWidget() {
