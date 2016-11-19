@@ -134,6 +134,8 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		int y = 0;
 		int w = 0;
 		int h = 0;
+		int imageWidth;
+		int imageHeight;
 		int initX = 0 ;
 		BufferedImage wholeImage;
 
@@ -161,18 +163,28 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 			errorManager.exitError(
 					String.format("Couln not find property %s_height in sprite index file\n", spriteName));
 		}
+		try {
+			imageWidth = Integer.parseInt(confProperties.getProperty(spriteName + "_image_width"));
+		} catch (NumberFormatException e) {
+			imageWidth = Map.squareWidth ;
+		}
+		try {
+			imageHeight = Integer.parseInt(confProperties.getProperty(spriteName + "_image_height"));
+		} catch (NumberFormatException e) {
+			imageHeight = Map.squareHeight;
+		}
 		wholeImage = ImageWidget.loadImage(confProperties.getProperty(spriteName + "_path"));
 		if (wholeImage == null)
 			errorManager.exitError(
 					String.format("Couln not find file at %s_path in sprite index file\n", spriteName));
 		while (y < h) {
 			while (x < w) {
-				spriteList.add(wholeImage.getSubimage(x, y, Map.squareWidth, Map.squareHeight));
+				spriteList.add(wholeImage.getSubimage(x, y, imageWidth, imageHeight));
 				System.out.printf("Loaded %s %d;%d\n", spriteName, x, y);
-				x += Map.squareWidth;
+				x += imageWidth;
 			}
 			x = initX;
-			y += Map.squareHeight;
+			y += imageHeight;
 		}
 	}
 }

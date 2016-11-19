@@ -125,6 +125,8 @@ side_panel_texture_x=0
 side_panel_texture_y=0
 side_panel_texture_width=128
 side_panel_texture_height=128
+side_panel_texture_image_width=128
+side_panel_texture_image_height=128
 side_panel_texture_source=http://opengameart.org/content/smooth-wood-texture
 
 
