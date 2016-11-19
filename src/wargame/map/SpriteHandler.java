@@ -134,10 +134,11 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		int y = 0;
 		int w = 0;
 		int h = 0;
+		int initX = 0 ;
 		BufferedImage wholeImage;
 
 		try {
-			x = Integer.parseInt(confProperties.getProperty(spriteName + "_x"));
+			initX = x = Integer.parseInt(confProperties.getProperty(spriteName + "_x"));
 		} catch (NumberFormatException e) {
 			errorManager.exitError(
 					String.format("Couln not find property %s_x in sprite index file\n", spriteName));
@@ -170,7 +171,7 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 				System.out.printf("Loaded %s %d;%d\n", spriteName, x, y);
 				x += Map.squareWidth;
 			}
-			x = 0;
+			x = initX;
 			y += Map.squareHeight;
 		}
 	}
