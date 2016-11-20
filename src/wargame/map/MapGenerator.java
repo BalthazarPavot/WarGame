@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
+import wargame.basic_types.Position;
 import wargame.widgets.ImageWidget;
 
 /**
@@ -20,6 +21,8 @@ public class MapGenerator {
 	private Map map;
 	private Random rand;
 	private SpriteHandler spriteHandler;
+	private Position alliePopArea;
+	private Position ennemyPopArea;
 
 	public MapGenerator() {
 		this(null);
@@ -32,6 +35,9 @@ public class MapGenerator {
 			this.parameters.generateRandomParameters();
 		}
 		map = new Map();
+		alliePopArea = new Position(map.getWidth() - 5 * Map.squareWidth,
+				map.getHeight() - 5 * Map.squareHeight);
+		ennemyPopArea = new Position(5 * Map.squareWidth, 5 * Map.squareHeight);
 		this.rand = new Random();
 	}
 
@@ -46,16 +52,24 @@ public class MapGenerator {
 	 * Generate the map, using the parameters and store the result.
 	 */
 	public void generate(SpriteHandler spriteHandler) {
-		ArrayList<TreeShape> treeShapes = new ArrayList<TreeShape>();
-		ArrayList<RockShape> rockShapes = new ArrayList<RockShape>();
-		ArrayList<WaterShape> waterShapes = new ArrayList<WaterShape>();
+		ArrayList<TreeShape> treeShapes;
+		ArrayList<RockShape> rockShapes;
+		ArrayList<WaterShape> waterShapes;
 
-		this.map = new Map(this.parameters.getDimensions());
-		this.spriteHandler = spriteHandler;
-		generateShapes(treeShapes, rockShapes, waterShapes);
-		distordShapes(treeShapes, rockShapes, waterShapes);
-		generateGround();
-		applySprites(treeShapes, rockShapes, waterShapes);
+		do {
+			treeShapes = new ArrayList<TreeShape>();
+			rockShapes = new ArrayList<RockShape>();
+			waterShapes = new ArrayList<WaterShape>();
+			this.map = new Map(this.parameters.getDimensions());
+			this.spriteHandler = spriteHandler;
+			generateShapes(treeShapes, rockShapes, waterShapes);
+			distordShapes(treeShapes, rockShapes, waterShapes);
+			generateGround();
+			applySprites(treeShapes, rockShapes, waterShapes);
+			removePopAreas(4);
+		} while (!this.map.canCrossByWalking(alliePopArea, ennemyPopArea));
+		for (Position pos:map.pathByWalking (alliePopArea, ennemyPopArea))
+			map.getReal(pos).remove(map.getReal(pos).size()-1) ;
 	}
 
 	/**
@@ -158,7 +172,8 @@ public class MapGenerator {
 					map.add(spot.getPosition().getX(), spot.getPosition().getY(),
 							new MapElement(new ImageWidget(spot.getPosition().getX(),
 									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
-									treeImageList.get(rand.nextInt(treeImageList.size())))));
+									treeImageList.get(rand.nextInt(treeImageList.size()))),
+									MapElement.FLYABLE | MapElement.REMOVABLE));
 				} catch (IndexOutOfBoundsException e) {
 					/**
 					 * the resource in creation is out of the map ignore it.
@@ -174,7 +189,8 @@ public class MapGenerator {
 					map.add(spot.getPosition().getX(), spot.getPosition().getY(),
 							new MapElement(new ImageWidget(spot.getPosition().getX(),
 									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
-									rockImageList.get(rand.nextInt(rockImageList.size())))));
+									rockImageList.get(rand.nextInt(rockImageList.size()))),
+									MapElement.FLYABLE | MapElement.REMOVABLE));
 				} catch (IndexOutOfBoundsException e) {
 					/**
 					 * the resource in creation is out of the map ignore it.
@@ -204,7 +220,8 @@ public class MapGenerator {
 					map.add(spot.getPosition().getX(), spot.getPosition().getY(),
 							new MapElement(new ImageWidget(spot.getPosition().getX(),
 									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
-									spriteHandler.get("water_deep_full").get(0))));
+									spriteHandler.get("water_deep_full").get(0)),
+									MapElement.FLYABLE | MapElement.SHOT_THROUGH | MapElement.SWIMMABLE));
 				} catch (IndexOutOfBoundsException e) {
 					/**
 					 * the resource in creation is out of the map ignore it.
@@ -260,43 +277,51 @@ public class MapGenerator {
 								"water_sand_curve_out"))
 							elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(),
 									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
-									spriteHandler.get("water_deep_curve_out").get(0))));
+									spriteHandler.get("water_deep_curve_out").get(0)),
+									MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 						else if (positionContains(spot.getPosition().getX() + 64,
 								spot.getPosition().getY() - 64, "water_sand_curve_out"))
 							elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(),
 									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
-									spriteHandler.get("water_deep_curve_out").get(1))));
+									spriteHandler.get("water_deep_curve_out").get(1)),
+									MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 						else if (positionContains(spot.getPosition().getX() - 64,
 								spot.getPosition().getY() + 64, "water_sand_curve_out"))
 							elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(),
 									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
-									spriteHandler.get("water_deep_curve_out").get(2))));
+									spriteHandler.get("water_deep_curve_out").get(2)),
+									MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 						else if (positionContains(spot.getPosition().getX() + 64,
 								spot.getPosition().getY() + 64, "water_sand_curve_out"))
 							elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(),
 									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
-									spriteHandler.get("water_deep_curve_out").get(3))));
+									spriteHandler.get("water_deep_curve_out").get(3)),
+									MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 					} else if (numberOfStraightSand == 3) {
 						if (positionContains(spot.getPosition().getX() - 64, spot.getPosition().getY(),
 								"water_sand_straight"))
 							elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(),
 									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
-									spriteHandler.get("water_deep_straight").get(3))));
+									spriteHandler.get("water_deep_straight").get(3)),
+									MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 						else if (positionContains(spot.getPosition().getX() + 64, spot.getPosition().getY(),
 								"water_sand_straight"))
 							elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(),
 									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
-									spriteHandler.get("water_deep_straight").get(2))));
+									spriteHandler.get("water_deep_straight").get(2)),
+									MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 						else if (positionContains(spot.getPosition().getX(), spot.getPosition().getY() - 64,
 								"water_sand_straight"))
 							elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(),
 									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
-									spriteHandler.get("water_deep_straight").get(1))));
+									spriteHandler.get("water_deep_straight").get(1)),
+									MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 						else if (positionContains(spot.getPosition().getX(), spot.getPosition().getY() + 64,
 								"water_sand_straight"))
 							elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(),
 									spot.getPosition().getY(), Map.squareWidth, Map.squareHeight,
-									spriteHandler.get("water_deep_straight").get(0)))); // good!!
+									spriteHandler.get("water_deep_straight").get(0)),
+									MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE)); // good!!
 					}
 				} else if (numberOfDeepWater != 0 && elements.size() > 1) {
 					// elements.remove(elements.size() - 2);
@@ -312,7 +337,7 @@ public class MapGenerator {
 				elements = map.getReal(spot.getPosition().getX(), spot.getPosition().getY());
 				numberOfDeepWater = countConsecutiveSpriteNumberAround(spot.getPosition().getX(),
 						spot.getPosition().getY(), "water_deep_full");
-				if (numberOfDeepWater != 8 && numberOfDeepWater != 16 && elements.size ()>2)
+				if (numberOfDeepWater != 8 && numberOfDeepWater != 16 && elements.size() > 2)
 					elements.remove(elements.size() - 2);
 			}
 		}
@@ -328,16 +353,20 @@ public class MapGenerator {
 		// elements.remove(elements.size() - 1);
 		if (positionContains(x - Map.squareWidth, y - Map.squareHeight, "water_deep_full")) {
 			elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(3))));
+					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(3)),
+					MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 		} else if (positionContains(x + Map.squareWidth, y - Map.squareHeight, "water_deep_full")) {
 			elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(2))));
+					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(2)),
+					MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 		} else if (positionContains(x - Map.squareWidth, y + Map.squareHeight, "water_deep_full")) {
 			elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(1))));
+					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(1)),
+					MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 		} else {
 			elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(0))));
+					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(0)),
+					MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 		}
 	}
 
@@ -349,16 +378,20 @@ public class MapGenerator {
 		y = spot.getPosition().getY();
 		if (!positionContains(x - Map.squareWidth, y, "water_deep_full")) {
 			elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(3))));
+					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(3)),
+					MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 		} else if (!positionContains(x + Map.squareWidth, y, "water_deep_full")) {
 			elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(2))));
+					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(2)),
+					MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 		} else if (!positionContains(x, y + Map.squareHeight, "water_deep_full")) {
 			elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(0))));
+					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(0)),
+					MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 		} else {
 			elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(1))));
+					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(1)),
+					MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 		}
 	}
 
@@ -370,16 +403,20 @@ public class MapGenerator {
 		y = spot.getPosition().getY();
 		if (!positionContains(x - Map.squareWidth, y - Map.squareHeight, "water_deep_full")) {
 			elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(3))));
+					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(3)),
+					MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 		} else if (!positionContains(x + Map.squareWidth, y - Map.squareHeight, "water_deep_full")) {
 			elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(2))));
+					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(2)),
+					MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 		} else if (!positionContains(x - Map.squareWidth, y + Map.squareHeight, "water_deep_full")) {
 			elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(1))));
+					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(1)),
+					MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 		} else {
 			elements.add(new MapElement(new ImageWidget(spot.getPosition().getX(), spot.getPosition().getY(),
-					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(0))));
+					Map.squareWidth, Map.squareHeight, spriteHandler.get(spriteName).get(0)),
+					MapElement.FLYABLE|MapElement.SHOT_THROUGH|MapElement.SWIMMABLE));
 		}
 	}
 
@@ -405,14 +442,15 @@ public class MapGenerator {
 	}
 
 	private boolean positionContains(int x, int y, String spriteCathegory) {
-		return positionContains(x, y, spriteCathegory, false) ;
+		return positionContains(x, y, spriteCathegory, false);
 	}
-		private boolean positionContains(int x, int y, String spriteCathegory, boolean acceptNull) {
-		ArrayList <MapElement> allME ;
 
-		allME = map.getReal(x, y) ;
-		if (acceptNull && allME.size () == 0)
-			return true ;
+	private boolean positionContains(int x, int y, String spriteCathegory, boolean acceptNull) {
+		ArrayList<MapElement> allME;
+
+		allME = map.getReal(x, y);
+		if (acceptNull && allME.size() == 0)
+			return true;
 		for (MapElement me : allME) {
 			for (BufferedImage image : spriteHandler.get(spriteCathegory)) {
 				if (me.getImage().getImage() == image)
@@ -420,5 +458,29 @@ public class MapGenerator {
 			}
 		}
 		return false;
+	}
+
+	private void removePopAreas(int rayOfErase) {
+		ArrayList<MapElement> elements;
+
+		for (int x = alliePopArea.getX() - rayOfErase * Map.squareWidth; x < alliePopArea.getX()
+				+ rayOfErase * Map.squareWidth; x += Map.squareWidth) {
+			for (int y = alliePopArea.getY() - rayOfErase * Map.squareHeight; y < alliePopArea.getY()
+					+ rayOfErase * Map.squareHeight; y += Map.squareHeight) {
+				elements = this.map.getReal(x, y);
+				while (elements.size() > 1)
+					elements.remove(elements.get(elements.size() - 1));
+			}
+		}
+		for (int x = ennemyPopArea.getX() - rayOfErase * Map.squareWidth; x < ennemyPopArea.getX()
+				+ rayOfErase * Map.squareWidth; x += Map.squareWidth) {
+			for (int y = ennemyPopArea.getY() - rayOfErase * Map.squareHeight; y < ennemyPopArea.getY()
+					+ rayOfErase * Map.squareHeight; y += Map.squareHeight) {
+				elements = this.map.getReal(x, y);
+				while (elements.size() > 1)
+					elements.remove(elements.get(elements.size() - 1));
+			}
+		}
+
 	}
 }
