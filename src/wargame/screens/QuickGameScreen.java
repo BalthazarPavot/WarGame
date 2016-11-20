@@ -44,7 +44,6 @@ public class QuickGameScreen extends GameScreen {
 		GameScreen.mainFrame.setVisible(true);
 		this.screenTermination();
 	}
-
 }
 
 class QuickGameScreenActionManager extends GameScreenActionManager {

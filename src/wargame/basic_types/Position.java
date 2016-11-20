@@ -7,6 +7,7 @@ import wargame.map.Map;
 
 /**
  * Simple class defining a entire position (x;y) in a grid.
+ * 
  * @author Balthazar Pavot
  *
  */
@@ -25,6 +26,7 @@ public class Position implements Comparable<Object> {
 
 	/**
 	 * Move the position using the gven vector.
+	 * 
 	 * @param x
 	 * @param y
 	 */
@@ -39,7 +41,7 @@ public class Position implements Comparable<Object> {
 	public int getX() {
 		return x;
 	}
- 
+
 	/**
 	 * @return The y value of the position
 	 */
@@ -94,56 +96,52 @@ public class Position implements Comparable<Object> {
 	/**
 	 * @return All the positions reachable giving the amount of moving points.
 	 */
-	public ArrayList<Position> getReachableNeighbor(int movePoints) {/*
-		ArrayList<Position> neighbor;
-
-		neighbor = new ArrayList<Position>();
-		neighbor.add(new Position(x, y - Map.squareHeight));
-		neighbor.add(new Position(x + Map.squareWidth, y - Map.squareHeight));
-		neighbor.add(new Position(x + Map.squareWidth, y));
-		neighbor.add(new Position(x + Map.squareWidth, y + Map.squareHeight));
-		neighbor.add(new Position(x, y + Map.squareHeight));
-		neighbor.add(new Position(x - Map.squareWidth, y + Map.squareHeight));
-		neighbor.add(new Position(x - Map.squareWidth, y));
-		neighbor.add(new Position(x - Map.squareWidth, y - Map.squareHeight));
-		return neighbor;*/
-		return new ArrayList<Position> () ;
+	public ArrayList<Position> getReachableNeighbor(
+			int movePoints) {/* ArrayList<Position> neighbor;
+								 * 
+								 * neighbor = new ArrayList<Position>(); neighbor.add(new Position(x, y -
+								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y -
+								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y));
+								 * neighbor.add(new Position(x + Map.squareWidth, y + Map.squareHeight));
+								 * neighbor.add(new Position(x, y + Map.squareHeight)); neighbor.add(new
+								 * Position(x - Map.squareWidth, y + Map.squareHeight)); neighbor.add(new
+								 * Position(x - Map.squareWidth, y)); neighbor.add(new Position(x -
+								 * Map.squareWidth, y - Map.squareHeight)); return neighbor; */
+		return new ArrayList<Position>();
 	}
 
 	/**
 	 * @return All the positions targetable by a character, giving his sight line.
 	 */
-	public ArrayList<Position> getTargetableNeighbor(int sightLigne) {/*
-		ArrayList<Position> neighbor;
-
-		neighbor = new ArrayList<Position>();
-		neighbor.add(new Position(x, y - Map.squareHeight));
-		neighbor.add(new Position(x + Map.squareWidth, y - Map.squareHeight));
-		neighbor.add(new Position(x + Map.squareWidth, y));
-		neighbor.add(new Position(x + Map.squareWidth, y + Map.squareHeight));
-		neighbor.add(new Position(x, y + Map.squareHeight));
-		neighbor.add(new Position(x - Map.squareWidth, y + Map.squareHeight));
-		neighbor.add(new Position(x - Map.squareWidth, y));
-		neighbor.add(new Position(x - Map.squareWidth, y - Map.squareHeight));
-		return neighbor;*/
-		return new ArrayList<Position> () ;
+	public ArrayList<Position> getTargetableNeighbor(
+			int sightLigne) {/* ArrayList<Position> neighbor;
+								 * 
+								 * neighbor = new ArrayList<Position>(); neighbor.add(new Position(x, y -
+								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y -
+								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y));
+								 * neighbor.add(new Position(x + Map.squareWidth, y + Map.squareHeight));
+								 * neighbor.add(new Position(x, y + Map.squareHeight)); neighbor.add(new
+								 * Position(x - Map.squareWidth, y + Map.squareHeight)); neighbor.add(new
+								 * Position(x - Map.squareWidth, y)); neighbor.add(new Position(x -
+								 * Map.squareWidth, y - Map.squareHeight)); return neighbor; */
+		return new ArrayList<Position>();
 	}
 
-	public int compareTo (Object o) {
+	public int compareTo(Object o) {
 		if (o.getClass() != this.getClass())
-			return -1 ;
-		return compareTo ((Position) o) ;
+			return -1;
+		return compareTo((Position) o);
 	}
 
-	public int compareTo (Position p) {
+	public int compareTo(Position p) {
 		if (this.y < p.getY())
-			return -1 ;
+			return -1;
 		if (this.y > p.getY())
-			return 1 ;
+			return 1;
 		if (this.x < p.getX())
-			return -1 ;
+			return -1;
 		if (this.x > p.getX())
-			return 1 ;
-		return 0 ;
+			return 1;
+		return 0;
 	}
 }

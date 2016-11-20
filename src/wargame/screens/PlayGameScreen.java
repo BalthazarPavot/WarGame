@@ -69,14 +69,9 @@ public class PlayGameScreen extends GameScreen {
 		sidePanel.addMouseListener(sidePanelMouseManager);
 		sidePanel.addMouseMotionListener(sidePanelMouseMotionManager);
 		sidePanel.addKeyListener(sidePanelKeyboardManager);
-		// sidePanel.addWidget(new MiniMap(this.gameContext.getMap(), 10, 10, 120, 120));
 		sidePanel.setBackground(new Color(153, 108, 57));
 		sidePanel.setOpaque(true);
 		this.addWidgets(sidePanel);
-		// this.addWidgets(new ImageWidget(0, 0, 120, 120,
-		// new MiniMap(this.gameContext.getMap(), this.gameContext.getWidth() - 140, 10, 120, 120)
-		// .getImage().getImage()));
-
 	}
 
 	public MapWidget getMapWidget() {
@@ -235,7 +230,6 @@ class SidePanelMouseManager extends GameScreenMouseManager {
 
 	public void mouseClicked(MouseEvent arg0) {
 		System.out.println("Clicked!");
-
 	}
 }
 
