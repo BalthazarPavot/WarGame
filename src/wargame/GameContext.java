@@ -3,16 +3,19 @@ package wargame;
 
 import java.awt.Dimension;
 import java.io.File;
-//import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
 import wargame.map.Map;
 import wargame.map.SpriteHandler;
 
 /**
- * Defines the context in which the game is running, like the game state,
- * its configuration, the loaded sprites... All data that are beside the game itself.
+ * Defines the context in which the game is running, like the game state, its configuration, the loaded
+ * sprites... All data that are beside the game itself.
+ * 
  * @author Balthazar Pavot
  *
  */
@@ -28,24 +31,26 @@ public class GameContext {
 	private ErrorManager errorManager = null;
 	private int width = MIN_WIDTH;
 	private int height = MIN_HEIGHT;
+	private boolean autoSave = true;
+	private boolean sound = true;
 	private boolean confLoaded = false;
-	private SpriteHandler spriteHandler ;
-	private Map map ;
+	private SpriteHandler spriteHandler;
+	private Map map;
 
 	public GameContext(ErrorManager errorManager) {
 		if (errorManager == null)
 			ErrorManager.earlyTermination("Could not create the game context without the error manager.");
 		this.errorManager = errorManager;
 		this.loadConf();
-		this.spriteHandler = new SpriteHandler(this.errorManager) ;
+		this.spriteHandler = new SpriteHandler(this.errorManager);
 	}
 
-	public void setMap (Map map) {
-		this.map = map ;
+	public void setMap(Map map) {
+		this.map = map;
 	}
 
-	public Map getMap () {
-		return this.map ;
+	public Map getMap() {
+		return this.map;
 	}
 
 	/**
@@ -69,6 +74,7 @@ public class GameContext {
 
 	/**
 	 * Give the window width
+	 * 
 	 * @return The value of the current width
 	 */
 	public int getWidth() {
@@ -77,6 +83,7 @@ public class GameContext {
 
 	/**
 	 * Give the window height
+	 * 
 	 * @return The value of the current height
 	 */
 	public int getHeight() {
@@ -94,6 +101,7 @@ public class GameContext {
 
 	/**
 	 * Gives the horizontal centre of the window.
+	 * 
 	 * @return The middle of the width of the screen
 	 */
 	public int centerWidth() {
@@ -102,6 +110,7 @@ public class GameContext {
 
 	/**
 	 * Gives the vertical centre of the window.
+	 * 
 	 * @return middle of the height of the screen
 	 */
 	public int centerHeight() {
@@ -110,6 +119,7 @@ public class GameContext {
 
 	/**
 	 * Gives the error manager of the game.
+	 * 
 	 * @return The error manager of the game.
 	 */
 	public ErrorManager getErrorManager() {
@@ -118,10 +128,11 @@ public class GameContext {
 
 	/**
 	 * Give the sprite handler of the game
+	 * 
 	 * @return The SpriteHandler instance, containing all the sprites.
 	 */
-	public SpriteHandler getSpriteHandler () {
-		return this.spriteHandler ;
+	public SpriteHandler getSpriteHandler() {
+		return this.spriteHandler;
 	}
 
 	/**
@@ -147,6 +158,8 @@ public class GameContext {
 	private void loadConf(Properties confProperties) throws IOException, IllegalArgumentException {
 		width = Integer.parseInt(confProperties.getProperty("width"));
 		height = Integer.parseInt(confProperties.getProperty("height"));
+		setAutoSave(Boolean.parseBoolean(confProperties.getProperty("auto_save")));
+		setSound(Boolean.parseBoolean(confProperties.getProperty("sound")));
 		checkConf();
 	}
 
@@ -166,6 +179,59 @@ public class GameContext {
 		if (height > GameContext.MAX_HEIGHT)
 			errorManager.exitError(String.format("The height defined in the conf file is more than %d.\n",
 					GameContext.MAX_HEIGHT));
+	}
+
+	public void setConfiguration(String resolution, boolean autoSave, boolean sound) {
+		int width;
+		int height;
+
+		width = Integer.parseInt(resolution.substring(0, resolution.indexOf('x')).trim());
+		height = Integer.parseInt(resolution.substring(resolution.indexOf('x') + 1).trim());
+		setConfiguration(width, height, autoSave, sound);
+	}
+
+	private void setConfiguration(int width, int height, boolean autoSave, boolean sound) {
+		try {
+			setConfiguration(width, height, autoSave, sound,
+					new FileOutputStream(new File(this.getClass().getResource(defaultConfigPath).toURI())));
+		} catch (FileNotFoundException e) {
+			errorManager.exitError("Could not open config file", 4);
+		} catch (URISyntaxException e) {
+			errorManager.exitError("Could not find config file", 4);
+		} catch (IOException e) {
+			errorManager.exitError("Could not close config file", 4);
+		}
+	}
+
+	private void setConfiguration(Integer width, Integer height, Boolean autoSave, Boolean sound,
+			FileOutputStream configStream) throws IOException {
+		Properties properties = new Properties();
+		properties.setProperty("width", width.toString());
+		properties.setProperty("height", height.toString());
+		properties.setProperty("auto_save", autoSave.toString());
+		properties.setProperty("sound", sound.toString());
+		try {
+			properties.store(configStream, "Generated");
+		} catch (IOException e) {
+			errorManager.exitError("Could not write config file", 4);
+		}
+		configStream.close();
+	}
+
+	public boolean getAutoSave() {
+		return autoSave;
+	}
+
+	public void setAutoSave(boolean autoSave) {
+		this.autoSave = autoSave;
+	}
+
+	public boolean getSound() {
+		return sound;
+	}
+
+	public void setSound(boolean sound) {
+		this.sound = sound;
 	}
 
 }
