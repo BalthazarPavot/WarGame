@@ -46,6 +46,7 @@ public class ButtonWidget extends JButton implements GameWidget {
 		this.boundRect = boundRect;
 		this.setTextSize(size);
 		this.setForeground(color);
+		this.setActionCommand(text);
 	}
 
 	/**
