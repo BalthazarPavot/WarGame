@@ -19,6 +19,9 @@ public class ConfigScreenActionManager extends GameScreenActionManager {
 			gameScreen.nextScreenID = GameScreen.MAIN_MENU_SCREEN;
 		} else if (e.getActionCommand().equals("Quit")) {
 			gameScreen.nextScreenID = GameScreen.QUIT_SCREEN;
+		} else if (e.getActionCommand().equals("Save")) {
+			((ConfigScreen)gameScreen).doSaveAction () ;
+			return;
 		} else {
 			return;
 		}
