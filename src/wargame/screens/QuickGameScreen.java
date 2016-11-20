@@ -1,6 +1,8 @@
 
 package wargame.screens;
 
+import java.awt.event.ActionEvent;
+
 import wargame.GameContext;
 import wargame.map.MapGenerator;
 
@@ -44,3 +46,15 @@ public class QuickGameScreen extends GameScreen {
 	}
 
 }
+
+class QuickGameScreenActionManager extends GameScreenActionManager {
+
+	public QuickGameScreenActionManager(GameScreen gameScreen) {
+		super(gameScreen);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+	}
+
+}
+

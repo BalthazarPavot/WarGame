@@ -2,6 +2,7 @@
 package wargame.screens;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 
 import wargame.GameContext;
 import wargame.widgets.*;
@@ -37,3 +38,24 @@ public class NewGameScreen extends GameScreen {
 	}
 
 }
+
+
+class NewGameScreenActionManager extends GameScreenActionManager {
+
+	public NewGameScreenActionManager(GameScreen gameScreen) {
+		super(gameScreen);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals("Previous")) {
+			gameScreen.nextScreenID = GameScreen.MAIN_MENU_SCREEN;
+		} else if (e.getActionCommand().equals("Quit")) {
+			gameScreen.nextScreenID = GameScreen.QUIT_SCREEN;
+		} else {
+			return;
+		}
+		this.gameScreen.screenTermination();
+	}
+
+}
+

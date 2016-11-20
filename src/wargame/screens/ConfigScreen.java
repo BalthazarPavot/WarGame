@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -242,4 +243,26 @@ class Form extends JPanel implements GameWidget {
 	public void paintComponent(Graphics g, int zoom, int x, int y) {
 		super.paintComponent(g);
 	}
+}
+
+class ConfigScreenActionManager extends GameScreenActionManager {
+
+	public ConfigScreenActionManager(GameScreen gameScreen) {
+		super(gameScreen);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals("Previous")) {
+			gameScreen.nextScreenID = GameScreen.MAIN_MENU_SCREEN;
+		} else if (e.getActionCommand().equals("Quit")) {
+			gameScreen.nextScreenID = GameScreen.QUIT_SCREEN;
+		} else if (e.getActionCommand().equals("Save")) {
+			((ConfigScreen)gameScreen).doSaveAction () ;
+			return;
+		} else {
+			return;
+		}
+		this.gameScreen.screenTermination();
+	}
+
 }
