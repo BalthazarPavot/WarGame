@@ -14,7 +14,7 @@ public class Terrestre extends Unit {
 
 	@Override
 	public void makeDamage(Unit u) {
-		double val = Math.random()*5;
+		double val = Math.random()*4;
 		int val2=(int)val;
 		if (u.maCara.isFlying()==true)
 			val2=0;
@@ -28,9 +28,6 @@ public class Terrestre extends Unit {
 			break;
 		case 3:
 				u.takedamage((int)(10*this.maCara.getAtkBlunt()), val2);
-			break;
-		case 4:
-			u.takedamage((int)(10*this.maCara.getAtkMagic()), val2);
 			break;
 		default:
 			u.takedamage(0, val2);
@@ -54,7 +51,7 @@ public class Terrestre extends Unit {
 	public void takedamage(int val, int type) {
 		int val2=0;
 		
-		switch(val)
+		switch(type)
 		{
 		case 1:
 			if(val-(maCara.getDefSlashing()*10)<0)
