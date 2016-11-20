@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.swing.JPanel;
 import wargame.basic_types.Position;
@@ -21,11 +23,38 @@ public class MapWidget extends JPanel implements GameWidget {
 	protected Rectangle frame;
 	protected int zoom = 1;
 	protected boolean drawGrid = true;
+	protected HashMap<Integer, HashMap<Integer, Boolean>> noFogAt = new HashMap<Integer, HashMap<Integer, Boolean>>();
 
 	public MapWidget(Map map, int width, int height) {
 		this.map = map;
 		this.boundRect = new Rectangle(0, 0, width, height);
 		this.frame = new Rectangle(0, 0, width, height);
+		for (int x = 0; x < 1000; x += 64)
+			for (int y = 0; y < 1000; y += 64)
+				setFog(x, y);
+	}
+
+	public void setFog (int x, int y) {
+		setFog (x, y, true) ;
+	}
+
+	public void setFog (int x, int y, boolean fog) {
+		if (noFogAt.get(x) == null)
+			noFogAt.put(x, new HashMap<Integer, Boolean> ()) ;
+		if (noFogAt.get(x).get(y) == null)
+			noFogAt.get(x).put(y, fog) ;
+	}
+
+	public boolean fogAt (int x, int y) {
+		if (noFogAt.get(x) == null)
+			return true ;
+		if (noFogAt.get(x).get(y) == null)
+			return true ;
+		return !noFogAt.get(x).get(y) ;
+	}
+
+	public boolean fogAt (Position p) {
+		return fogAt (p.getX(), p.getY()) ;
 	}
 
 	@Override
@@ -103,26 +132,25 @@ public class MapWidget extends JPanel implements GameWidget {
 		for (Position p : map.getPositions()) {
 			x = p.getX();
 			y = p.getY();
-			if (!(x / zoom < (int) frame.getX() - Map.squareWidth
-					|| y / zoom < (int) frame.getY() - Map.squareHeight
-					|| x / zoom > (int) frame.getX() + frame.getWidth()
-					|| y / zoom > (int) frame.getY() + frame.getHeight()))
+			if (!(x < (int) frame.x - Map.squareWidth || y < (int) frame.y - Map.squareHeight
+					|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height
+					|| fogAt(p)))
 				for (MapElement me : map.getReal(x, y))
-					me.paintComponent(g, zoom, x / zoom - (int) frame.getX() + dx,
-							y / zoom - (int) frame.getY() + dy);
+					me.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
+							y / zoom - (int) frame.y / zoom + dy);
 		}
 		if (this.drawGrid && zoom == 1) {
 			g.setColor(new Color(0, 0, 0, 96));
-			int beginX = -(int) (frame.getX() < 0 ? frame.getX() : frame.getX() % (Map.squareWidth / zoom));
-			int beginY = -(int) (frame.getY() < 0 ? frame.getY() : frame.getY() % (Map.squareHeight / zoom));
-			int overX = (int) (frame.getX() + frame.getWidth() > map.getWidth()
-					? frame.getX() + frame.getWidth() - map.getWidth() : 0);
-			int overY = (int) (frame.getY() + frame.getHeight() > map.getHeight()
-					? frame.getY() + frame.getHeight() - map.getHeight() : 0);
-			for (x = beginX; x <= frame.getWidth() - overX; x += Map.squareWidth / zoom)
-				g.drawLine(x+dx, beginY - overY+dy, x, (int) frame.getHeight() - 1 - overY);
-			for (y = beginY; y <= frame.getHeight() - overY; y += Map.squareHeight / zoom)
-				g.drawLine(beginX - overX+dx, y+dy, (int) frame.getWidth() - 1 - overX, y);
+			int beginX = -(int) (frame.x < 0 ? frame.x : frame.x % (Map.squareWidth / zoom));
+			int beginY = -(int) (frame.y < 0 ? frame.y : frame.y % (Map.squareHeight / zoom));
+			int overX = (int) (frame.x + frame.width > map.getWidth() ? frame.x + frame.width - map.getWidth()
+					: 0);
+			int overY = (int) (frame.y + frame.height > map.getHeight()
+					? frame.y + frame.height - map.getHeight() : 0);
+			for (x = beginX; x <= frame.width - overX; x += Map.squareWidth / zoom)
+				g.drawLine(x + dx, beginY - overY + dy, x, (int) frame.height - 1 - overY);
+			for (y = beginY; y <= frame.height - overY; y += Map.squareHeight / zoom)
+				g.drawLine(beginX - overX + dx, y + dy, (int) frame.width - 1 - overX, y);
 		}
 	}
 
@@ -134,33 +162,31 @@ public class MapWidget extends JPanel implements GameWidget {
 		int resx;
 		int resy;
 
-		resx = frame.x + x * scollSpeed / zoom;
-		resy = frame.y + y * scollSpeed / zoom;
-		if ((x >= 0 && resx <= map.getWidth() / zoom - frame.width * 3 / 4)
-				|| (x <= 0 && resx > -frame.width / 4))
+		resx = frame.x + x * scollSpeed * zoom;
+		resy = frame.y + y * scollSpeed * zoom;
+		if ((x > 0 && resx <= map.getWidth() - frame.width * 3 / 4) || (x < 0 && resx > -frame.width / 4))
 			frame.x = resx;
-		if ((y >= 0 && resy <= map.getHeight() / zoom - frame.height * 3 / 4)
-				|| (y <= 0 && resy > -frame.height / 4))
+		if ((y > 0 && resy <= map.getHeight() - frame.height * 3 / 4) || (y < 0 && resy > -frame.height / 4))
 			frame.y = resy;
 	}
 
 	public void increaseZoom() {
 		if (zoom > 1) {
 			zoom /= 2;
-			frame.x += boundRect.width / 2 * zoom;
-			frame.y += boundRect.height / 2 * zoom;
-			frame.width *= zoom;
-			frame.height *= zoom;
+			frame.x += boundRect.width / 2 * zoom;// * zoom - boundRect.width /4;
+			frame.y += boundRect.height / 2 * zoom;// * zoom - boundRect.height /4;
+			frame.width = boundRect.width * zoom;
+			frame.height = boundRect.height * zoom;
 		}
 	}
 
 	public void decreaseZoom() {
-		if (zoom < 2) {
-			frame.x -= boundRect.width / 2 * zoom;
-			frame.y -= boundRect.height / 2 * zoom;
-			frame.width /= zoom;
-			frame.height /= zoom;
+		if (zoom < 4) {
+			frame.x -= boundRect.width / 2 * zoom;// * zoom - boundRect.width /4;
+			frame.y -= boundRect.height / 2 * zoom;// * zoom - boundRect.height /4;
 			zoom *= 2;
+			frame.width = boundRect.width * zoom;
+			frame.height = boundRect.height * zoom;
 		}
 	}
 }
