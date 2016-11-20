@@ -31,12 +31,10 @@ public class LoadGameScreen extends GameScreen {
 		button = new ButtonWidget("Previous", 20, gameContext.getHeight() - 100, 100, 20, 14,
 				new Color(128, 128, 128));
 		button.addActionListener(this.actionManager);
-		button.setActionCommand("Previous");
 		this.addWidgets(button);
 		button = new ButtonWidget("Quit", 20, gameContext.getHeight() - 60, 100, 20, 14,
 				new Color(128, 128, 128));
 		button.addActionListener(this.actionManager);
-		button.setActionCommand("Quit");
 		this.addWidgets(button);
 	}
 

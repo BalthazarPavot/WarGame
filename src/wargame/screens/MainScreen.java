@@ -48,7 +48,6 @@ public class MainScreen extends GameScreen {
 			button = new ButtonWidget(buttonTexts[j], w / 2 - 100, h / 15 * i, 200, 30, 20,
 					new Color(128, 128, 128));
 			button.addActionListener(this.actionManager);
-			button.setActionCommand(buttonTexts[j]);
 			this.addWidgets(button);
 		}
 		this.createBackground();
