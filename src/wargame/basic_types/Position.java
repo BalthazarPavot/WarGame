@@ -144,4 +144,8 @@ public class Position implements Comparable<Object> {
 			return 1;
 		return 0;
 	}
+
+	public String toString () {
+		return String.format("[%d;%d]", x, y) ;
+	}
 }
