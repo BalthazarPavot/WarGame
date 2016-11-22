@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-
 import javax.swing.JPanel;
 
 import wargame.basic_types.Position;
@@ -19,20 +18,27 @@ public class SidePanel extends JPanel implements GameWidget {
 	private ArrayList<GameWidget> widgets;
 	private BufferedImage minimap;
 	private Map map;
-	private int minimapWidth = 128;
-	private int minimapHeight = 128;
-	private BufferedImage background ;
+	private int minimapWidth = Map.defaultWidth/30;
+	private int minimapHeight = Map.defaultHeight/30;
+	private Rectangle miniFrame;
+	private BufferedImage background;
+	private BufferedImage fogImage;
+	private Rectangle frame;
 
-	public SidePanel(Map map, int x, int y, int w, int h, BufferedImage backgroundImage) {
-		this(map, new Rectangle(x, y, w, h), backgroundImage);
+	public SidePanel(Map map, int x, int y, int w, int h, BufferedImage backgroundImage, Rectangle frame) {
+		this(map, new Rectangle(x, y, w, h), backgroundImage, frame);
 	}
 
-	public SidePanel(Map map, Rectangle boundRect, BufferedImage backgroundImage) {
+	public SidePanel(Map map, Rectangle boundRect, BufferedImage backgroundImage, Rectangle frame) {
 		this.boundRect = boundRect;
 		widgets = new ArrayList<GameWidget>();
 		this.map = map;
 		buildImage();
-		background = backgroundImage ;
+		background = backgroundImage;
+		this.frame = frame;
+		this.miniFrame = new Rectangle();
+		miniFrame.width = (int) (frame.width / (double) map.getWidth() * minimapWidth);
+		miniFrame.height = (int) (frame.height / (double) map.getHeight() * minimapHeight);
 	}
 
 	/**
@@ -120,10 +126,17 @@ public class SidePanel extends JPanel implements GameWidget {
 
 	public void paintComponent(Graphics g, int zoom, int x, int y) {
 		super.paintComponent(g);
-		for (int x2=0;x2<boundRect.width;x2+=128)
-			for (int y2=0;y2<boundRect.height;y2+=128)
-				g.drawImage(background, x2, y2, 128, 128, this) ;
+		for (int x2 = 0; x2 < boundRect.width; x2 += 128)
+			for (int y2 = 0; y2 < boundRect.height; y2 += 128)
+				g.drawImage(background, x2, y2, 128, 128, this);
 		g.drawImage(minimap, x + 10, y + 10, this);
+		g.drawImage(fogImage, x + 10, y + 10, this);
+		g.drawLine(miniFrame.x, miniFrame.y, miniFrame.x + miniFrame.width, miniFrame.y); // ⁻
+		g.drawLine(miniFrame.x, miniFrame.y, miniFrame.x, miniFrame.y + miniFrame.height);// |
+		g.drawLine(miniFrame.x, miniFrame.y + miniFrame.height, miniFrame.x + miniFrame.width,
+				miniFrame.y + miniFrame.height);// _
+		g.drawLine(miniFrame.x + miniFrame.width, miniFrame.y, miniFrame.x + miniFrame.width,
+				miniFrame.y + miniFrame.height);
 	}
 
 	public void addWidget(GameWidget widget) {
@@ -143,24 +156,66 @@ public class SidePanel extends JPanel implements GameWidget {
 			for (y = 0; y < minimapHeight; y += 1) {
 				pixel = map.colorAt(x * dx / Map.squareWidth * Map.squareWidth,
 						y * dy / Map.squareHeight * Map.squareHeight);
-				/*
-				 * 13490654 : snow tree
-				 * 1842462 : rock
-				 * 462861 : fir
-				 */
-				if (pixel == 1842462 || pixel==462861) {// 462861
-					pixel = enlightColor (pixel);
+				/* 13490654 : snow tree 1842462 : rock 462861 : fir */
+				if (pixel == 1842462 || pixel == 462861) {// 462861
+					pixel = enlightColor(pixel);
 				}
-				image.setRGB(x, y, pixel);
+				image.setRGB (x, y, pixel) ;
 			}
 		}
 		this.minimap = image;
+		fogImage = new BufferedImage(minimapWidth, minimapHeight, BufferedImage.TYPE_INT_ARGB);
+		freeFog();
 	}
 
-	private int enlightColor (int color) {
-		return enlightColor (color, 2);
+	public void freeFog() {
+		for (int x = 0; x < minimapWidth; x += 1)
+			for (int y = 0; y < minimapHeight; y += 1)
+				fogImage.setRGB(x, y, 0xff000000);
 	}
-	private int enlightColor (int color, float degree) {
-		return (int)((color >> 16 & 255)*degree) << 16 | (int)((color >> 8 & 255)*degree) << 8 | (int)((color& 255)*degree);
+
+	public void buildFog(MapWidget mapWidget) {
+		int x;
+		int y;
+		int dx = map.getWidth() / minimapWidth;
+		int dy = map.getHeight() / minimapHeight;
+
+		for (x = 0; x < minimapWidth; x += 1) {
+			for (y = 0; y < minimapHeight; y += 1) {
+				if (mapWidget.fogAt(x * dx / Map.squareWidth * Map.squareWidth,
+						y * dy / Map.squareHeight * Map.squareHeight))
+					setFog(x, y);
+				else
+					unSetFog(x, y);
+			}
+		}
+	}
+
+	public void unSetFog(int x, int y) {
+		if (x < 0 || y < 0 || x > fogImage.getWidth() - 1 || y > fogImage.getHeight() - 1)
+			return;
+		fogImage.setRGB(x, y, 0x00ffffff);
+	}
+
+	public void setFog(int x, int y) {
+		if (x < 0 || y < 0 || x > fogImage.getWidth() - 1 || y > fogImage.getHeight() - 1)
+			return;
+		fogImage.setRGB(x, y, 0xff000000);
+	}
+
+	private int enlightColor(int color) {
+		return enlightColor(color, 2);
+	}
+
+	private int enlightColor(int color, float degree) {
+		return (int) ((color >> 16 & 255) * degree) << 16 | (int) ((color >> 8 & 255) * degree) << 8
+				| (int) ((color & 255) * degree);
+	}
+
+	public void updateFrame() {
+		miniFrame.width = (int) (frame.width / (double) map.getWidth() * minimapWidth);
+		miniFrame.height = (int) (frame.height / (double) map.getHeight() * minimapHeight);
+		miniFrame.x = (int) (frame.x / (double) map.getWidth() * minimapWidth + 10);
+		miniFrame.y = (int) (frame.y / (double) map.getHeight() * minimapHeight + 10);
 	}
 }
