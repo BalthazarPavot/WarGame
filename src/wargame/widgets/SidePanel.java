@@ -182,13 +182,26 @@ public class SidePanel extends JPanel implements GameWidget {
 
 		for (x = 0; x < minimapWidth; x += 1) {
 			for (y = 0; y < minimapHeight; y += 1) {
-				if (mapWidget.fogAt(x * dx / Map.squareWidth * Map.squareWidth,
-						y * dy / Map.squareHeight * Map.squareHeight))
+				switch(mapWidget.fogAt(x * dx / Map.squareWidth * Map.squareWidth,
+						y * dy / Map.squareHeight * Map.squareHeight)){
+				case 0:
 					setFog(x, y);
-				else
+					break;
+				case 1:
+					setSemiFog (x, y);
+					break;
+				default:
 					unSetFog(x, y);
+					break;
+				}
 			}
 		}
+	}
+
+	private void setSemiFog(int x, int y) {
+		if (x < 0 || y < 0 || x > fogImage.getWidth() - 1 || y > fogImage.getHeight() - 1)
+			return;
+		fogImage.setRGB(x, y, 0x88000000);
 	}
 
 	public void unSetFog(int x, int y) {

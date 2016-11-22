@@ -62,7 +62,7 @@ public class PlayGameScreen extends GameScreen {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyboardManager);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(sidePanelKeyboardManager);
 		mapWidget = new MapWidget(this.gameContext.getMap(), this.gameContext.getWidth() - 150,
-				this.gameContext.getHeight());
+				this.gameContext.getHeight(), gameContext.getSpriteHandler());
 		mapWidget.addMouseListener(this.mouseManager);
 		mapWidget.addMouseMotionListener(this.mouseMotionManager);
 		mapWidget.addKeyListener(keyboardManager);

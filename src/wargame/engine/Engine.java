@@ -82,6 +82,7 @@ public class Engine {
 	public void nextTurn() {
 		for (Unit ennemy : ennemyUnits)
 			ennemy.play(playerUnits, ennemyUnits, map);
+		playerUnits.get(0).position.move(64, 64);
 		updateFog(playerUnits);
 	}
 
@@ -97,7 +98,7 @@ public class Engine {
 			int rangeY = 5 * Map.squareHeight + position.getY();// ((Object) unit.getMaCara()).getRange() ;
 			for (int x = rangeX-10 * Map.squareWidth; x < rangeX; x += Map.squareWidth) {
 				for (int y = rangeY-10 * Map.squareHeight; y < rangeY; y += Map.squareHeight) {
-					mapWidget.setFog(x, y, false);
+					mapWidget.setFog(x, y, 2);
 				}
 			}
 

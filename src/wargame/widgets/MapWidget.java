@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import wargame.basic_types.Position;
 import wargame.map.Map;
 import wargame.map.MapElement;
+import wargame.map.SpriteHandler;
 
 public class MapWidget extends JPanel implements GameWidget {
 
@@ -22,39 +23,42 @@ public class MapWidget extends JPanel implements GameWidget {
 	protected Rectangle frame;
 	protected int zoom = 1;
 	protected boolean drawGrid = true;
-	protected HashMap<Integer, HashMap<Integer, Boolean>> noFogAt = new HashMap<Integer, HashMap<Integer, Boolean>>();
+	protected ImageWidget semiFog ;
+	protected HashMap<Integer, HashMap<Integer, Integer>> fog = new HashMap<Integer, HashMap<Integer, Integer>>();
 
-	public MapWidget(Map map, int width, int height) {
+	public MapWidget(Map map, int width, int height, SpriteHandler spriteHandler) {
 		this.map = map;
 		this.boundRect = new Rectangle(0, 0, width, height);
 		this.frame = new Rectangle(0, 0, width, height);
+		semiFog = new ImageWidget(new Rectangle(0, 0, 64, 64), spriteHandler.get("semi_fog").get(0)) ;
 	}
 
-	public void freeFog () {
-		noFogAt = new HashMap<Integer, HashMap<Integer, Boolean>> () ;
+	public void freeFog() {
+		for (Integer x:fog.keySet())
+			for (Integer y:fog.get(x).keySet())
+				setFog (x, y, 1) ;
 	}
 
-	public void setFog (int x, int y) {
-		setFog (x, y, true) ;
+	public void setFog(int x, int y) {
+		setFog(x, y, 2);
 	}
 
-	public void setFog (int x, int y, boolean fog) {
-		if (noFogAt.get(x) == null)
-			noFogAt.put(x, new HashMap<Integer, Boolean> ()) ;
-		if (noFogAt.get(x).get(y) == null)
-			noFogAt.get(x).put(y, !fog) ;
+	public void setFog(int x, int y, Integer fogValue) {
+		if (fog.get(x) == null)
+			fog.put(x, new HashMap<Integer, Integer>());
+		fog.get(x).put(y, fogValue);
 	}
 
-	public boolean fogAt (int x, int y) {
-		if (noFogAt.get(x) == null)
-			return true ;
-		if (noFogAt.get(x).get(y) == null)
-			return true ;
-		return !noFogAt.get(x).get(y) ;
+	public Integer fogAt(int x, int y) {
+		if (fog.get(x) == null)
+			return 0;
+		if (fog.get(x).get(y) == null)
+			return 0;
+		return fog.get(x).get(y);
 	}
 
-	public boolean fogAt (Position p) {
-		return fogAt (p.getX(), p.getY()) ;
+	public Integer fogAt(Position p) {
+		return fogAt(p.getX(), p.getY());
 	}
 
 	@Override
@@ -133,11 +137,14 @@ public class MapWidget extends JPanel implements GameWidget {
 			x = p.getX();
 			y = p.getY();
 			if (!(x < (int) frame.x - Map.squareWidth || y < (int) frame.y - Map.squareHeight
-					|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height
-					|| fogAt(p)))
+					|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height || fogAt(p)==0)) {
 				for (MapElement me : map.getReal(x, y))
 					me.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
 							y / zoom - (int) frame.y / zoom + dy);
+				if (fogAt(p) == 1)
+					semiFog.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
+							y / zoom - (int) frame.y / zoom + dy);
+			}
 		}
 		if (this.drawGrid && zoom == 1) {
 			g.setColor(new Color(0, 0, 0, 96));

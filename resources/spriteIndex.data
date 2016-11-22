@@ -13,7 +13,8 @@ all_sprites_names = \
   water_deep_curve_in;\
   water_deep_straight;\
   water_deep_full;\
-  side_panel_texture
+  side_panel_texture;\
+  semi_fog
 
 
 allSources = \
@@ -131,6 +132,14 @@ side_panel_texture_height=128
 side_panel_texture_image_width=128
 side_panel_texture_image_height=128
 side_panel_texture_source=http://opengameart.org/content/smooth-wood-texture
+
+
+semi_fog_path=images/semiFog.png
+semi_fog_x=0
+semi_fog_y=0
+semi_fog_width=64
+semi_fog_height=64
+semi_fog_source=personal
 
 
 
