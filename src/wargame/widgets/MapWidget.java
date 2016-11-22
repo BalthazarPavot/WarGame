@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import javax.swing.JPanel;
 import wargame.basic_types.Position;
@@ -29,9 +28,10 @@ public class MapWidget extends JPanel implements GameWidget {
 		this.map = map;
 		this.boundRect = new Rectangle(0, 0, width, height);
 		this.frame = new Rectangle(0, 0, width, height);
-		for (int x = 0; x < 1000; x += 64)
-			for (int y = 0; y < 1000; y += 64)
-				setFog(x, y);
+	}
+
+	public void freeFog () {
+		noFogAt = new HashMap<Integer, HashMap<Integer, Boolean>> () ;
 	}
 
 	public void setFog (int x, int y) {
@@ -42,7 +42,7 @@ public class MapWidget extends JPanel implements GameWidget {
 		if (noFogAt.get(x) == null)
 			noFogAt.put(x, new HashMap<Integer, Boolean> ()) ;
 		if (noFogAt.get(x).get(y) == null)
-			noFogAt.get(x).put(y, fog) ;
+			noFogAt.get(x).put(y, !fog) ;
 	}
 
 	public boolean fogAt (int x, int y) {
