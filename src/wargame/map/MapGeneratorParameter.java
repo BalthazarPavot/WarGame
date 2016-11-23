@@ -173,7 +173,7 @@ public class MapGeneratorParameter {
 	 * Generate random parameters to match a swamp climate
 	 */
 	private void generateSwampParameters() {
-		waterRatio = rangeDouble(0.3, 0.4);
+		waterRatio = rangeDouble(0.1, 0.2);
 		isolatedWaterSpots = rand.nextInt() % 5 != 0;
 		treeRatio = rangeDouble(0.075, 0.1);
 		isolatedTrees = true;

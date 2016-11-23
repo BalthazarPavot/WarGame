@@ -42,8 +42,7 @@ public class Spot implements Comparable<Spot> {
 	}
 
 	public boolean equals(Spot s) {
-		return position.getX() == s.getPosition().getX()
-				&& position.getY() == s.getPosition().getY()
+		return position.getX() == s.getPosition().getX() && position.getY() == s.getPosition().getY()
 				&& dimensions.getWidth() == s.getDimension().getWidth()
 				&& dimensions.getHeight() == s.getDimension().getHeight();
 	}
