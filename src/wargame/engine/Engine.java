@@ -11,6 +11,8 @@ import wargame.widgets.SidePanel;
 // temp class, waiting for the other's code.
 class Unit {
 	public Position position;
+	public ArrayList<Position> stackedPositions;
+	public int curentPosition;
 
 	public Unit(Position position) {
 		this.position = position;
@@ -31,7 +33,16 @@ class Unit {
 		return false;
 	}
 
-	public void move(ArrayList<Position> currentPath) {
+	public void setMove(ArrayList<Position> currentPath) {
+		stackedPositions = currentPath;
+		this.curentPosition = 0;
+	}
+
+	public void move() {
+		if (stackedPositions != null && curentPosition < stackedPositions.size())
+			this.position = stackedPositions.get(curentPosition++);
+		else
+			stackedPositions = null;
 	}
 
 	public ArrayList<Position> canMove(Map map, Position position) {
@@ -39,6 +50,7 @@ class Unit {
 	}
 
 	public void play(ArrayList<Unit> playerUnits, ArrayList<Unit> ennemyUnits, Map map) {
+		move();
 	}
 
 	public Object getMaCara() {
@@ -72,7 +84,8 @@ public class Engine {
 
 	public void initPlayerUnits() {
 		playerUnits = new ArrayList<Unit>();
-		playerUnits.add(new Unit(new Position(2048, 1024)));
+		playerUnits.add(new Unit(map.getAlliePopArea()));
+		playerUnits.get(0).setMove(map.pathByWalking(map.getAlliePopArea(), map.getEnnemyPopArea()));
 	}
 
 	public void initEnnemyUnits() {
@@ -82,7 +95,8 @@ public class Engine {
 	public void nextTurn() {
 		for (Unit ennemy : ennemyUnits)
 			ennemy.play(playerUnits, ennemyUnits, map);
-		playerUnits.get(0).position.move(64, 64);
+		for (Unit allie : playerUnits)
+			allie.play(playerUnits, ennemyUnits, map);
 		updateFog(playerUnits);
 	}
 
@@ -96,14 +110,13 @@ public class Engine {
 			Position position = unit.getPosition();
 			int rangeX = 5 * Map.squareWidth + position.getX();// ((Object) unit.getMaCara()).getRange() ;
 			int rangeY = 5 * Map.squareHeight + position.getY();// ((Object) unit.getMaCara()).getRange() ;
-			for (int x = rangeX-10 * Map.squareWidth; x < rangeX; x += Map.squareWidth) {
-				for (int y = rangeY-10 * Map.squareHeight; y < rangeY; y += Map.squareHeight) {
+			for (int x = rangeX - 10 * Map.squareWidth; x < rangeX; x += Map.squareWidth) {
+				for (int y = rangeY - 10 * Map.squareHeight; y < rangeY; y += Map.squareHeight) {
 					mapWidget.setFog(x, y, 2);
 				}
 			}
-
 		}
-		sidePanel.buildFog (mapWidget) ;
+		sidePanel.buildFog(mapWidget);
 	}
 
 	public void mapMotioned(Position position) {
@@ -142,7 +155,7 @@ public class Engine {
 
 	private void allieMoveTo(Position position) {
 		if (currentPath != null)
-			selectedAllie.move(currentPath);
+			selectedAllie.setMove(currentPath);
 		currentPath = null;
 	}
 
@@ -166,11 +179,11 @@ public class Engine {
 	}
 
 	public void setAutoGame() {
-		autoGameMode = true ;
+		autoGameMode = true;
 	}
 
 	public void unSetAutoGame() {
-		autoGameMode = false ;
+		autoGameMode = false;
 	}
 
 }
