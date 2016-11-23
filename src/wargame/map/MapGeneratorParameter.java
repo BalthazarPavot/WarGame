@@ -4,6 +4,12 @@ package wargame.map;
 import java.awt.Dimension;
 import java.util.Random;
 
+
+/**
+ * This class defined the parameters used by the map generator to generate a map.
+ * @author Balthazar Pavot
+ *
+ */
 public class MapGeneratorParameter {
 
 	public final static double MIN_TREE_RATIO = 0.01;
@@ -42,33 +48,55 @@ public class MapGeneratorParameter {
 		rand = new Random();
 	}
 
+	/**
+	 * Generate some random climate and generate the parameters to match this climate.
+	 */
 	public void generateRandomParameters() {
 		this.setDimensions(new Dimension(Map.defaultWidth, Map.defaultHeight));
 		this.generateRandomClimate();
 		this.generateThisClimateParams();
 	}
 
+	/**
+	 * @return The dimension defined by the parameters.
+	 */
 	public Dimension getDimensions() {
 		return this.dimensions;
 	}
 
+	/**
+	 * Set the parameter of dimension.
+	 * @param dimension
+	 */
 	public void setDimensions(Dimension dimension) {
 		this.dimensions = dimension;
 	}
 
+	/**
+	 * @return The surface in pixel².
+	 */
 	public double getSurface() {
 		return this.dimensions.getWidth() * this.dimensions.getHeight();
 	}
 
+	/**
+	 * @return The number of squares defined by the parameters.
+	 */
 	public int getSquareNumber() {
 		return (int) (this.dimensions.getWidth() / Map.squareWidth * this.dimensions.getHeight()
 				/ Map.squareHeight);
 	}
 
+	/**
+	 * Choose a random climate.
+	 */
 	private void generateRandomClimate() {
 		climate = rand.nextInt() % CLIMATE_NUMBER;
 	}
 
+	/**
+	 * Call the method to generate parameters depending on the climate.
+	 */
 	private void generateThisClimateParams() {
 		switch (climate) {
 		case TOUNDRA_CLIMATE:
@@ -93,6 +121,9 @@ public class MapGeneratorParameter {
 		}
 	}
 
+	/**
+	 * Generate random parameters to match a toundra climate
+	 */
 	private void generateToundraParameters() {
 		waterRatio = rangeDouble(0, 0.1);
 		isolatedWaterSpots = true;
@@ -102,6 +133,9 @@ public class MapGeneratorParameter {
 		isolatedRockSets = true;
 	}
 
+	/**
+	 * Generate random parameters to match a sand desert climate
+	 */
 	private void generateSandDesertParameters() {
 		waterRatio = 0;
 		isolatedWaterSpots = true;
@@ -111,6 +145,9 @@ public class MapGeneratorParameter {
 		isolatedRockSets = false;
 	}
 
+	/**
+	 * Generate random parameters to match a rock desert climate
+	 */
 	private void generateRocksDesertParameters() {
 		waterRatio = rangeDouble(0.0, 0.01);
 		isolatedWaterSpots = true;
@@ -120,6 +157,9 @@ public class MapGeneratorParameter {
 		isolatedRockSets = false;
 	}
 
+	/**
+	 * Generate random parameters to match a forest climate
+	 */
 	private void generateDarkForestParameters() {
 		waterRatio = rangeDouble(0.0, 0.02);
 		isolatedWaterSpots = true;
@@ -129,15 +169,21 @@ public class MapGeneratorParameter {
 		isolatedRockSets = true;
 	}
 
+	/**
+	 * Generate random parameters to match a swamp climate
+	 */
 	private void generateSwampParameters() {
 		waterRatio = rangeDouble(0.3, 0.4);
 		isolatedWaterSpots = rand.nextInt() % 5 != 0;
-		treeRatio = rangeDouble(0.75, 0.1);
+		treeRatio = rangeDouble(0.075, 0.1);
 		isolatedTrees = true;
 		rockRatio = rangeDouble(0.02, 0.035);
 		isolatedRockSets = true;
 	}
 
+	/**
+	 * Generate random parameters.
+	 */
 	private void generateNoClimateParameters() {
 		do {
 			treeRatio = rangeDouble(MIN_TREE_RATIO, MAX_TREE_RATIO);
@@ -159,6 +205,11 @@ public class MapGeneratorParameter {
 				|| treeRatio + waterRatio + rockRatio < MIN_TOTAL_RATIO);
 	}
 
+	/**
+	 * @param min
+	 * @param max
+	 * @return A random double between man and max.
+	 */
 	public double rangeDouble(double min, double max) {
 		return min + (max - min) * rand.nextDouble();
 	}

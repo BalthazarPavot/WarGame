@@ -2,6 +2,7 @@
 package wargame.screens;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
@@ -10,6 +11,11 @@ import wargame.GameContext;
 import wargame.map.Map;
 import wargame.widgets.*;
 
+/**
+ * This screen is the first screen of the game, the main menu.
+ * @author Balthazar Pavot
+ *
+ */
 public class MainScreen extends GameScreen {
 
 	private static final long serialVersionUID = 1L;
@@ -35,7 +41,7 @@ public class MainScreen extends GameScreen {
 
 		w = gameContext.getWidth();
 		h = gameContext.getHeight();
-		this.addWidgets(new TextWidget("War Game", w / 2 - 150, h / 10 * 2 - 100, 300, 200, 50,
+		this.addWidgets(new TextWidget("War Game", w / 2 - 134, h / 10 * 2 - 100, 268, 200, 50,
 				new Color(128, 128, 128)));
 		for (int i = 7, j = 0; i < 12; j++, i++) {
 			ButtonWidget button;
@@ -43,7 +49,6 @@ public class MainScreen extends GameScreen {
 			button = new ButtonWidget(buttonTexts[j], w / 2 - 100, h / 15 * i, 200, 30, 20,
 					new Color(128, 128, 128));
 			button.addActionListener(this.actionManager);
-			button.setActionCommand(buttonTexts[j]);
 			this.addWidgets(button);
 		}
 		this.createBackground();
@@ -53,31 +58,31 @@ public class MainScreen extends GameScreen {
 		ArrayList<BufferedImage> backgroundImageList;
 		ArrayList<BufferedImage> treeImageList;
 		Random rand;
-		int randint ;
+		int randint;
 
 		rand = new Random();
-		randint = rand.nextInt(2) ;
+		randint = rand.nextInt(2);
 		backgroundImageList = gameContext.getSpriteHandler()
 				.get(randint == 1 ? "snow_textures" : "grass_textures");
-		treeImageList = gameContext.getSpriteHandler()
-				.get(randint == 1 ? "tree_snow_set" : "tree_set");
-		for (int x = 0; x < gameContext.getWidth(); x+=Map.squareWidth) {
-			for (int y = 0; y < gameContext.getHeight(); y+=Map.squareHeight) {
+		treeImageList = gameContext.getSpriteHandler().get(randint == 1 ? "tree_snow_set" : "tree_set");
+		for (int x = 0; x < gameContext.getWidth(); x += Map.squareWidth) {
+			for (int y = 0; y < gameContext.getHeight(); y += Map.squareHeight) {
 				if (rand.nextInt(20) == 0)
 					this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
-						treeImageList.get(rand.nextInt(treeImageList.size()))));
+							treeImageList.get(rand.nextInt(treeImageList.size()))));
 				else if (rand.nextInt(20) == 0 && randint == 1)
 					this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
-						gameContext.getSpriteHandler().get("rock_snow_set").get(0)));
-				else if (rand.nextInt(150) == 0){// && randint == 0) {
-					this.addWidgets(new ImageWidget(x+Map.squareWidth, y+Map.squareHeight, Map.squareWidth, Map.squareHeight,
-							gameContext.getSpriteHandler().get("water").get(3)));
-					this.addWidgets(new ImageWidget(x, y+Map.squareHeight, Map.squareWidth, Map.squareHeight,
-							gameContext.getSpriteHandler().get("water").get(2)));
-					this.addWidgets(new ImageWidget(x+Map.squareWidth, y, Map.squareWidth, Map.squareHeight,
-							gameContext.getSpriteHandler().get("water").get(1)));
+							gameContext.getSpriteHandler().get("rock_snow_set").get(0)));
+				else if (rand.nextInt(150) == 0) {
+					this.addWidgets(
+							new ImageWidget(x + Map.squareWidth, y + Map.squareHeight, Map.squareWidth,
+									Map.squareHeight, gameContext.getSpriteHandler().get("water_sand_curve_out").get(3)));
+					this.addWidgets(new ImageWidget(x, y + Map.squareHeight, Map.squareWidth,
+							Map.squareHeight, gameContext.getSpriteHandler().get("water_sand_curve_out").get(2)));
+					this.addWidgets(new ImageWidget(x + Map.squareWidth, y, Map.squareWidth, Map.squareHeight,
+							gameContext.getSpriteHandler().get("water_sand_curve_out").get(1)));
 					this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
-							gameContext.getSpriteHandler().get("water").get(0)));
+							gameContext.getSpriteHandler().get("water_sand_curve_out").get(0)));
 				}
 				this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
 						backgroundImageList.get(rand.nextInt(backgroundImageList.size()))));
@@ -85,3 +90,29 @@ public class MainScreen extends GameScreen {
 		}
 	}
 }
+
+class MainScreenActionManager extends GameScreenActionManager {
+
+	public MainScreenActionManager(GameScreen gameScreen) {
+		super(gameScreen);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals(MainScreen.QUICK_GAME_STRING)) {
+			gameScreen.nextScreenID = GameScreen.QUICK_GAME_SCREEN;
+		} else if (e.getActionCommand().equals(MainScreen.NEW_GAME_STRING)) {
+			gameScreen.nextScreenID = GameScreen.NEW_GAME_SCREEN;
+		} else if (e.getActionCommand().equals(MainScreen.LOAD_GAME_STRING)) {
+			gameScreen.nextScreenID = GameScreen.LOAD_GAME_SCREEN;
+		} else if (e.getActionCommand().equals(MainScreen.CONFIGURATION_STRING)) {
+			gameScreen.nextScreenID = GameScreen.CONFIGURATION_SCREEN;
+		} else if (e.getActionCommand().equals(MainScreen.QUIT_GAME_STRING)) {
+			gameScreen.nextScreenID = GameScreen.QUIT_SCREEN;
+		} else {
+			return;
+		}
+		this.gameScreen.screenTermination();
+	}
+
+}
+

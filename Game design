@@ -14,7 +14,7 @@ Les différentes parties du jeux sont:
     - Sound ;
     - Auto-save ;
   - Datamodel des perso:
-    Perso, Monster, Player ; ((kamil)
+    Perso, Monster, Player ; (kamil)
     IA ; (Romain)
 
 Les cases de la map sont des octogones (simplifiés en cercles, ou

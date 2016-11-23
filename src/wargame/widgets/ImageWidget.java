@@ -4,18 +4,21 @@ package wargame.widgets;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import wargame.basic_types.Position;
 
 public class ImageWidget extends JLabel implements GameWidget {
 
+	private static HashMap<BufferedImage, ArrayList<BufferedImage>> zoomedImageBuffer = new HashMap<BufferedImage, ArrayList<BufferedImage>>();
 	private static final long serialVersionUID = 1L;
 	protected Rectangle boundRect;
 	protected BufferedImage image;
@@ -23,12 +26,55 @@ public class ImageWidget extends JLabel implements GameWidget {
 
 	public static BufferedImage loadImage(String path) {
 		BufferedImage image;
+		BufferedImage newImage = null;
 
 		try {
-			image = ImageIO.read(new File(path));
+			image = ImageIO.read(Thread.currentThread().getContextClassLoader().getResourceAsStream(path));
+			newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = newImage.createGraphics();
+			g.drawImage(image, 0, 0, null);
+			g.dispose();
 		} catch (IOException ex) {
 			image = null;
 		}
+		return newImage;
+	}
+
+	/**
+	 * Return the zoomed image (1/zoom)
+	 * 
+	 * @param image
+	 * @param zoom
+	 * @return
+	 */
+	public static BufferedImage zoomImage(BufferedImage image, int zoom) {
+		BufferedImage newImage = null;
+		ArrayList<BufferedImage> imageBuffer;
+
+		imageBuffer = zoomedImageBuffer.get(image);
+		if (imageBuffer == null) {
+			// System.out.println("buffer image creation for zoom");
+			imageBuffer = new ArrayList<BufferedImage>();
+			zoomedImageBuffer.put(image, imageBuffer);
+			for (int x = 2; x < 8; x <<= 1) {
+				newImage = new BufferedImage(image.getWidth() / x, image.getHeight() / x,
+						BufferedImage.TYPE_INT_ARGB);
+				Graphics2D g = newImage.createGraphics();
+				g.drawImage(image, 0, 0, image.getWidth() / x, image.getHeight() / x, null);
+				g.dispose();
+				imageBuffer.add(newImage);
+			}
+		}
+		switch (zoom) {
+		case 2:
+			return imageBuffer.get(0);
+		case 4:
+			return imageBuffer.get(1);
+		default:
+			break;
+		}
+		if (zoom == 1)
+			return image;
 		return image;
 	}
 
@@ -55,8 +101,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 	}
 
 	public ImageWidget(Rectangle boundRect, BufferedImage image) {
-		super(new ImageIcon(image));
-		// this (boundRect) ;
+		// super(new ImageIcon(image));
 		this.boundRect = boundRect;
 		this.image = image;
 	}
@@ -65,9 +110,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * Set the position of the bound rectangle.
 	 * 
 	 * @param x
-	 *            The position in the x axis
 	 * @param y
-	 *            The position in the y axis
 	 */
 	public void setPosition(int x, int y) {
 		this.boundRect = new Rectangle(x, y, this.boundRect.width, this.boundRect.height);
@@ -77,7 +120,6 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * Set the position of the bound rectangle.
 	 * 
 	 * @param position
-	 *            The position to go on
 	 */
 	public void setPosition(Position position) {
 		this.boundRect = new Rectangle(position.getX(), position.getY(), this.boundRect.width,
@@ -92,12 +134,17 @@ public class ImageWidget extends JLabel implements GameWidget {
 	}
 
 	/**
+	 * Return widget's position
+	 */
+	public BufferedImage getImage() {
+		return this.image;
+	}
+
+	/**
 	 * Set the dimensions of the bound rectangle.
 	 * 
 	 * @param w
-	 *            The width of the rectangle
 	 * @param h
-	 *            The height of the rectangle
 	 */
 	public void setDimension(int w, int h) {
 		this.boundRect = new Rectangle(this.boundRect.x, this.boundRect.y, w, h);
@@ -107,9 +154,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * Set the dimensions of the bound rectangle.
 	 * 
 	 * @param w
-	 *            The width of the rectangle
 	 * @param h
-	 *            The height of the rectangle
 	 */
 	public Dimension getDimension() {
 		return new Dimension(this.boundRect.width, this.boundRect.height);
@@ -119,13 +164,9 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * Set the bound rectangle.
 	 * 
 	 * @param x
-	 *            The position in the x axis
 	 * @param y
-	 *            The position in the y axis
 	 * @param w
-	 *            The width of the rectangle
 	 * @param h
-	 *            The height of the rectangle
 	 */
 	public void setBinding(int x, int y, int w, int h) {
 		this.boundRect = new Rectangle(x, y, w, h);
@@ -135,7 +176,6 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * Set the bound rectangle.
 	 * 
 	 * @param Copy
-	 *            the given rect and it as the bound rect.
 	 */
 	public void setBinding(Rectangle binds) {
 		this.boundRect = new Rectangle(binds);
@@ -152,23 +192,44 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * draw the image at its position
 	 * 
 	 * @param g
-	 *            Graphics in which display the image.
 	 */
 	public void paintComponent(Graphics g) {
 		this.paintComponent(g, 1);
 	}
 
 	/**
-	 * draw the image at its position
+	 * draw the image at its position zoomed. The zoom can be 1,2,3 or 4, with 4 is the smaller.
 	 * 
 	 * @param g
-	 *            Graphics in which display the image.
 	 * @param zoom
-	 *            The zoom image at which the image must be.
 	 */
 	public void paintComponent(Graphics g, int zoom) {
-		g.drawImage(image, 0, 0, this.boundRect.width * zoom, this.boundRect.height * zoom, this.bgColor,
-				this);
+		this.paintComponent(g, zoom, 0, 0);
+	}
+
+	public void paintComponent(Graphics g, int zoom, int x, int y) {
+		super.paintComponent(g);
+		g.drawImage(zoomImage(image, zoom), x, y, this);
+	}
+
+	public int getColor() {
+		int totalR = 0;
+		int totalG = 0;
+		int totalB = 0;
+		int pixel;
+		int nbPixel;
+
+		nbPixel = image.getWidth() * image.getHeight();
+		for (int x = 0; x < image.getWidth(); x += 1) {
+			for (int y = 0; y < image.getHeight(); y += 1) {
+				pixel = image.getRGB(x, y);
+				totalR += ((pixel >> 16) & 0xff);// * ((pixel >> 24 & 0xff)/255);
+				totalG += ((pixel >> 8) & 0xff);// * ((pixel >> 24 & 0xff)/255);
+				totalB += (pixel & 0xff);// * ((pixel >> 24 & 0xff)/255);
+			}
+		}
+
+		return totalR / nbPixel << 16 | totalG / nbPixel << 8 | totalB / nbPixel;
 	}
 
 }

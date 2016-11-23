@@ -5,18 +5,16 @@ import wargame.GameScreenGenerator;
 import wargame.screens.GameScreen;
 import UnitPackage.*;
 
-//package wargame ;
-
 /**
  * Entry point of the game. <br />
- * Initialize the game screen generator. <br />
+ * Initialise the game screen generator. <br />
  * Request the main screen. <br />
  * Launch the main screen. <br />
  * while the player does not quit the game: <br />
  * Get the next screen to launch. <br />
  * Launch the requested screen. <br />
  * 
- * @author Pavot Balthazar ; Pelegrin Romain
+ * @author Pavot Balthazar
  */
 
 public class WarGame {
@@ -25,8 +23,6 @@ public class WarGame {
 	 * Launch the mainloop giving the first game screen id.
 	 * 
 	 * @param args
-	 *            Does nothing.
-	 * @return nothing
 	 */
 	public static void main(String[] args) {
 		//mainloop(GameScreen.MAIN_MENU_SCREEN);
@@ -51,8 +47,6 @@ public class WarGame {
 	 * again while the player does not decide to quit.
 	 * 
 	 * @param gameScreenID
-	 *            The id of the first game screen to launch.
-	 * @return nothing
 	 */
 	public static void mainloop(int gameScreenID) {
 		GameScreenGenerator gameScreenGenerator;

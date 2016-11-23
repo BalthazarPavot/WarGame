@@ -5,7 +5,13 @@ import java.util.ArrayList;
 
 import wargame.map.Map;
 
-public class Position {
+/**
+ * Simple class defining a entire position (x;y) in a grid.
+ * 
+ * @author Balthazar Pavot
+ *
+ */
+public class Position implements Comparable<Object> {
 
 	private int x = 0;
 	private int y = 0;
@@ -18,33 +24,60 @@ public class Position {
 		this.y = y;
 	}
 
+	/**
+	 * Move the position using the gven vector.
+	 * 
+	 * @param x
+	 * @param y
+	 */
 	public void move(int x, int y) {
 		this.x += x;
 		this.y += y;
 	}
 
+	/**
+	 * @return The x value of the position
+	 */
 	public int getX() {
 		return x;
 	}
 
+	/**
+	 * @return The y value of the position
+	 */
 	public int getY() {
 		return y;
 	}
 
+	/**
+	 * @param x
+	 * @param y
+	 * @return The distance between the current point and the given one.
+	 */
 	public double distance(int x, int y) {
 		return Math.sqrt(
 				Math.pow((double) (x - this.x), (double) 2) + Math.pow((double) (y - this.y), (double) 2));
 	}
 
+	/**
+	 * @param position
+	 * @return The distance between the current point and the given one.
+	 */
 	public double distance(Position position) {
 		return distance(position.getX(), position.getY());
 	}
 
+	/**
+	 * @return True if the positions are the same.
+	 */
 	public boolean equals(Object o) {
 		return o.getClass() == this.getClass() && this.x == ((Position) o).getX()
 				&& this.y == ((Position) o).getY();
 	}
 
+	/**
+	 * @return All the positions around the current one.
+	 */
 	public ArrayList<Position> getNeighbor() {
 		ArrayList<Position> neighbor;
 
@@ -60,4 +93,59 @@ public class Position {
 		return neighbor;
 	}
 
+	/**
+	 * @return All the positions reachable giving the amount of moving points.
+	 */
+	public ArrayList<Position> getReachableNeighbor(
+			int movePoints) {/* ArrayList<Position> neighbor;
+								 * 
+								 * neighbor = new ArrayList<Position>(); neighbor.add(new Position(x, y -
+								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y -
+								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y));
+								 * neighbor.add(new Position(x + Map.squareWidth, y + Map.squareHeight));
+								 * neighbor.add(new Position(x, y + Map.squareHeight)); neighbor.add(new
+								 * Position(x - Map.squareWidth, y + Map.squareHeight)); neighbor.add(new
+								 * Position(x - Map.squareWidth, y)); neighbor.add(new Position(x -
+								 * Map.squareWidth, y - Map.squareHeight)); return neighbor; */
+		return new ArrayList<Position>();
+	}
+
+	/**
+	 * @return All the positions targetable by a character, giving his sight line.
+	 */
+	public ArrayList<Position> getTargetableNeighbor(
+			int sightLigne) {/* ArrayList<Position> neighbor;
+								 * 
+								 * neighbor = new ArrayList<Position>(); neighbor.add(new Position(x, y -
+								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y -
+								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y));
+								 * neighbor.add(new Position(x + Map.squareWidth, y + Map.squareHeight));
+								 * neighbor.add(new Position(x, y + Map.squareHeight)); neighbor.add(new
+								 * Position(x - Map.squareWidth, y + Map.squareHeight)); neighbor.add(new
+								 * Position(x - Map.squareWidth, y)); neighbor.add(new Position(x -
+								 * Map.squareWidth, y - Map.squareHeight)); return neighbor; */
+		return new ArrayList<Position>();
+	}
+
+	public int compareTo(Object o) {
+		if (o.getClass() != this.getClass())
+			return -1;
+		return compareTo((Position) o);
+	}
+
+	public int compareTo(Position p) {
+		if (this.y < p.getY())
+			return -1;
+		if (this.y > p.getY())
+			return 1;
+		if (this.x < p.getX())
+			return -1;
+		if (this.x > p.getX())
+			return 1;
+		return 0;
+	}
+
+	public String toString () {
+		return String.format("[%d;%d]", x, y) ;
+	}
 }

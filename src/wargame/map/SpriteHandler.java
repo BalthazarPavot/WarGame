@@ -3,7 +3,6 @@ package wargame.map;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,11 +11,17 @@ import java.util.Properties;
 import wargame.ErrorManager;
 import wargame.widgets.ImageWidget;
 
+/**
+ * The aim of this class is to load the sprites and contain them. <br />
+ * One can access a sprite by giving the sprite sheet name, and the number of the sprite.
+ * 
+ * @author Balthazar Pavot
+ *
+ */
 public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 
 	private static final long serialVersionUID = 1L;
-	// http://gamedev.stackexchange.com/questions/53705/how-can-i-make-a-sprite-sheet-based-animation-system
-	private final static String spriteIndex = "resources/spriteIndex.data";
+	private final static String spriteIndex = "/spriteIndex.data";
 
 	private boolean loaded = false;
 	private ErrorManager errorManager;
@@ -26,6 +31,9 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		loadSprites();
 	}
 
+	/**
+	 * Load the sprites using the default path as the sprite index file path
+	 */
 	public void loadSprites() {
 		if (loaded == false) {
 			loaded = true;
@@ -33,6 +41,11 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		}
 	}
 
+	/**
+	 * Load the sprites using the given path as the sprite index file path
+	 * 
+	 * @param indexPath
+	 */
 	private void loadSprites(String indexPath) {
 		File confFile = null;
 
@@ -40,6 +53,8 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		try {
 			loadSprites(confFile);
 		} catch (IOException e) {
+			System.out.println(e);
+			e.printStackTrace();
 			errorManager.exitError("Could not load sprite index file. Verify its content, please.\n");
 		} catch (IllegalArgumentException e) {
 			System.out.println(e);
@@ -50,27 +65,30 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		confFile = null;
 	}
 
+	/**
+	 * load the sprites using the given file as the sprite index file
+	 * 
+	 * @param confFile
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 */
 	private void loadSprites(File confFile) throws IOException, IllegalArgumentException {
-		FileInputStream confStream = null;
 		Properties confProperties = null;
 
-		if (!confFile.exists())
-			errorManager.exitError(
-					String.format("The sprite index file \"%s\" is missing.\n", confFile.getPath()));
-		if (confFile.isDirectory())
-			errorManager.exitError(
-					String.format("The conf sprite index \"%s\" is a directory.\n", confFile.getPath()));
-		confStream = new FileInputStream(confFile.getPath());
 		confProperties = new Properties();
-		confProperties.load(confStream);
+		confProperties.load(this.getClass().getResourceAsStream(spriteIndex));
 		loadSprites(confProperties);
 		loaded = true;
-		confStream.close();
-		confStream.close();
-		confStream = null;
 		confProperties = null;
 	}
 
+	/**
+	 * Load the sprites using the given properties as the sprite index file properties.
+	 * 
+	 * @param confProperties
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 */
 	private void loadSprites(Properties confProperties) throws IOException, IllegalArgumentException {
 		String allSpritesNames;
 		String[] spriteNames;
@@ -80,6 +98,14 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		loadSprites(confProperties, spriteNames);
 	}
 
+	/**
+	 * Place in the given array all the sprites extracted from each spriteNames
+	 * 
+	 * @param confProperties
+	 * @param spriteNames
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 */
 	private void loadSprites(Properties confProperties, String[] spriteNames)
 			throws IOException, IllegalArgumentException {
 
@@ -89,16 +115,27 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		}
 	}
 
+	/**
+	 * Extract all the sprite from spriteName, using the path, x, y, width and heigh given in the sprite
+	 * property file.
+	 * 
+	 * @param spriteName
+	 * @param spriteList
+	 * @param confProperties
+	 */
 	private void loadSprites(String spriteName, ArrayList<BufferedImage> spriteList,
 			Properties confProperties) {
 		int x = 0;
 		int y = 0;
 		int w = 0;
 		int h = 0;
+		int imageWidth;
+		int imageHeight;
+		int initX = 0;
 		BufferedImage wholeImage;
 
 		try {
-			x = Integer.parseInt(confProperties.getProperty(spriteName + "_x"));
+			initX = x = Integer.parseInt(confProperties.getProperty(spriteName + "_x"));
 		} catch (NumberFormatException e) {
 			errorManager.exitError(
 					String.format("Couln not find property %s_x in sprite index file\n", spriteName));
@@ -121,18 +158,28 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 			errorManager.exitError(
 					String.format("Couln not find property %s_height in sprite index file\n", spriteName));
 		}
+		try {
+			imageWidth = Integer.parseInt(confProperties.getProperty(spriteName + "_image_width"));
+		} catch (NumberFormatException e) {
+			imageWidth = Map.squareWidth;
+		}
+		try {
+			imageHeight = Integer.parseInt(confProperties.getProperty(spriteName + "_image_height"));
+		} catch (NumberFormatException e) {
+			imageHeight = Map.squareHeight;
+		}
 		wholeImage = ImageWidget.loadImage(confProperties.getProperty(spriteName + "_path"));
 		if (wholeImage == null)
 			errorManager.exitError(
 					String.format("Couln not find file at %s_path in sprite index file\n", spriteName));
 		while (y < h) {
 			while (x < w) {
-				spriteList.add(wholeImage.getSubimage(x, y, Map.squareWidth, Map.squareHeight));
+				spriteList.add(wholeImage.getSubimage(x, y, imageWidth, imageHeight));
 				System.out.printf("Loaded %s %d;%d\n", spriteName, x, y);
-				x += Map.squareWidth;
+				x += imageWidth;
 			}
-			x = 0;
-			y += Map.squareHeight;
+			x = initX;
+			y += imageHeight;
 		}
 	}
 }
