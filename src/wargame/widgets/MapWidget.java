@@ -23,20 +23,20 @@ public class MapWidget extends JPanel implements GameWidget {
 	protected Rectangle frame;
 	protected int zoom = 1;
 	protected boolean drawGrid = true;
-	protected ImageWidget semiFog ;
+	protected ImageWidget semiFog;
 	protected HashMap<Integer, HashMap<Integer, Integer>> fog = new HashMap<Integer, HashMap<Integer, Integer>>();
 
 	public MapWidget(Map map, int width, int height, SpriteHandler spriteHandler) {
 		this.map = map;
 		this.boundRect = new Rectangle(0, 0, width, height);
 		this.frame = new Rectangle(0, 0, width, height);
-		semiFog = new ImageWidget(new Rectangle(0, 0, 64, 64), spriteHandler.get("semi_fog").get(0)) ;
+		semiFog = new ImageWidget(new Rectangle(0, 0, 64, 64), spriteHandler.get("semi_fog").get(0));
 	}
 
 	public void freeFog() {
-		for (Integer x:fog.keySet())
-			for (Integer y:fog.get(x).keySet())
-				setFog (x, y, 1) ;
+		for (Integer x : fog.keySet())
+			for (Integer y : fog.get(x).keySet())
+				setFog(x, y, 1);
 	}
 
 	public void setFog(int x, int y) {
@@ -137,7 +137,8 @@ public class MapWidget extends JPanel implements GameWidget {
 			x = p.getX();
 			y = p.getY();
 			if (!(x < (int) frame.x - Map.squareWidth || y < (int) frame.y - Map.squareHeight
-					|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height || fogAt(p)==0)) {
+					|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height
+					|| fogAt(p) == 0)) {
 				for (MapElement me : map.getReal(x, y))
 					me.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
 							y / zoom - (int) frame.y / zoom + dy);
@@ -165,6 +166,10 @@ public class MapWidget extends JPanel implements GameWidget {
 		return frame;
 	}
 
+	public void setFramePosition(int x, int y) {
+		frame.setLocation(x, y);
+	}
+
 	public void moveFrame(int x, int y) {
 		int resx;
 		int resy;
@@ -180,8 +185,8 @@ public class MapWidget extends JPanel implements GameWidget {
 	public void increaseZoom() {
 		if (zoom > 1) {
 			zoom /= 2;
-			frame.x += boundRect.width / 2 * zoom;// * zoom - boundRect.width /4;
-			frame.y += boundRect.height / 2 * zoom;// * zoom - boundRect.height /4;
+			frame.x += boundRect.width / 2 * zoom;
+			frame.y += boundRect.height / 2 * zoom;
 			frame.width = boundRect.width * zoom;
 			frame.height = boundRect.height * zoom;
 		}
@@ -189,11 +194,18 @@ public class MapWidget extends JPanel implements GameWidget {
 
 	public void decreaseZoom() {
 		if (zoom < 4) {
-			frame.x -= boundRect.width / 2 * zoom;// * zoom - boundRect.width /4;
-			frame.y -= boundRect.height / 2 * zoom;// * zoom - boundRect.height /4;
+			frame.x -= boundRect.width / 2 * zoom;
+			frame.y -= boundRect.height / 2 * zoom;
 			zoom *= 2;
 			frame.width = boundRect.width * zoom;
 			frame.height = boundRect.height * zoom;
 		}
+	}
+
+	public void updateFramePositionFromMinimap(Rectangle minimapFrame, Rectangle minimapRectangle) {
+		this.frame.x = (int) ((double) ((minimapFrame.x - minimapRectangle.x)) / minimapRectangle.width
+				* map.getWidth());
+		this.frame.y = (int) ((double) ((minimapFrame.y - minimapRectangle.y)) / minimapRectangle.height
+				* map.getHeight());
 	}
 }
