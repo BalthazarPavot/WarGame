@@ -22,9 +22,6 @@ class Unit {
 		return true;
 	}
 
-	public void actOn(Unit unit) {
-	}
-
 	public boolean inflictDamage(Unit unit) {
 		return false;
 	}
@@ -45,7 +42,7 @@ class Unit {
 			stackedPositions = null;
 	}
 
-	public ArrayList<Position> canMove(Map map, Position position) {
+	public ArrayList<Position> canMove(Map map, Position destination) {
 		return null;
 	}
 
