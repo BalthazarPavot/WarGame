@@ -21,8 +21,6 @@ public class MapGenerator {
 	private Map map;
 	private Random rand;
 	private SpriteHandler spriteHandler;
-	private Position alliePopArea;
-	private Position ennemyPopArea;
 
 	public MapGenerator() {
 		this(null);
@@ -35,9 +33,6 @@ public class MapGenerator {
 			this.parameters.generateRandomParameters();
 		}
 		map = new Map();
-		alliePopArea = new Position(map.getWidth() - 5 * Map.squareWidth,
-				map.getHeight() - 5 * Map.squareHeight);
-		ennemyPopArea = new Position(5 * Map.squareWidth, 5 * Map.squareHeight);
 		this.rand = new Random();
 	}
 
@@ -67,8 +62,8 @@ public class MapGenerator {
 			generateGround();
 			applySprites(treeShapes, rockShapes, waterShapes);
 			removePopAreas(4);
-		} while (!this.map.canCrossByWalking(alliePopArea, ennemyPopArea));
-		for (Position pos:map.pathByWalking (alliePopArea, ennemyPopArea))
+		} while (!this.map.canCrossByWalking(map.getAlliePopArea(), map.getEnnemyPopArea()));
+		for (Position pos:map.pathByWalking (map.getAlliePopArea(), map.getEnnemyPopArea()))
 			map.getReal(pos).remove(map.getReal(pos).size()-1) ;
 	}
 
@@ -463,18 +458,18 @@ public class MapGenerator {
 	private void removePopAreas(int rayOfErase) {
 		ArrayList<MapElement> elements;
 
-		for (int x = alliePopArea.getX() - rayOfErase * Map.squareWidth; x < alliePopArea.getX()
+		for (int x =  map.getAlliePopArea().getX() - rayOfErase * Map.squareWidth; x < map.getAlliePopArea().getX()
 				+ rayOfErase * Map.squareWidth; x += Map.squareWidth) {
-			for (int y = alliePopArea.getY() - rayOfErase * Map.squareHeight; y < alliePopArea.getY()
+			for (int y = map.getAlliePopArea().getY() - rayOfErase * Map.squareHeight; y < map.getAlliePopArea().getY()
 					+ rayOfErase * Map.squareHeight; y += Map.squareHeight) {
 				elements = this.map.getReal(x, y);
 				while (elements.size() > 1)
 					elements.remove(elements.get(elements.size() - 1));
 			}
 		}
-		for (int x = ennemyPopArea.getX() - rayOfErase * Map.squareWidth; x < ennemyPopArea.getX()
+		for (int x =  map.getEnnemyPopArea().getX() - rayOfErase * Map.squareWidth; x <  map.getEnnemyPopArea().getX()
 				+ rayOfErase * Map.squareWidth; x += Map.squareWidth) {
-			for (int y = ennemyPopArea.getY() - rayOfErase * Map.squareHeight; y < ennemyPopArea.getY()
+			for (int y =  map.getEnnemyPopArea().getY() - rayOfErase * Map.squareHeight; y <  map.getEnnemyPopArea().getY()
 					+ rayOfErase * Map.squareHeight; y += Map.squareHeight) {
 				elements = this.map.getReal(x, y);
 				while (elements.size() > 1)
