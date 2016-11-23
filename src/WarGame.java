@@ -3,6 +3,7 @@ import wargame.ErrorManager;
 import wargame.GameContext;
 import wargame.GameScreenGenerator;
 import wargame.screens.GameScreen;
+import UnitPackage.*;
 
 /**
  * Entry point of the game. <br />
@@ -24,8 +25,20 @@ public class WarGame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		mainloop(GameScreen.MAIN_MENU_SCREEN);
+		//mainloop(GameScreen.MAIN_MENU_SCREEN);
+		Healer h;
+		Soldier s;
+		
+		h=new Healer();
+		s=new Soldier();
+		
+		System.out.print("vie du soldat: "+s.getMaCara().getPv()+"\n");
+		h.makedamage(s);
+		System.out.print("vie du soldat apres combat :"+s.getMaCara().getPv()+"\n");
+		h.makeheal(s);
+		System.out.print("vie du soldat apres soin :"+s.getMaCara().getPv()+"\n");
 	}
+	
 
 	/**
 	 * Create the game context and the error manager, load the config and create the game screen generator
