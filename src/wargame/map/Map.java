@@ -36,6 +36,8 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 
 	private int width;
 	private int height;
+	private Position alliePopArea;
+	private Position ennemyPopArea;
 	private HashMap<Integer, HashMap<Integer, ArrayList<MapElement>>> realPositions;
 	private ArrayList<Position> allPositions;
 
@@ -53,6 +55,8 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 		this.height = height;
 		realPositions = new HashMap<Integer, HashMap<Integer, ArrayList<MapElement>>>();
 		allPositions = new ArrayList<Position>();
+		setAlliePopArea(new Position(getWidth() - 5 * Map.squareWidth, getHeight() - 5 * Map.squareHeight));
+		setEnnemyPopArea(new Position(5 * Map.squareWidth, 5 * Map.squareHeight));
 	}
 
 	/**
@@ -445,6 +449,34 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 		if (mapElts.size() == 0)
 			return 0;
 		return mapElts.get(mapElts.size() - 1).getColor();
+	}
+
+	/**
+	 * @return the alliePopArea
+	 */
+	public Position getAlliePopArea() {
+		return alliePopArea;
+	}
+
+	/**
+	 * @param alliePopArea the alliePopArea to set
+	 */
+	public void setAlliePopArea(Position alliePopArea) {
+		this.alliePopArea = alliePopArea;
+	}
+
+	/**
+	 * @return the ennemyPopArea
+	 */
+	public Position getEnnemyPopArea() {
+		return ennemyPopArea;
+	}
+
+	/**
+	 * @param ennemyPopArea the ennemyPopArea to set
+	 */
+	public void setEnnemyPopArea(Position ennemyPopArea) {
+		this.ennemyPopArea = ennemyPopArea;
 	}
 
 }
