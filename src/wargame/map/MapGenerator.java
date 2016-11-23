@@ -89,7 +89,7 @@ public class MapGenerator {
 			rockRatio += rockShapes.get(rockShapes.size() - 1).getSquareNumber() / this.map.getSquareNumber();
 		}
 		while (waterRatio < this.parameters.waterRatio) {
-			waterShapes.add(new WaterShape().generate(this.parameters));
+			waterShapes.add(new WaterShape(waterShapes).generate(this.parameters));
 			waterRatio += waterShapes.get(waterShapes.size() - 1).getSquareNumber()
 					/ this.map.getSquareNumber();
 		}

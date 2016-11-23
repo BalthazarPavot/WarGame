@@ -1,6 +1,8 @@
 
 package wargame.map;
 
+import java.util.ArrayList;
+
 /**
  * Defines a water set shape.
  * 
@@ -11,6 +13,13 @@ public class WaterShape extends Shape {
 
 	public WaterShape() {
 		super();
+	}
+
+	public WaterShape(ArrayList<WaterShape> waterShapes) {
+		for (WaterShape waterShape:waterShapes) {
+			for (Spot spot:waterShape.spots)
+				otherSpots.add(spot) ;
+		}
 	}
 
 	/**

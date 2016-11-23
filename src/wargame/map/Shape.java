@@ -17,6 +17,7 @@ public abstract class Shape {
 	protected double spotSurfaceError = 1;
 	protected MapGeneratorParameter parameters;
 	protected ArrayList<Spot> spots = new ArrayList<Spot>();
+	protected ArrayList<Spot> otherSpots = new ArrayList<Spot>();
 	private Random rand;
 
 	public Shape() {
@@ -85,15 +86,15 @@ public abstract class Shape {
 		if (noOverlap)
 			for (int x = beginX; x < beginX + w * Map.squareWidth; x += Map.squareWidth)
 				for (int y = beginY; y < beginY + h * Map.squareHeight; y += Map.squareHeight)
-					for (int dw = -1; dw < 2; dw += 1)
-						for (int dh = -1; dh < 2; dh += 1)
-							if (spots.contains(new Spot(x + dw * Map.squareWidth, y + dh * Map.squareHeight,
-									Map.squareWidth, Map.squareHeight)))
+					for (int dw = -Map.squareWidth; dw < 2 * Map.squareWidth; dw += Map.squareWidth)
+						for (int dh = -Map.squareHeight; dh < 2 * Map.squareHeight; dh += Map.squareHeight)
+							if (otherSpots.contains(new Spot(x + dw, y + dh, Map.squareWidth, Map.squareHeight)))
 								return;
 		for (int x = beginX; x < beginX + w * Map.squareWidth; x += Map.squareWidth)
 			for (int y = beginY; y < beginY + h * Map.squareHeight; y += Map.squareHeight)
 				try {
 					spots.add(new Spot(x, y, Map.squareWidth, Map.squareHeight));
+					otherSpots.add(new Spot(x, y, Map.squareWidth, Map.squareHeight));
 				} catch (IndexOutOfBoundsException e) {
 					/**
 					 * The resource is out of the map, ignore it.
@@ -101,11 +102,6 @@ public abstract class Shape {
 				}
 
 		spotNumber = w * h;
-		// for (int x = 0 ; x < Math.sqrt(this.spotSurface * spotSurfaceError); x++) {
-		// for (int y = 0 ; y < Math.sqrt(this.spotSurface * spotSurfaceError); y++) {
-		// spots.add(new Spot(x, y
-		// }
-		// }
 	}
 
 	@SuppressWarnings("unchecked")
