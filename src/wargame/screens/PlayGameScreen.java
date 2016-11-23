@@ -38,7 +38,7 @@ public class PlayGameScreen extends GameScreen {
 	protected SidePanelKeyboardManager sidePanelKeyboardManager;
 	protected Engine engine;
 	protected long turnTimer = System.currentTimeMillis();
-	private long turnDuration = 2000;
+	private long turnDuration = 1000;
 
 	public PlayGameScreen(GameContext gameContext) {
 		super(gameContext);
@@ -47,11 +47,16 @@ public class PlayGameScreen extends GameScreen {
 		this.mouseMotionManager = new PlayGameScreenMouseMotionManager(this);
 		this.keyboardManager = new PlayGameScreenKeyboardManager(this,
 				KeyboardFocusManager.getCurrentKeyboardFocusManager());
-		sidePanelActionManager = new SidePanelActionManager(this);
-		sidePanelMouseManager = new SidePanelMouseManager(this);
-		sidePanelMouseMotionManager = new SidePanelMouseMotionManager(this);
+		this.mapWidget = new MapWidget(this.gameContext.getMap(), this.gameContext.getWidth() - 150,
+				this.gameContext.getHeight(), gameContext.getSpriteHandler());
+		this.sidePanel = new SidePanel(gameContext.getMap(), this.gameContext.getWidth() - 150, 0, 150,
+				this.gameContext.getHeight(), gameContext.getSpriteHandler().get("side_panel_texture").get(0),
+				mapWidget.getFrame());
+		sidePanelActionManager = new SidePanelActionManager(this, sidePanel);
+		sidePanelMouseManager = new SidePanelMouseManager(this, sidePanel, mapWidget);
+		sidePanelMouseMotionManager = new SidePanelMouseMotionManager(this, sidePanel);
 		sidePanelKeyboardManager = new SidePanelKeyboardManager(this,
-				KeyboardFocusManager.getCurrentKeyboardFocusManager());
+				KeyboardFocusManager.getCurrentKeyboardFocusManager(), sidePanel);
 		turnTimer = System.currentTimeMillis();
 	}
 
@@ -61,17 +66,12 @@ public class PlayGameScreen extends GameScreen {
 	public void prepare() {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyboardManager);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(sidePanelKeyboardManager);
-		mapWidget = new MapWidget(this.gameContext.getMap(), this.gameContext.getWidth() - 150,
-				this.gameContext.getHeight(), gameContext.getSpriteHandler());
 		mapWidget.addMouseListener(this.mouseManager);
 		mapWidget.addMouseMotionListener(this.mouseMotionManager);
 		mapWidget.addKeyListener(keyboardManager);
 		mapWidget.setBackground(Color.BLACK);
 		mapWidget.setOpaque(true);
 		this.addWidgets(mapWidget);
-		sidePanel = new SidePanel(gameContext.getMap(), this.gameContext.getWidth() - 150, 0, 150,
-				this.gameContext.getHeight(),
-				gameContext.getSpriteHandler().get("side_panel_texture").get(0), mapWidget.getFrame());
 		sidePanel.addMouseListener(sidePanelMouseManager);
 		sidePanel.addMouseMotionListener(sidePanelMouseMotionManager);
 		sidePanel.addKeyListener(sidePanelKeyboardManager);
@@ -79,8 +79,8 @@ public class PlayGameScreen extends GameScreen {
 		sidePanel.setOpaque(true);
 		this.addWidgets(sidePanel);
 		engine = new Engine(gameContext.getMap(), mapWidget, sidePanel);
-		engine.setAutoGame () ;
-		engine.updateFog () ;
+		engine.setAutoGame();
+		engine.updateFog();
 	}
 
 	public MapWidget getMapWidget() {
@@ -90,7 +90,7 @@ public class PlayGameScreen extends GameScreen {
 	protected void windowManagement() {
 		mapWidget.moveFrame(leftScrolling ? -1 : rightScrolling ? 1 : 0,
 				upScrolling ? -1 : downScrolling ? 1 : 0);
-		sidePanel.updateFrame () ;
+		sidePanel.updateFrame();
 		if (engine.autoGameMode && System.currentTimeMillis() - turnTimer > turnDuration) {
 			engine.nextTurn();
 			turnTimer = System.currentTimeMillis();
@@ -193,10 +193,12 @@ class PlayGameScreenKeyboardManager extends GameScreenKeyboardManager implements
 class SidePanelActionManager extends GameScreenActionManager {
 
 	protected PlayGameScreen gameScreen = null;
+	protected SidePanel sidePanel;
 
-	public SidePanelActionManager(GameScreen gameScreen) {
+	public SidePanelActionManager(GameScreen gameScreen, SidePanel sidePanel) {
 		super(gameScreen);
 		this.gameScreen = (PlayGameScreen) gameScreen;
+		this.sidePanel = sidePanel;
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -208,11 +210,14 @@ class SidePanelActionManager extends GameScreenActionManager {
 class SidePanelKeyboardManager extends GameScreenKeyboardManager implements KeyEventDispatcher {
 	protected PlayGameScreen gameScreen = null;
 	protected KeyboardFocusManager focusManager;
+	protected SidePanel sidePanel;
 
-	public SidePanelKeyboardManager(GameScreen gameScreen, KeyboardFocusManager focusManager) {
+	public SidePanelKeyboardManager(GameScreen gameScreen, KeyboardFocusManager focusManager,
+			SidePanel sidePanel) {
 		super(gameScreen);
 		this.gameScreen = (PlayGameScreen) gameScreen;
 		this.focusManager = focusManager;
+		this.sidePanel = sidePanel;
 	}
 
 	@Override
@@ -239,24 +244,40 @@ class SidePanelKeyboardManager extends GameScreenKeyboardManager implements KeyE
 class SidePanelMouseManager extends GameScreenMouseManager {
 
 	protected PlayGameScreen gameScreen = null;
+	protected SidePanel sidePanel;
+	protected MapWidget mapWidget;
 
-	public SidePanelMouseManager(GameScreen gameScreen) {
+	public SidePanelMouseManager(GameScreen gameScreen, SidePanel sidePanel, MapWidget mapWidget) {
 		super(gameScreen);
 		this.gameScreen = (PlayGameScreen) gameScreen;
+		this.sidePanel = sidePanel;
+		this.mapWidget = mapWidget ;
 	}
 
-	public void mouseClicked(MouseEvent arg0) {
-		System.out.println("Clicked!");
+	public void mouseClicked(MouseEvent event) {
+		if (event.getX() > sidePanel.getMinimapRectangle().getX()
+				&& event.getY() > sidePanel.getMinimapRectangle().getY()
+				&& event.getX() < sidePanel.getMinimapRectangle().getX()
+						+ sidePanel.getMinimapRectangle().getWidth()
+				&& event.getY() < sidePanel.getMinimapRectangle().getY()
+						+ sidePanel.getMinimapRectangle().getHeight()) {
+			sidePanel.setFramePosition((int)(event.getX() - sidePanel.getMinimapFrame().getWidth() / 2),
+					(int)(event.getY() - sidePanel.getMinimapFrame().getHeight() / 2));
+			mapWidget.updateFramePositionFromMinimap (sidePanel.getMinimapFrame(), sidePanel.getMinimapRectangle()) ;
+		} else
+			System.out.println("Clicked! (panel)");
 	}
 }
 
 class SidePanelMouseMotionManager extends GameScreenMouseMotionManager {
 
 	protected PlayGameScreen gameScreen = null;
+	protected SidePanel sidePanel;
 
-	public SidePanelMouseMotionManager(GameScreen gameScreen) {
+	public SidePanelMouseMotionManager(GameScreen gameScreen, SidePanel sidePanel) {
 		super(gameScreen);
 		this.gameScreen = (PlayGameScreen) gameScreen;
+		this.sidePanel = sidePanel;
 	}
 
 	public void mouseDragged(ActionEvent e) {
