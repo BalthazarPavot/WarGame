@@ -52,12 +52,14 @@ public class PlayGameScreen extends GameScreen {
 		this.sidePanel = new SidePanel(gameContext.getMap(), this.gameContext.getWidth() - 150, 0, 150,
 				this.gameContext.getHeight(), gameContext.getSpriteHandler().get("side_panel_texture").get(0),
 				mapWidget.getFrame());
-		sidePanelActionManager = new SidePanelActionManager(this, sidePanel);
+		engine = new Engine(gameContext.getMap(), mapWidget, sidePanel);
+		sidePanelActionManager = new SidePanelActionManager(this, sidePanel, engine);
 		sidePanelMouseManager = new SidePanelMouseManager(this, sidePanel, mapWidget);
 		sidePanelMouseMotionManager = new SidePanelMouseMotionManager(this, sidePanel);
 		sidePanelKeyboardManager = new SidePanelKeyboardManager(this,
 				KeyboardFocusManager.getCurrentKeyboardFocusManager(), sidePanel);
 		turnTimer = System.currentTimeMillis();
+		// mapWidget.setRevealed();
 	}
 
 	/**
@@ -66,21 +68,34 @@ public class PlayGameScreen extends GameScreen {
 	public void prepare() {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyboardManager);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(sidePanelKeyboardManager);
+		buildMapWidget();
+		buildSidePanel();
+		engine.setAutoGame();
+		engine.updateFog();
+	}
+
+	private void buildMapWidget() {
 		mapWidget.addMouseListener(this.mouseManager);
 		mapWidget.addMouseMotionListener(this.mouseMotionManager);
 		mapWidget.addKeyListener(keyboardManager);
 		mapWidget.setBackground(Color.BLACK);
 		mapWidget.setOpaque(true);
 		this.addWidgets(mapWidget);
+	}
+
+	private void buildSidePanel() {
 		sidePanel.addMouseListener(sidePanelMouseManager);
 		sidePanel.addMouseMotionListener(sidePanelMouseMotionManager);
 		sidePanel.addKeyListener(sidePanelKeyboardManager);
 		sidePanel.setBackground(new Color(153, 108, 57));
 		sidePanel.setOpaque(true);
+		sidePanel.setLayout(null);
+		sidePanel.addWidget(new ButtonWidget("Next turn", 10, 20 + sidePanel.getMinimapHeight(),
+				sidePanel.getMinimapWidth(), 20, 12, Color.black, sidePanelActionManager));
+		sidePanel.addWidget(new ButtonWidget("Auto-play: " + (mapWidget.isVisible() ? "on" : "off"), 10,
+				50 + sidePanel.getMinimapHeight(), sidePanel.getMinimapWidth(), 20, 12, Color.black,
+				sidePanelActionManager));
 		this.addWidgets(sidePanel);
-		engine = new Engine(gameContext.getMap(), mapWidget, sidePanel);
-		engine.setAutoGame();
-		engine.updateFog();
 	}
 
 	public MapWidget getMapWidget() {
@@ -91,7 +106,7 @@ public class PlayGameScreen extends GameScreen {
 		mapWidget.moveFrame(leftScrolling ? -1 : rightScrolling ? 1 : 0,
 				upScrolling ? -1 : downScrolling ? 1 : 0);
 		sidePanel.updateFrame();
-		if (engine.autoGameMode && System.currentTimeMillis() - turnTimer > turnDuration) {
+		if (engine.isAutoGame() && System.currentTimeMillis() - turnTimer > turnDuration) {
 			engine.nextTurn();
 			turnTimer = System.currentTimeMillis();
 		}
@@ -194,15 +209,26 @@ class SidePanelActionManager extends GameScreenActionManager {
 
 	protected PlayGameScreen gameScreen = null;
 	protected SidePanel sidePanel;
+	protected Engine engine ;
 
-	public SidePanelActionManager(GameScreen gameScreen, SidePanel sidePanel) {
+	public SidePanelActionManager(GameScreen gameScreen, SidePanel sidePanel, Engine engine) {
 		super(gameScreen);
 		this.gameScreen = (PlayGameScreen) gameScreen;
 		this.sidePanel = sidePanel;
+		this.engine = engine ;
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
+		if (e.getActionCommand().equals("Next turn")) {
+			engine.nextTurn();			;
+		} else if (e.getActionCommand().equals("Auto-play: on")) {
+			((ButtonWidget)e.getSource()).setText("Auto-play: off");
+			engine.unSetAutoGame();
+		} else if (e.getActionCommand().equals("Auto-play: off")) {
+			((ButtonWidget)e.getSource()).setText("Auto-play: on");
+			engine.setAutoGame();
+		}
 	}
 
 }
@@ -251,7 +277,7 @@ class SidePanelMouseManager extends GameScreenMouseManager {
 		super(gameScreen);
 		this.gameScreen = (PlayGameScreen) gameScreen;
 		this.sidePanel = sidePanel;
-		this.mapWidget = mapWidget ;
+		this.mapWidget = mapWidget;
 	}
 
 	public void mouseClicked(MouseEvent event) {
@@ -261,9 +287,10 @@ class SidePanelMouseManager extends GameScreenMouseManager {
 						+ sidePanel.getMinimapRectangle().getWidth()
 				&& event.getY() < sidePanel.getMinimapRectangle().getY()
 						+ sidePanel.getMinimapRectangle().getHeight()) {
-			sidePanel.setFramePosition((int)(event.getX() - sidePanel.getMinimapFrame().getWidth() / 2),
-					(int)(event.getY() - sidePanel.getMinimapFrame().getHeight() / 2));
-			mapWidget.updateFramePositionFromMinimap (sidePanel.getMinimapFrame(), sidePanel.getMinimapRectangle()) ;
+			sidePanel.setFramePosition((int) (event.getX() - sidePanel.getMinimapFrame().getWidth() / 2),
+					(int) (event.getY() - sidePanel.getMinimapFrame().getHeight() / 2));
+			mapWidget.updateFramePositionFromMinimap(sidePanel.getMinimapFrame(),
+					sidePanel.getMinimapRectangle());
 		} else
 			System.out.println("Clicked! (panel)");
 	}
