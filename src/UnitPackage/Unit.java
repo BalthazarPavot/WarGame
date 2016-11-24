@@ -1,10 +1,12 @@
 package UnitPackage;
 
+import wargame.basic_types.Position;
+
 public abstract class Unit implements IUnit {
 	
 	protected  Caracteristique maCara;
 	protected boolean isActive;
-
+	protected Position mapos;
 	public boolean isActive() {
 		return isActive;
 	}
@@ -18,7 +20,7 @@ public abstract class Unit implements IUnit {
 	}
 
 	public  void setMaCara(Caracteristique maCara) {
-		maCara = maCara;
+		this.maCara = maCara;
 	}
 
 
