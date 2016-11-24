@@ -69,7 +69,7 @@ public class Engine {
 	private Unit selectedAllie = null;
 	private Unit selectedEnnemy = null;
 	public ArrayList<Position> currentPath = null;
-	public boolean autoGameMode = false;
+	private boolean autoGameMode = false;
 
 	public Engine(Map map, MapWidget mapWidget, SidePanel sidePanel) {
 		this.map = map;
@@ -105,11 +105,13 @@ public class Engine {
 		mapWidget.freeFog();
 		for (Unit unit : units) {
 			Position position = unit.getPosition();
-			int rangeX = 5 * Map.squareWidth + position.getX();// ((Object) unit.getMaCara()).getRange() ;
-			int rangeY = 5 * Map.squareHeight + position.getY();// ((Object) unit.getMaCara()).getRange() ;
-			for (int x = rangeX - 10 * Map.squareWidth; x < rangeX; x += Map.squareWidth) {
-				for (int y = rangeY - 10 * Map.squareHeight; y < rangeY; y += Map.squareHeight) {
-					mapWidget.setFog(x, y, 2);
+			int sight = 4 * Map.squareWidth;
+			for (int x = position.getX() - sight; x < sight + position.getX()
+					+ Map.squareWidth; x += Map.squareWidth) {
+				for (int y = position.getY() - sight; y < sight + position.getY()
+						+ Map.squareHeight; y += Map.squareHeight) {
+					if (position.distance(x, y) <= sight)
+						mapWidget.setFog(x, y, 2);
 				}
 			}
 		}
@@ -173,6 +175,10 @@ public class Engine {
 
 	public void setSelectedEnnemy(Unit selectedEnnemy) {
 		this.selectedEnnemy = selectedEnnemy;
+	}
+
+	public boolean isAutoGame() {
+		return autoGameMode;
 	}
 
 	public void setAutoGame() {
