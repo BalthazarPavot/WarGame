@@ -25,6 +25,7 @@ public class MapWidget extends JPanel implements GameWidget {
 	protected boolean drawGrid = true;
 	protected ImageWidget semiFog;
 	protected HashMap<Integer, HashMap<Integer, Integer>> fog = new HashMap<Integer, HashMap<Integer, Integer>>();
+	protected boolean relealed = false ;
 
 	public MapWidget(Map map, int width, int height, SpriteHandler spriteHandler) {
 		this.map = map;
@@ -138,11 +139,11 @@ public class MapWidget extends JPanel implements GameWidget {
 			y = p.getY();
 			if (!(x < (int) frame.x - Map.squareWidth || y < (int) frame.y - Map.squareHeight
 					|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height
-					|| fogAt(p) == 0)) {
+					|| (fogAt(p) == 0 && !relealed))) {
 				for (MapElement me : map.getReal(x, y))
 					me.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
 							y / zoom - (int) frame.y / zoom + dy);
-				if (fogAt(p) == 1)
+				if (fogAt(p) == 1 && !relealed)
 					semiFog.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
 							y / zoom - (int) frame.y / zoom + dy);
 			}
@@ -207,5 +208,17 @@ public class MapWidget extends JPanel implements GameWidget {
 				* map.getWidth());
 		this.frame.y = (int) ((double) ((minimapFrame.y - minimapRectangle.y)) / minimapRectangle.height
 				* map.getHeight());
+	}
+
+	public boolean isRevealed () {
+		return relealed ;
+	}
+
+	public void setRevealed () {
+		relealed = true ;
+	}
+
+	public void setNotRelealed () {
+		relealed = false ;
 	}
 }
