@@ -1,18 +1,16 @@
 package UnitPackage;
 
+import wargame.basic_types.Position;
+
 public class Aerien extends Unit {
 	Aerien(int pvmax, double atkSlaching, double defSlaching, double atkBlunt, double defBlunt,
-			double atkPercing, double defPercing, double atkMagic, double defMagic)
+			double atkPercing, double defPercing, double atkMagic, double defMagic,Position p)
 	{
+		super(p);
 		caracteristique=new Caracteristique(pvmax,atkSlaching,defSlaching,atkBlunt,defBlunt,atkPercing,defPercing,atkMagic,defMagic);
 		caracteristique.setFlying(true);
 	}
 
-	@Override
-	public void move() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void makeDamage(Unit u) {

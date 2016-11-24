@@ -1,14 +1,21 @@
 package UnitPackage;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import wargame.basic_types.Position;
+import wargame.map.Map;
 
 public abstract class Unit implements IUnit {
-	
-	protected  Caracteristique caracteristique;
+
+	protected Caracteristique caracteristique;
 	protected boolean isActive;
-	protected Position mapos;
-	public Position getMapos() {
-		return mapos;
+	public Position position;
+	public ArrayList<Position> stackedPosition;
+	public int currentPosition;
+
+	public Unit(Position position) {
+		this.position = position;
 	}
 
 	public Caracteristique getCaracteristique() {
@@ -19,10 +26,6 @@ public abstract class Unit implements IUnit {
 		this.caracteristique = caracteristique;
 	}
 
-	public void setMapos(Position mapos) {
-		this.mapos = mapos;
-	}
-
 	public boolean isActive() {
 		return isActive;
 	}
@@ -31,7 +34,28 @@ public abstract class Unit implements IUnit {
 		this.isActive = isActive;
 	}
 
+	public void setmove(ArrayList<Position> currentPath) {
+		stackedPosition = currentPath;
+		this.currentPosition = 0;
+	}
 
-
-
+	public void move() {
+		if (stackedPosition != null && currentPosition < stackedPosition.size()) {
+			this.position = stackedPosition.get(currentPosition++);
+		} else
+			stackedPosition = null;
+	}
+	public ArrayList<Position> canMove(Map map,Position destination)
+	{
+		ArrayList<Position> distance=null;
+		if(this.caracteristique.isFlying())
+		{
+			distance = map.pathByFlying(position, destination);
+		}
+		else
+		{
+			distance= map.pathByWalking(position, destination);
+		}
+		return distance;
+	}
 }
