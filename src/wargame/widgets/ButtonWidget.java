@@ -10,6 +10,7 @@ import java.awt.Rectangle;
 import javax.swing.JButton;
 
 import wargame.basic_types.Position;
+import wargame.screens.GameScreenActionManager;
 
 public class ButtonWidget extends JButton implements GameWidget {
 
@@ -42,10 +43,26 @@ public class ButtonWidget extends JButton implements GameWidget {
 	}
 
 	public ButtonWidget(String text, Rectangle boundRect, int size, Color color) {
+		this(text, boundRect, size, color, null);
+	}
+
+	public ButtonWidget(String text, int x, int y, int w, int h, int size, Color color,
+			GameScreenActionManager actionManager) {
+		this(text, new Rectangle(x, y, w, h), size, color, actionManager);
+	}
+
+	public ButtonWidget(String text, Rectangle boundRect, int size, Color color,
+			GameScreenActionManager actionManager) {
 		super(text);
 		this.boundRect = boundRect;
 		this.setTextSize(size);
 		this.setForeground(color);
+		this.setActionCommand(text);
+		this.addActionListener(actionManager);
+	}
+
+	public void setText (String text) {
+		super.setText (text);
 		this.setActionCommand(text);
 	}
 
@@ -137,7 +154,6 @@ public class ButtonWidget extends JButton implements GameWidget {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 	}
-
 
 	@Override
 	public void paintComponent(Graphics g, int zoom, int x, int y) {
