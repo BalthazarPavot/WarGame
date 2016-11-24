@@ -1,22 +1,20 @@
 package UnitPackage;
 
 public class Ranger extends Terrestre {
-	public Ranger()
-	{
-		maCara.setAtkBlunt(0);
-		maCara.setAtkMagic(0);
-		maCara.setAtkPercing(1.5);
-		
-		maCara.setDefSlashing(0.5);
-		maCara.setDefBlunt(1.5);
+
+	
+	
+	Ranger(int pvmax, double atkSlaching, double defSlaching, double atkBlunt, double defBlunt, double atkPercing,
+			double defPercing, double atkMagic, double defMagic) {
+		super(pvmax, atkSlaching, defSlaching, atkBlunt, defBlunt, atkPercing, defPercing, atkMagic, defMagic);
+		// TODO Auto-generated constructor stub
 	}
-	
-	
+
 	public void makeDamage(Unit u) {
-		if(u.maCara.isFlying()==false) 
+		if(u.caracteristique.isFlying()==false) 
 			super.makeDamage(u);
 		else
-			u.takedamage((int)(10*maCara.getAtkPercing()), 2);
+			u.takeDamagePercing((int)(10*caracteristique.getAtkPercing()));
 	}
 
 }

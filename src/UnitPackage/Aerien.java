@@ -1,10 +1,11 @@
 package UnitPackage;
 
 public class Aerien extends Unit {
-	Aerien()
+	Aerien(int pvmax, double atkSlaching, double defSlaching, double atkBlunt, double defBlunt,
+			double atkPercing, double defPercing, double atkMagic, double defMagic)
 	{
-		maCara=new Caracteristique();
-		maCara.setFlying(true);
+		caracteristique=new Caracteristique(pvmax,atkSlaching,defSlaching,atkBlunt,defBlunt,atkPercing,defPercing,atkMagic,defMagic);
+		caracteristique.setFlying(true);
 	}
 
 	@Override
@@ -27,46 +28,53 @@ public class Aerien extends Unit {
 
 	@Override
 	public void gainLife(int val) {
-		maCara.setPv(maCara.getPv()+val);
+		caracteristique.setPv(caracteristique.getPv()+val);
+		
+	}
+
+
+
+	@Override
+	public void takeDamagePercing(int val) {
+		int val2;
+		if(val-(caracteristique.getDefPercing()*10)<0)
+			val2=0;
+		else
+			val2=(int) (val-(caracteristique.getDefPercing()*10));
+		caracteristique.setPv(caracteristique.getPv() - val2);
+	}
+
+	@Override
+	public void takeDamageBlunt(int val) {
+		int val2;
+		if(val-(caracteristique.getDefBlunt()*10)<0)
+			val2=0;
+		else
+			val2=(int) (val-(caracteristique.getDefBlunt()*10));
+		caracteristique.setPv(caracteristique.getPv() - val2);
 		
 	}
 
 	@Override
-	public void takedamage(int val, int type) {
-		int val2=0;
-		
-		switch(type)
-		{
-		case 1:
-			if(val-(maCara.getDefSlashing()*10)<0)
-				val2=0;
-			else
-				val2=(int) (val-(maCara.getDefSlashing()*10));
-			break;
-		case 2:
-			if(val-(maCara.getDefPercing()*10)<0)
-				val2=0;
-			else
-				val2=(int) (val-(maCara.getDefPercing()*10));
-			break;
-		case 3:
-			if(val-(maCara.getDefBlunt()*10)<0)
-				val2=0;
-			else
-				val2=(int) (val-(maCara.getDefBlunt()*10));
-			break;
-		case 4:
-			if(val-(maCara.getDefMagic()*10)<0)
-				val2=0;
-			else
-				val2=(int) (val-(maCara.getDefMagic()*10));
-			break;
-		default:
+	public void takeDamageMagic(int val) {
+		int val2;
+		if(val-(caracteristique.getDefMagic()*10)<0)
 			val2=0;
-			break;
-		}
-		maCara.setPv(maCara.getPv() - val2);
-
+		else
+			val2=(int) (val-(caracteristique.getDefMagic()*10));
+		caracteristique.setPv(caracteristique.getPv() - val2);
+		
 	}
 
-}
+	@Override
+	public void takeDamageSlaching(int val) {
+		// TODO Auto-generated method stub
+		int val2;
+		if(val-(caracteristique.getDefSlashing()*10)<0)
+			val2=0;
+		else
+			val2=(int) (val-(caracteristique.getDefSlashing()*10));
+		caracteristique.setPv(caracteristique.getPv() - val2);
+	}
+
+};

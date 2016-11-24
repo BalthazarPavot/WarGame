@@ -4,9 +4,25 @@ import wargame.basic_types.Position;
 
 public abstract class Unit implements IUnit {
 	
-	protected  Caracteristique maCara;
+	protected  Caracteristique caracteristique;
 	protected boolean isActive;
 	protected Position mapos;
+	public Position getMapos() {
+		return mapos;
+	}
+
+	public Caracteristique getCaracteristique() {
+		return caracteristique;
+	}
+
+	public void setCaracteristique(Caracteristique caracteristique) {
+		this.caracteristique = caracteristique;
+	}
+
+	public void setMapos(Position mapos) {
+		this.mapos = mapos;
+	}
+
 	public boolean isActive() {
 		return isActive;
 	}
@@ -15,13 +31,7 @@ public abstract class Unit implements IUnit {
 		this.isActive = isActive;
 	}
 
-	public  Caracteristique getMaCara() {
-		return maCara;
-	}
 
-	public  void setMaCara(Caracteristique maCara) {
-		this.maCara = maCara;
-	}
 
 
 }

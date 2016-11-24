@@ -1,47 +1,61 @@
 package UnitPackage;
 
 public class Caracteristique {
-	
+
 	private int pvMax;
 	private int pv;
-	
+
 	private boolean flying;
-	
-	private double atkSlashing;
-	private double defSlashing;
-	
-	private double atkPercing;
-	private double defPercing;
-	
-	private double atkBlunt;
-	private double defBlunt;
-	
-	private double atkMagic;
-	private double defMagic;
-	
-	private int range;
-	private int nbCaseDep;
-	
-	Caracteristique()
-	{
-		flying=false;
-		
-		atkBlunt=1;
-		atkPercing=1;
-		atkSlashing=1;
-		atkMagic=1;
-		
-		defBlunt=1;
-		defPercing=1;
-		defSlashing=1;
-		defMagic=1;
-		
-		pvMax=100;
-		pv=100;
-		
-		range=1;
-		nbCaseDep=2;
+
+	private double atkSlashing = 1.0;
+	private double defSlashing = 1.0;
+
+	private double atkPercing = 1.0;
+	private double defPercing = 1.0;
+
+	private double atkBlunt = 1.0;
+	private double defBlunt = 1.0;
+
+	private double atkMagic = 1.0;
+	private double defMagic = 1.0;
+
+	private int range = 1;
+	private int sigh=3;
+	private int nbCaseDep = 2;
+
+	public Caracteristique(int pvmax, double atkSlaching, double defSlaching, double atkBlunt, double defBlunt,
+			double atkPercing, double defPercing, double atkMagic, double defMagic) {
+
+		flying = false;
+
+		this.pvMax = pvmax;
+		pv = pvmax;
+
+		this.atkPercing = atkPercing;
+		this.defPercing = defPercing;
+
+		this.atkBlunt = atkBlunt;
+		this.defBlunt = defBlunt;
+
+		this.atkMagic = atkMagic;
+		this.defMagic = defMagic;
+
+		this.atkSlashing = atkSlaching;
+		this.defSlashing = defSlaching;
+
 	}
+
+
+
+	public int getSigh() {
+		return sigh;
+	}
+
+	public void setSigh(int sigh) {
+		this.sigh = sigh;
+	}
+
+
 
 	public int getRange() {
 		return range;
@@ -75,11 +89,11 @@ public class Caracteristique {
 		this.defMagic = defMagic;
 	}
 
-	public  int getPvMax() {
+	public int getPvMax() {
 		return pvMax;
 	}
 
-	public  void setPvMax(int pvMax) {
+	public void setPvMax(int pvMax) {
 		this.pvMax = pvMax;
 	}
 
@@ -146,5 +160,5 @@ public class Caracteristique {
 	public void setDefBlunt(double defBlunt) {
 		this.defBlunt = defBlunt;
 	}
-	
+
 }

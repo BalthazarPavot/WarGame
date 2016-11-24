@@ -1,18 +1,14 @@
 package UnitPackage;
 
 public class Soldier extends Terrestre {
-	
-	public Soldier()
-	{
-		maCara.setAtkBlunt(0);
-		maCara.setAtkMagic(0);
-		maCara.setAtkSlashing(1.5);
-		
-		maCara.setDefBlunt(0.5);
-		maCara.setDefPercing(1.5);
-		
-		
+
+	Soldier(int pvmax, double atkSlaching, double defSlaching, double atkBlunt, double defBlunt, double atkPercing,
+			double defPercing, double atkMagic, double defMagic) {
+		super(pvmax, atkSlaching, defSlaching, atkBlunt, defBlunt, atkPercing, defPercing, atkMagic, defMagic);
+		// TODO Auto-generated constructor stub
 	}
+	
+
 	
 
 
