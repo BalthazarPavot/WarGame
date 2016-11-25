@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JPanel;
@@ -25,7 +26,9 @@ public class MapWidget extends JPanel implements GameWidget {
 	protected boolean drawGrid = true;
 	protected ImageWidget semiFog;
 	protected HashMap<Integer, HashMap<Integer, Integer>> fog = new HashMap<Integer, HashMap<Integer, Integer>>();
-	protected boolean relealed = false ;
+	protected boolean relealed = false;
+	protected ArrayList<UnitDisplayer> unitDisplayers = new ArrayList<UnitDisplayer>();
+	protected ArrayList<UnitDisplayer> ennemyDisplayers = new ArrayList<UnitDisplayer>();
 
 	public MapWidget(Map map, int width, int height, SpriteHandler spriteHandler) {
 		this.map = map;
@@ -161,6 +164,23 @@ public class MapWidget extends JPanel implements GameWidget {
 			for (y = beginY; y <= frame.height - overY; y += Map.squareHeight / zoom)
 				g.drawLine(beginX - overX + dx, y + dy, (int) frame.width - 1 - overX, y);
 		}
+		for (UnitDisplayer unitDisplayer : unitDisplayers) {
+			x = unitDisplayer.getX();
+			y = unitDisplayer.getY();
+			if (!(x < (int) frame.x - Map.squareWidth || y < (int) frame.y - Map.squareHeight
+					|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height))
+				unitDisplayer.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
+						y / zoom - (int) frame.y / zoom + dy);
+			;
+		}
+	}
+
+	public void addUnitDisplayer(UnitDisplayer unitDisplayer) {
+		unitDisplayers.add(unitDisplayer);
+	}
+
+	public void addEnnemyDisplayer(UnitDisplayer unitDisplayer) {
+		ennemyDisplayers.add(unitDisplayer);
 	}
 
 	public Rectangle getFrame() {
@@ -210,15 +230,15 @@ public class MapWidget extends JPanel implements GameWidget {
 				* map.getHeight());
 	}
 
-	public boolean isRevealed () {
-		return relealed ;
+	public boolean isRevealed() {
+		return relealed;
 	}
 
-	public void setRevealed () {
-		relealed = true ;
+	public void setRevealed() {
+		relealed = true;
 	}
 
-	public void setNotRelealed () {
-		relealed = false ;
+	public void setNotRelealed() {
+		relealed = false;
 	}
 }

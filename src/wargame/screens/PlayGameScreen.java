@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import wargame.GameContext;
 import wargame.basic_types.Position;
 import wargame.engine.Engine;
+import wargame.unit.Unit;
 import wargame.widgets.*;
 
 /**
@@ -80,6 +81,9 @@ public class PlayGameScreen extends GameScreen {
 		mapWidget.addKeyListener(keyboardManager);
 		mapWidget.setBackground(Color.BLACK);
 		mapWidget.setOpaque(true);
+		for (Unit unit : engine.getPlayerUnits())
+			mapWidget.addUnitDisplayer(new UnitDisplayer(unit,
+					gameContext.getSpriteHandler().getUnitStaticPositionSprites(unit)));
 		this.addWidgets(mapWidget);
 	}
 
@@ -209,24 +213,25 @@ class SidePanelActionManager extends GameScreenActionManager {
 
 	protected PlayGameScreen gameScreen = null;
 	protected SidePanel sidePanel;
-	protected Engine engine ;
+	protected Engine engine;
 
 	public SidePanelActionManager(GameScreen gameScreen, SidePanel sidePanel, Engine engine) {
 		super(gameScreen);
 		this.gameScreen = (PlayGameScreen) gameScreen;
 		this.sidePanel = sidePanel;
-		this.engine = engine ;
+		this.engine = engine;
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
 		if (e.getActionCommand().equals("Next turn")) {
-			engine.nextTurn();			;
+			engine.nextTurn();
+			;
 		} else if (e.getActionCommand().equals("Auto-play: on")) {
-			((ButtonWidget)e.getSource()).setText("Auto-play: off");
+			((ButtonWidget) e.getSource()).setText("Auto-play: off");
 			engine.unSetAutoGame();
 		} else if (e.getActionCommand().equals("Auto-play: off")) {
-			((ButtonWidget)e.getSource()).setText("Auto-play: on");
+			((ButtonWidget) e.getSource()).setText("Auto-play: on");
 			engine.setAutoGame();
 		}
 	}
