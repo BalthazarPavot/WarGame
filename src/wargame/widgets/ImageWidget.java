@@ -78,6 +78,14 @@ public class ImageWidget extends JLabel implements GameWidget {
 		return image;
 	}
 
+	public ImageWidget() {
+		this(new Rectangle(0, 0, 0, 0));
+	}
+
+	public ImageWidget(int x, int y) {
+		this(new Rectangle(x, y, 0, 0));
+	}
+
 	public ImageWidget(int x, int y, int w, int h) {
 		this(new Rectangle(x, y, w, h));
 	}
