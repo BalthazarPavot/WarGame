@@ -75,6 +75,10 @@ public class Position implements Comparable<Object> {
 				&& this.y == ((Position) o).getY();
 	}
 
+	public boolean equals(Position p) {
+		return this.x == p.getX() && this.y == p.getY();
+	}
+
 	/**
 	 * @return All the positions around the current one.
 	 */
@@ -133,6 +137,14 @@ public class Position implements Comparable<Object> {
 		return compareTo((Position) o);
 	}
 
+	public boolean after(Position p) {
+		return compareTo (p) == 1 ;
+	}
+
+	public boolean before(Position p) {
+		return compareTo (p) == -1 ;
+	}
+
 	public int compareTo(Position p) {
 		if (this.y < p.getY())
 			return -1;
@@ -145,7 +157,7 @@ public class Position implements Comparable<Object> {
 		return 0;
 	}
 
-	public String toString () {
-		return String.format("[%d;%d]", x, y) ;
+	public String toString() {
+		return String.format("[%d;%d]", x, y);
 	}
 }
