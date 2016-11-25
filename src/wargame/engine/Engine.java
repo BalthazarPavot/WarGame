@@ -3,61 +3,13 @@ package wargame.engine;
 
 import java.util.ArrayList;
 
+
 import wargame.basic_types.Position;
 import wargame.map.Map;
+import wargame.unit.Unit;
 import wargame.widgets.MapWidget;
 import wargame.widgets.SidePanel;
 
-// temp class, waiting for the other's code.
-class Unit {
-	public Position position;
-	public ArrayList<Position> stackedPositions;
-	public int curentPosition;
-
-	public Unit(Position position) {
-		this.position = position;
-	}
-
-	public boolean isClicked(Position pos) {
-		return true;
-	}
-
-	public boolean inflictDamage(Unit unit) {
-		return false;
-	}
-
-	public boolean heal(Unit unit) {
-		return false;
-	}
-
-	public void setMove(ArrayList<Position> currentPath) {
-		stackedPositions = currentPath;
-		this.curentPosition = 0;
-	}
-
-	public void move() {
-		if (stackedPositions != null && curentPosition < stackedPositions.size())
-			this.position = stackedPositions.get(curentPosition++);
-		else
-			stackedPositions = null;
-	}
-
-	public ArrayList<Position> canMove(Map map, Position destination) {
-		return null;
-	}
-
-	public void play(ArrayList<Unit> playerUnits, ArrayList<Unit> ennemyUnits, Map map) {
-		move();
-	}
-
-	public Object getMaCara() {
-		return null;
-	}
-
-	public Position getPosition() {
-		return position;
-	}
-}
 
 public class Engine {
 
@@ -187,6 +139,14 @@ public class Engine {
 
 	public void unSetAutoGame() {
 		autoGameMode = false;
+	}
+
+	public ArrayList<Unit> getPlayerUnits() {
+		return playerUnits;
+	}
+
+	public ArrayList<Unit> getEnnemyUnits() {
+		return ennemyUnits;
 	}
 
 }
