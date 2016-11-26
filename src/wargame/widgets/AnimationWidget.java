@@ -31,16 +31,26 @@ public class AnimationWidget extends Component {
 		positionList.add(p);
 	}
 
-	public void replay () {
-		currentImage = 0 ;
+	public void replay() {
+		currentImage = 0;
 	}
 
-	public void paintComponent(Graphics g) {
+	public void move(int x, int y) {
+		for (Position position : positionList)
+			position.move(x, y);
+	}
+
+	public void move(Position position) {
+		move(position.getX(), position.getY());
+	}
+
+	public boolean paintComponent(Graphics g) {
 		if (System.currentTimeMillis() - lastFrame > frameDuration) {
 			g.drawImage(imageList.get(currentImage), positionList.get(currentImage).getX(),
 					positionList.get(currentImage++).getY(), this);
 			lastFrame = System.currentTimeMillis();
 		}
+		return currentImage < imageList.size () ;
 	}
 
 }
