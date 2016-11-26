@@ -35,6 +35,10 @@ public class Position implements Comparable<Object> {
 		this.y += y;
 	}
 
+	public void move(Position position) {
+		move (position.getX(), position.getY()) ;
+	}
+
 	/**
 	 * @return The x value of the position
 	 */
