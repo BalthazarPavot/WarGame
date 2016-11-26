@@ -201,7 +201,7 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		ArrayList<BufferedImage> unitWalkImages = null;
 		AnimationWidget animation[] = new AnimationWidget[4];
 		AnimationWidget currentAnimation;
-		Position[] vector = new Position[] {new Position (0, -6)} ;
+		Position[] vector = new Position[] {new Position (0, -6), new Position (-6, 0), new Position (0, 6), new Position (6, 0)} ;
 
 		if (unit.getClass() == Unit.class) {
 			unitWalkImages = get("magos_walking_poses");
@@ -210,9 +210,11 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 			return null;
 		for (int animNo = 0; animNo < 4; animNo++) {
 			currentAnimation = new AnimationWidget(0.05);
-			Posit
-			for (int i = 0; i < 9; i++)
-				currentAnimation.addImage(unitWalkImages.get(animNo*9+i));
+			Position dPosition = new Position (0, 0) ;
+			for (int i = 0; i < 9; i++) {
+				currentAnimation.addImage(unitWalkImages.get(animNo*9+i), dPosition);
+				dPosition.move(vector[animNo]);
+			}
 		}
 		return animation;
 	}
