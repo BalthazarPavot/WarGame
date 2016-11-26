@@ -1,12 +1,14 @@
 
 package wargame.engine;
 
+import java.awt.Graphics;
 import java.util.ArrayList;
 
 
 import wargame.basic_types.Position;
 import wargame.map.Map;
 import wargame.unit.Unit;
+import wargame.widgets.AnimationWidget;
 import wargame.widgets.MapWidget;
 import wargame.widgets.SidePanel;
 
@@ -22,6 +24,7 @@ public class Engine {
 	private Unit selectedEnnemy = null;
 	public ArrayList<Position> currentPath = null;
 	private boolean autoGameMode = false;
+	private AnimationWidget currentAnimation = null;
 
 	public Engine(Map map, MapWidget mapWidget, SidePanel sidePanel) {
 		this.map = map;
@@ -147,6 +150,30 @@ public class Engine {
 
 	public ArrayList<Unit> getEnnemyUnits() {
 		return ennemyUnits;
+	}
+
+	public void setAnimation (AnimationWidget animation) {
+		setAnimation (animation, 0, 0) ;
+	}
+
+	public void setAnimation (AnimationWidget animation, Position position) {
+		setAnimation(animation, position.getX(), position.getY());
+	}
+
+	public void setAnimation (AnimationWidget animation, int x, int y) {
+		currentAnimation = animation ;
+		currentAnimation.move(x, y);
+	}
+
+	public void displayAnimations(Graphics g) {
+		if (currentAnimation == null)
+			return;
+		if (!currentAnimation.paintComponent (g))
+			currentAnimation = null ;
+	}
+
+	public boolean inAnimationLoop() {
+		return currentAnimation != null ;
 	}
 
 }
