@@ -161,7 +161,7 @@ public class Position implements Comparable<Object> {
 		return String.format("[%d;%d]", x, y);
 	}
 	
-	public boolean isDiagonal (Position posBegin, Position posEnd) {
-		return posBegin.getX() != posEnd.getX() && posBegin.getY() != posEnd.getY();
+	public boolean isDiagonal (Position posEnd) {
+		return this.getX() != posEnd.getX() && this.getY() != posEnd.getY();
 	}
 }
