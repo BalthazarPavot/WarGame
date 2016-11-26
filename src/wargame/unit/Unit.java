@@ -4,20 +4,30 @@ import java.util.ArrayList;
 
 import wargame.basic_types.Position;
 import wargame.map.Map;
+import wargame.map.SpriteHandler;
+import wargame.widgets.AnimationWidget;
 
 public class Unit {
-	public static int UPWARD_DIRECRTION = 0;
-	public static int DOWNWARD_DIRECRTION = 2;
-	public static int RIGHTWARD_DIRECRTION = 1;
-	public static int LEFTWARD_DIRECRTION = 3;
+
+	public static final int NO_ACTION = 0;
+	public static final int MOVE_ACTION = 1;
+	public static final int ATTACK_ACTION = 2;
+
+	public static final int UPWARD_DIRECRTION = 0;
+	public static final int RIGHTWARD_DIRECRTION = 1;
+	public static final int DOWNWARD_DIRECRTION = 2;
+	public static final int LEFTWARD_DIRECRTION = 3;
+
 	public int staticPosition = DOWNWARD_DIRECRTION;
 	public Position position;
 	public ArrayList<Position> stackedPositions;
 	public int curentPosition;
 	public boolean hasPlayed = false;
+	public AnimationWidget[] walkAnimations ;
 
-	public Unit(Position position) {
+	public Unit(Position position, SpriteHandler spriteHandler) {
 		this.position = position;
+		this.walkAnimations = spriteHandler.getUnitWalkSprites(this) ;
 	}
 
 	public boolean isClicked(Position pos) {
@@ -39,36 +49,42 @@ public class Unit {
 		this.curentPosition = 0;
 	}
 
-	public Position[] currentAndNextPositions() {
-		return new Position[] { stackedPositions.get(curentPosition), stackedPositions
-				.get(curentPosition + ((curentPosition < stackedPositions.size() - 1) ? 1 : 0)) };
-	}
-
-	public void move() {
+	public boolean move() {
 		Position nextPosition;
-		if (stackedPositions != null && curentPosition < stackedPositions.size()) {
-			if (curentPosition < stackedPositions.size() - 1) {
-				nextPosition = stackedPositions.get(curentPosition + 1);
-				if (nextPosition.getX() > position.getX())
-					staticPosition = LEFTWARD_DIRECRTION;
-				else if (nextPosition.getX() < position.getX())
-					staticPosition = RIGHTWARD_DIRECRTION;
-				else if (nextPosition.getY() > position.getY())
-					staticPosition = DOWNWARD_DIRECRTION;
-				else if (nextPosition.getY() < position.getY())
-					staticPosition = UPWARD_DIRECRTION;
+		if (stackedPositions != null) {
+			if (curentPosition < stackedPositions.size()) {
+				if (curentPosition < stackedPositions.size() - 1) {
+					nextPosition = stackedPositions.get(curentPosition + 1);
+					if (nextPosition.getX() > position.getX())
+						staticPosition = LEFTWARD_DIRECRTION;
+					else if (nextPosition.getX() < position.getX())
+						staticPosition = RIGHTWARD_DIRECRTION;
+					else if (nextPosition.getY() > position.getY())
+						staticPosition = DOWNWARD_DIRECRTION;
+					else if (nextPosition.getY() < position.getY())
+						staticPosition = UPWARD_DIRECRTION;
+				}
+				this.position = stackedPositions.get(curentPosition++);
+			} else {
+				stackedPositions = null;
+				return false;
 			}
-			this.position = stackedPositions.get(curentPosition++);
-		} else
-			stackedPositions = null;
+		} else {
+			return false;
+		}
+		return true;
 	}
 
 	public ArrayList<Position> canMove(Map map, Position destination) {
 		return null;
 	}
 
-	public void play(ArrayList<Unit> playerUnits, ArrayList<Unit> ennemyUnits, Map map) {
-		move();
+	public int play(ArrayList<Unit> playerUnits, ArrayList<Unit> ennemyUnits, Map map) {
+		if (!hasPlayed) {
+			hasPlayed = true;
+			return move() ? MOVE_ACTION : NO_ACTION ;
+		}
+		return NO_ACTION;
 	}
 
 	public Object getMaCara() {
@@ -77,5 +93,12 @@ public class Unit {
 
 	public Position getPosition() {
 		return position;
+	}
+
+	public AnimationWidget getCurrentWalkAnimation() {
+		System.out.println(staticPosition);
+		System.out.println(walkAnimations);
+		System.out.println(walkAnimations[staticPosition]);
+		return walkAnimations[staticPosition];
 	}
 }
