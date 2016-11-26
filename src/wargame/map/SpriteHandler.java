@@ -210,7 +210,6 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 			return null;
 		for (int animNo = 0; animNo < 4; animNo++) {
 			currentAnimation = new AnimationWidget(0.05);
-			Posit
 			for (int i = 0; i < 9; i++)
 				currentAnimation.addImage(unitWalkImages.get(animNo*9+i));
 		}
