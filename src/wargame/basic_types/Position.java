@@ -164,4 +164,16 @@ public class Position implements Comparable<Object> {
 	public boolean isDiagonal (Position posEnd) {
 		return this.getX() != posEnd.getX() && this.getY() != posEnd.getY();
 	}
+	
+	public static int movementCounter (ArrayList <Position> path) {
+		int counter ;
+		Position previousPos = path.get(0);
+		counter = 0 ;
+		for (Position currentPos : path) {
+			if (currentPos.getX() != previousPos.getX()) ++counter ;
+			if (currentPos.getY() != previousPos.getY()) ++counter ;
+			previousPos = currentPos ;
+		}
+		return counter;
+	}
 }
