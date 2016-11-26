@@ -21,7 +21,7 @@ import wargame.map.SpriteHandler;
  */
 public class GameContext {
 
-	private static String defaultConfigPath = "/config.conf";
+	private static String defaultConfigPath = "config.conf";
 	public static String TITLE = "War Game";
 	static int MIN_WIDTH = 800;
 	static int MAX_WIDTH = 1600;
