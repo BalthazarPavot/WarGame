@@ -12,8 +12,12 @@ package wargame;
 public class ErrorManager {
 
 	static int EARLY_TERMINATION_ERROR = 1;
+	static int MISSING_CONFIG_FILE_ERROR = 2;
+	static int BAD_CONFIG_FILE_ERROR = 3;
+	static int BAD_SCREEN_ID_ERROR = 4;
 	static int UNKNOWN_ERROR = 255;
-
+	static String MISSING_CONFIG_FILE_ERROR_MESSAGE = "Could not load config file. Verify its content, please.";
+	static String BAD_SCREEN_ID_ERROR_MESSAGE = "Internal error, unknown screen ID: ";
 	private static ErrorManager singleton = new ErrorManager();
 
 	/**

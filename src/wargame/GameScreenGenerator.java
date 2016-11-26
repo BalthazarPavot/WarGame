@@ -49,10 +49,11 @@ public class GameScreenGenerator {
 			break;
 		case GameScreen.PLAY_GAME_SCREEN:
 			preparedGameScreen = new PlayGameScreen(gameContext);
-			break ;
+			break;
 		default:
-			this.gameContext.getErrorManager()
-					.exitError(String.format("Unknown screen id: %d", gameScreenID));
+			this.gameContext.getErrorManager().exitError(
+					ErrorManager.BAD_SCREEN_ID_ERROR_MESSAGE + gameScreenID,
+					ErrorManager.BAD_CONFIG_FILE_ERROR);
 			break;
 		}
 		preparedGameScreen.prepare();

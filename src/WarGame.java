@@ -49,7 +49,6 @@ public class WarGame {
 			gameScreenGenerator.prepareGameScreen(gameScreenID);
 			gameScreen = gameScreenGenerator.getGameScreen();
 			gameScreenID = gameScreen.run();
-			System.out.printf("Screen ID: %d\n", gameScreenID);
 		} while (gameScreenID != GameScreen.QUIT_SCREEN);
 		System.exit(0);
 	}

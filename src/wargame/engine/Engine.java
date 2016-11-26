@@ -3,61 +3,13 @@ package wargame.engine;
 
 import java.util.ArrayList;
 
+
 import wargame.basic_types.Position;
 import wargame.map.Map;
+import wargame.unit.Unit;
 import wargame.widgets.MapWidget;
 import wargame.widgets.SidePanel;
 
-// temp class, waiting for the other's code.
-class Unit {
-	public Position position;
-	public ArrayList<Position> stackedPositions;
-	public int curentPosition;
-
-	public Unit(Position position) {
-		this.position = position;
-	}
-
-	public boolean isClicked(Position pos) {
-		return true;
-	}
-
-	public boolean inflictDamage(Unit unit) {
-		return false;
-	}
-
-	public boolean heal(Unit unit) {
-		return false;
-	}
-
-	public void setMove(ArrayList<Position> currentPath) {
-		stackedPositions = currentPath;
-		this.curentPosition = 0;
-	}
-
-	public void move() {
-		if (stackedPositions != null && curentPosition < stackedPositions.size())
-			this.position = stackedPositions.get(curentPosition++);
-		else
-			stackedPositions = null;
-	}
-
-	public ArrayList<Position> canMove(Map map, Position destination) {
-		return null;
-	}
-
-	public void play(ArrayList<Unit> playerUnits, ArrayList<Unit> ennemyUnits, Map map) {
-		move();
-	}
-
-	public Object getMaCara() {
-		return null;
-	}
-
-	public Position getPosition() {
-		return position;
-	}
-}
 
 public class Engine {
 
@@ -69,7 +21,7 @@ public class Engine {
 	private Unit selectedAllie = null;
 	private Unit selectedEnnemy = null;
 	public ArrayList<Position> currentPath = null;
-	public boolean autoGameMode = false;
+	private boolean autoGameMode = false;
 
 	public Engine(Map map, MapWidget mapWidget, SidePanel sidePanel) {
 		this.map = map;
@@ -105,11 +57,13 @@ public class Engine {
 		mapWidget.freeFog();
 		for (Unit unit : units) {
 			Position position = unit.getPosition();
-			int rangeX = 5 * Map.squareWidth + position.getX();// ((Object) unit.getMaCara()).getRange() ;
-			int rangeY = 5 * Map.squareHeight + position.getY();// ((Object) unit.getMaCara()).getRange() ;
-			for (int x = rangeX - 10 * Map.squareWidth; x < rangeX; x += Map.squareWidth) {
-				for (int y = rangeY - 10 * Map.squareHeight; y < rangeY; y += Map.squareHeight) {
-					mapWidget.setFog(x, y, 2);
+			int sight = 4 * Map.squareWidth;
+			for (int x = position.getX() - sight; x < sight + position.getX()
+					+ Map.squareWidth; x += Map.squareWidth) {
+				for (int y = position.getY() - sight; y < sight + position.getY()
+						+ Map.squareHeight; y += Map.squareHeight) {
+					if (position.distance(x, y) <= sight)
+						mapWidget.setFog(x, y, 2);
 				}
 			}
 		}
@@ -175,12 +129,24 @@ public class Engine {
 		this.selectedEnnemy = selectedEnnemy;
 	}
 
+	public boolean isAutoGame() {
+		return autoGameMode;
+	}
+
 	public void setAutoGame() {
 		autoGameMode = true;
 	}
 
 	public void unSetAutoGame() {
 		autoGameMode = false;
+	}
+
+	public ArrayList<Unit> getPlayerUnits() {
+		return playerUnits;
+	}
+
+	public ArrayList<Unit> getEnnemyUnits() {
+		return ennemyUnits;
 	}
 
 }

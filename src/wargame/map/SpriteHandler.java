@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import wargame.ErrorManager;
+import wargame.basic_types.Position;
+import wargame.unit.Unit;
+import wargame.widgets.AnimationWidget;
 import wargame.widgets.ImageWidget;
 
 /**
@@ -181,5 +184,36 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 			x = initX;
 			y += imageHeight;
 		}
+	}
+
+	public BufferedImage[] getUnitStaticPositionSprites(Unit unit) {
+		ArrayList<BufferedImage> unitWalkImages = null;
+		if (unit.getClass() == Unit.class) {
+			unitWalkImages = get("magos_static_poses");
+		}
+		if (unitWalkImages == null || unitWalkImages.size() < 3)
+			return null;
+		return new BufferedImage[] { unitWalkImages.get(0), unitWalkImages.get(1), unitWalkImages.get(2),
+				unitWalkImages.get(3) };
+	}
+
+	public AnimationWidget[] getUnitWalkSprites(Unit unit) {
+		ArrayList<BufferedImage> unitWalkImages = null;
+		AnimationWidget animation[] = new AnimationWidget[4];
+		AnimationWidget currentAnimation;
+		Position[] vector = new Position[] {new Position (0, -6)} ;
+
+		if (unit.getClass() == Unit.class) {
+			unitWalkImages = get("magos_walking_poses");
+		}
+		if (unitWalkImages == null || unitWalkImages.size() < 3)
+			return null;
+		for (int animNo = 0; animNo < 4; animNo++) {
+			currentAnimation = new AnimationWidget(0.05);
+			Posit
+			for (int i = 0; i < 9; i++)
+				currentAnimation.addImage(unitWalkImages.get(animNo*9+i));
+		}
+		return animation;
 	}
 }

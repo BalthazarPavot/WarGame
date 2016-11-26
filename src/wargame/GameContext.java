@@ -64,9 +64,8 @@ public class GameContext {
 			try {
 				loadConf(confFile);
 			} catch (IOException | IllegalArgumentException e) {
-				System.out.println(e);
-				e.printStackTrace();
-				errorManager.exitError("Could not load config file. Verify its content, please.\n");
+				errorManager.exitError(ErrorManager.MISSING_CONFIG_FILE_ERROR_MESSAGE,
+						ErrorManager.MISSING_CONFIG_FILE_ERROR);
 			}
 			confFile = null;
 		}
@@ -195,11 +194,12 @@ public class GameContext {
 			setConfiguration(width, height, autoSave, sound,
 					new FileOutputStream(new File(this.getClass().getResource(defaultConfigPath).toURI())));
 		} catch (FileNotFoundException e) {
-			errorManager.exitError("Could not open config file", 4);
+			errorManager.exitError(ErrorManager.MISSING_CONFIG_FILE_ERROR_MESSAGE,
+					ErrorManager.MISSING_CONFIG_FILE_ERROR);
 		} catch (URISyntaxException e) {
-			errorManager.exitError("Could not find config file", 4);
+			errorManager.exitError("Could not find config file", ErrorManager.BAD_CONFIG_FILE_ERROR);
 		} catch (IOException e) {
-			errorManager.exitError("Could not close config file", 4);
+			errorManager.exitError("Could not write config file", ErrorManager.BAD_CONFIG_FILE_ERROR);
 		}
 	}
 
@@ -213,7 +213,7 @@ public class GameContext {
 		try {
 			properties.store(configStream, "Generated");
 		} catch (IOException e) {
-			errorManager.exitError("Could not write config file", 4);
+			errorManager.exitError("Could not write config file", ErrorManager.BAD_CONFIG_FILE_ERROR);
 		}
 		configStream.close();
 	}

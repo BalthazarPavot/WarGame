@@ -261,7 +261,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	}
 
 	/**
-	 * Tell if two positions can be joined by walking
+	 * Give the path to join two positions by walking
 	 * 
 	 * @param begin_x
 	 * @param begin_y
@@ -270,7 +270,55 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @return true if two positions can be joined by walking
 	 */
 	public ArrayList<Position> pathByWalking(int begin_x, int begin_y, int end_x, int end_y) {
-		return AStart(begin_x, begin_y, end_x, end_y, MapElement.isWalkableString);
+		return AStart(end_x, end_y, begin_x, begin_y, MapElement.isWalkableString);
+	}
+
+	/**
+	 * Give the path to join two positions by walking
+	 * 
+	 * @param begin
+	 * @param end
+	 * @return true if two positions can be joined by walking
+	 */
+	public ArrayList<Position> pathByWalking(Position begin, Position end) {
+		return pathByWalking(begin.getX(), begin.getY(), end.getX(), end.getY());
+	}
+
+	/**
+	 * Give the path to join two positions by walking
+	 * 
+	 * @param begin_x
+	 * @param begin_y
+	 * @param end_x
+	 * @param end_y
+	 * @return true if two positions can be joined by walking
+	 */
+	public ArrayList<Position> pathByFlying(int begin_x, int begin_y, int end_x, int end_y) {
+		return AStart(end_x, end_y, begin_x, begin_y, MapElement.isFlyableString);
+	}
+
+	/**
+	 * Give the path to join two positions by walking
+	 * 
+	 * @param begin
+	 * @param end
+	 * @return true if two positions can be joined by walking
+	 */
+	public ArrayList<Position> pathByFlying(Position begin, Position end) {
+		return pathByFlying(begin.getX(), begin.getY(), end.getX(), end.getY());
+	}
+
+	/**
+	 * Tell if two positions can be joined by walking
+	 * 
+	 * @param begin_x
+	 * @param begin_y
+	 * @param end_x
+	 * @param end_y
+	 * @return true if two positions can be joined by walking
+	 */
+	public boolean canCrossByFlying(int begin_x, int begin_y, int end_x, int end_y) {
+		return AStart(end_x, end_y, begin_x, begin_y, MapElement.isFlyableString) != null;
 	}
 
 	/**
@@ -280,8 +328,8 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param end
 	 * @return true if two positions can be joined by walking
 	 */
-	public ArrayList<Position> pathByWalking(Position begin, Position end) {
-		return pathByWalking(begin.getX(), begin.getY(), end.getX(), end.getY());
+	public boolean canCrossByFlying(Position begin, Position end) {
+		return canCrossByFlying (begin.getX(), begin.getY(), end.getX(), end.getY());
 	}
 
 	/**
@@ -294,7 +342,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @return true if two positions can be joined by walking
 	 */
 	public boolean canCrossByWalking(int begin_x, int begin_y, int end_x, int end_y) {
-		return AStart(begin_x, begin_y, end_x, end_y, MapElement.isWalkableString) != null;
+		return AStart(end_x, end_y, begin_x, begin_y, MapElement.isWalkableString) != null;
 	}
 
 	/**
@@ -305,8 +353,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @return true if two positions can be joined by walking
 	 */
 	public boolean canCrossByWalking(Position begin, Position end) {
-		return AStart(begin.getX(), begin.getY(), end.getX(), end.getY(),
-				MapElement.isWalkableString) != null;
+		return canCrossByWalking (begin.getX(), begin.getY(), end.getX(), end.getY());
 	}
 
 	/**

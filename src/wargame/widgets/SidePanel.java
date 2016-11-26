@@ -1,6 +1,7 @@
 
 package wargame.widgets;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -21,7 +22,7 @@ public class SidePanel extends JPanel implements GameWidget {
 	private int minimapY = 10;
 	private int minimapWidth = Map.defaultWidth / 30;
 	private int minimapHeight = Map.defaultHeight / 30;
-	private Rectangle minimapRectangle = new Rectangle(minimapX, minimapY, minimapWidth, minimapHeight);
+	private Rectangle minimapRectangle = new Rectangle(minimapX, minimapY, getMinimapWidth(), getMinimapHeight());
 	private Rectangle miniFrame;
 	private BufferedImage background;
 	private BufferedImage fogImage;
@@ -39,8 +40,8 @@ public class SidePanel extends JPanel implements GameWidget {
 		background = backgroundImage;
 		this.frame = frame;
 		this.miniFrame = new Rectangle();
-		miniFrame.width = (int) (frame.width / (double) map.getWidth() * minimapWidth);
-		miniFrame.height = (int) (frame.height / (double) map.getHeight() * minimapHeight);
+		miniFrame.width = (int) (frame.width / (double) map.getWidth() * getMinimapWidth());
+		miniFrame.height = (int) (frame.height / (double) map.getHeight() * getMinimapHeight());
 	}
 
 	/**
@@ -143,19 +144,20 @@ public class SidePanel extends JPanel implements GameWidget {
 
 	public void addWidget(GameWidget widget) {
 		widgets.add(widget);
+		this.add((Component)widget);
 		widget.bind();
 	}
 
 	private void buildImage() {
-		BufferedImage image = new BufferedImage(minimapWidth, minimapHeight, BufferedImage.TYPE_INT_RGB);
+		BufferedImage image = new BufferedImage(getMinimapWidth(), getMinimapHeight(), BufferedImage.TYPE_INT_RGB);
 		int x;
 		int y;
-		int dx = map.getWidth() / minimapWidth;
-		int dy = map.getHeight() / minimapHeight;
+		int dx = map.getWidth() / getMinimapWidth();
+		int dy = map.getHeight() / getMinimapHeight();
 		int pixel;
 
-		for (x = 0; x < minimapWidth; x += 1) {
-			for (y = 0; y < minimapHeight; y += 1) {
+		for (x = 0; x < getMinimapWidth(); x += 1) {
+			for (y = 0; y < getMinimapHeight(); y += 1) {
 				pixel = map.colorAt(x * dx / Map.squareWidth * Map.squareWidth,
 						y * dy / Map.squareHeight * Map.squareHeight);
 				/* 13490654 : snow tree 1842462 : rock 462861 : fir */
@@ -166,26 +168,26 @@ public class SidePanel extends JPanel implements GameWidget {
 			}
 		}
 		this.minimap = image;
-		fogImage = new BufferedImage(minimapWidth, minimapHeight, BufferedImage.TYPE_INT_ARGB);
+		fogImage = new BufferedImage(getMinimapWidth(), getMinimapHeight(), BufferedImage.TYPE_INT_ARGB);
 		freeFog();
 	}
 
 	public void freeFog() {
-		for (int x = 0; x < minimapWidth; x += 1)
-			for (int y = 0; y < minimapHeight; y += 1)
+		for (int x = 0; x < getMinimapWidth(); x += 1)
+			for (int y = 0; y < getMinimapHeight(); y += 1)
 				fogImage.setRGB(x, y, 0xff000000);
 	}
 
 	public void buildFog(MapWidget mapWidget) {
 		int x;
 		int y;
-		int dx = map.getWidth() / minimapWidth;
-		int dy = map.getHeight() / minimapHeight;
+		int dx = map.getWidth() / getMinimapWidth();
+		int dy = map.getHeight() / getMinimapHeight();
 
-		for (x = 0; x < minimapWidth; x += 1) {
-			for (y = 0; y < minimapHeight; y += 1) {
+		for (x = 0; x < getMinimapWidth(); x += 1) {
+			for (y = 0; y < getMinimapHeight(); y += 1) {
 				switch (mapWidget.fogAt(x * dx / Map.squareWidth * Map.squareWidth,
-						y * dy / Map.squareHeight * Map.squareHeight)) {
+						y * dy / Map.squareHeight * Map.squareHeight)+(mapWidget.isRevealed()?2:0)) {
 				case 0:
 					setFog(x, y);
 					break;
@@ -228,10 +230,10 @@ public class SidePanel extends JPanel implements GameWidget {
 	}
 
 	public void updateFrame() {
-		miniFrame.width = (int) (frame.width / (double) map.getWidth() * minimapWidth);
-		miniFrame.height = (int) (frame.height / (double) map.getHeight() * minimapHeight);
-		miniFrame.x = (int) (frame.x / (double) map.getWidth() * minimapWidth + minimapX);
-		miniFrame.y = (int) (frame.y / (double) map.getHeight() * minimapHeight + minimapY);
+		miniFrame.width = (int) (frame.width / (double) map.getWidth() * getMinimapWidth());
+		miniFrame.height = (int) (frame.height / (double) map.getHeight() * getMinimapHeight());
+		miniFrame.x = (int) (frame.x / (double) map.getWidth() * getMinimapWidth() + minimapX);
+		miniFrame.y = (int) (frame.y / (double) map.getHeight() * getMinimapHeight() + minimapY);
 	}
 
 	/**
@@ -248,5 +250,33 @@ public class SidePanel extends JPanel implements GameWidget {
 
 	public Rectangle getMinimapFrame() {
 		return miniFrame;
+	}
+
+	/**
+	 * @return the minimapHeight
+	 */
+	public int getMinimapHeight() {
+		return minimapHeight;
+	}
+
+	/**
+	 * @param minimapHeight the minimapHeight to set
+	 */
+	public void setMinimapHeight(int minimapHeight) {
+		this.minimapHeight = minimapHeight;
+	}
+
+	/**
+	 * @return the minimapWidth
+	 */
+	public int getMinimapWidth() {
+		return minimapWidth;
+	}
+
+	/**
+	 * @param minimapWidth the minimapWidth to set
+	 */
+	public void setMinimapWidth(int minimapWidth) {
+		this.minimapWidth = minimapWidth;
 	}
 }
