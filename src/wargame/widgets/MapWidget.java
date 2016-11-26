@@ -114,7 +114,16 @@ public class MapWidget extends JPanel implements GameWidget {
 	 * @param g
 	 */
 	public void paintComponent(Graphics g) {
-		this.paintComponent(g, zoom);
+		paintComponent(g, true);
+	}
+
+	/**
+	 * draw the image at its position
+	 * 
+	 * @param g
+	 */
+	public void paintComponent(Graphics g, boolean displayUnits) {
+		this.paintComponent(g, zoom, displayUnits);
 	}
 
 	/**
@@ -124,7 +133,17 @@ public class MapWidget extends JPanel implements GameWidget {
 	 * @param zoom
 	 */
 	public void paintComponent(Graphics g, int zoom) {
-		paintComponent(g, zoom, 0, 0);
+		paintComponent (g, zoom, true) ;
+	}
+
+	/**
+	 * draw the image at its position
+	 * 
+	 * @param g
+	 * @param zoom
+	 */
+	public void paintComponent(Graphics g, int zoom, boolean displayUnits) {
+		paintComponent(g, zoom, 0, 0, displayUnits);
 	}
 
 	/**
@@ -134,6 +153,16 @@ public class MapWidget extends JPanel implements GameWidget {
 	 * @param zoom
 	 */
 	public void paintComponent(Graphics g, int zoom, int dx, int dy) {
+		paintComponent(g, zoom, dx, dy, true) ;
+	}
+
+	/**
+	 * draw the image at its position
+	 * 
+	 * @param g
+	 * @param zoom
+	 */
+	public void paintComponent(Graphics g, int zoom, int dx, int dy, boolean displayUnits) {
 		super.paintComponent(g);
 		int x;
 		int y;
@@ -164,15 +193,16 @@ public class MapWidget extends JPanel implements GameWidget {
 			for (y = beginY; y <= frame.height - overY; y += Map.squareHeight / zoom)
 				g.drawLine(beginX - overX + dx, y + dy, (int) frame.width - 1 - overX, y);
 		}
-		for (UnitDisplayer unitDisplayer : unitDisplayers) {
-			x = unitDisplayer.getX();
-			y = unitDisplayer.getY();
-			if (!(x < (int) frame.x - Map.squareWidth || y < (int) frame.y - Map.squareHeight
-					|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height))
-				unitDisplayer.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
-						y / zoom - (int) frame.y / zoom + dy);
-			;
-		}
+		if (displayUnits)
+			for (UnitDisplayer unitDisplayer : unitDisplayers) {
+				x = unitDisplayer.getX();
+				y = unitDisplayer.getY();
+				if (!(x < (int) frame.x - Map.squareWidth || y < (int) frame.y - Map.squareHeight
+						|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height))
+					unitDisplayer.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
+							y / zoom - (int) frame.y / zoom + dy);
+				;
+			}
 	}
 
 	public void addUnitDisplayer(UnitDisplayer unitDisplayer) {
