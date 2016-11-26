@@ -2,6 +2,7 @@
 package wargame.screens;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
@@ -110,6 +111,8 @@ public class PlayGameScreen extends GameScreen {
 		mapWidget.moveFrame(leftScrolling ? -1 : rightScrolling ? 1 : 0,
 				upScrolling ? -1 : downScrolling ? 1 : 0);
 		sidePanel.updateFrame();
+		if (engine.inAnimationLoop ())
+			return ;
 		if (engine.isAutoGame() && System.currentTimeMillis() - turnTimer > turnDuration) {
 			engine.nextTurn();
 			turnTimer = System.currentTimeMillis();
@@ -118,6 +121,11 @@ public class PlayGameScreen extends GameScreen {
 
 	protected void display() {
 		repaint();
+	}
+
+	protected void paintComponent (Graphics g) {
+		sidePanel.paintComponent(g);
+		mapWidget.paintComponent(g, !engine.inAnimationLoop());
 	}
 }
 
