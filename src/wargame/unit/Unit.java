@@ -39,6 +39,11 @@ public class Unit {
 		this.curentPosition = 0;
 	}
 
+	public Position[] currentAndNextPositions() {
+		return new Position[] { stackedPositions.get(curentPosition), stackedPositions
+				.get(curentPosition + ((curentPosition < stackedPositions.size() - 1) ? 1 : 0)) };
+	}
+
 	public void move() {
 		Position nextPosition;
 		if (stackedPositions != null && curentPosition < stackedPositions.size()) {
