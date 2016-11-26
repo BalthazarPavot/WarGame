@@ -1,4 +1,3 @@
-
 package wargame.basic_types;
 
 import java.util.ArrayList;
@@ -9,7 +8,7 @@ import wargame.map.Map;
  * Simple class defining a entire position (x;y) in a grid.
  * 
  * @author Balthazar Pavot
- *
+ * 
  */
 public class Position implements Comparable<Object> {
 
@@ -55,8 +54,8 @@ public class Position implements Comparable<Object> {
 	 * @return The distance between the current point and the given one.
 	 */
 	public double distance(int x, int y) {
-		return Math.sqrt(
-				Math.pow((double) (x - this.x), (double) 2) + Math.pow((double) (y - this.y), (double) 2));
+		return Math.sqrt(Math.pow((double) (x - this.x), (double) 2)
+				+ Math.pow((double) (y - this.y), (double) 2));
 	}
 
 	/**
@@ -71,7 +70,8 @@ public class Position implements Comparable<Object> {
 	 * @return True if the positions are the same.
 	 */
 	public boolean equals(Object o) {
-		return o.getClass() == this.getClass() && this.x == ((Position) o).getX()
+		return o.getClass() == this.getClass()
+				&& this.x == ((Position) o).getX()
 				&& this.y == ((Position) o).getY();
 	}
 
@@ -100,34 +100,165 @@ public class Position implements Comparable<Object> {
 	/**
 	 * @return All the positions reachable giving the amount of moving points.
 	 */
-	public ArrayList<Position> getReachableNeighbor(
-			int movePoints) {/* ArrayList<Position> neighbor;
-								 * 
-								 * neighbor = new ArrayList<Position>(); neighbor.add(new Position(x, y -
-								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y -
-								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y));
-								 * neighbor.add(new Position(x + Map.squareWidth, y + Map.squareHeight));
-								 * neighbor.add(new Position(x, y + Map.squareHeight)); neighbor.add(new
-								 * Position(x - Map.squareWidth, y + Map.squareHeight)); neighbor.add(new
-								 * Position(x - Map.squareWidth, y)); neighbor.add(new Position(x -
-								 * Map.squareWidth, y - Map.squareHeight)); return neighbor; */
+	public ArrayList<Position> getReachableNeighbor(int movePoints) {/*
+																	 * ArrayList<
+																	 * Position>
+																	 * neighbor;
+																	 * 
+																	 * neighbor
+																	 * = new
+																	 * ArrayList
+																	 * <
+																	 * Position>
+																	 * ();
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x, y -
+																	 * Map
+																	 * .squareHeight
+																	 * ));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x + Map.
+																	 * squareWidth
+																	 * , y -
+																	 * Map.
+																	 * squareHeight
+																	 * ));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x + Map.
+																	 * squareWidth
+																	 * , y));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x + Map.
+																	 * squareWidth
+																	 * , y +
+																	 * Map.
+																	 * squareHeight
+																	 * ));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x, y +
+																	 * Map
+																	 * .squareHeight
+																	 * ));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x - Map.
+																	 * squareWidth
+																	 * , y +
+																	 * Map.
+																	 * squareHeight
+																	 * ));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x - Map.
+																	 * squareWidth
+																	 * , y));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x - Map.
+																	 * squareWidth
+																	 * , y -
+																	 * Map.
+																	 * squareHeight
+																	 * ));
+																	 * return
+																	 * neighbor;
+																	 */
 		return new ArrayList<Position>();
 	}
 
 	/**
-	 * @return All the positions targetable by a character, giving his sight line.
+	 * @return All the positions targetable by a character, giving his sight
+	 *         line.
 	 */
-	public ArrayList<Position> getTargetableNeighbor(
-			int sightLigne) {/* ArrayList<Position> neighbor;
-								 * 
-								 * neighbor = new ArrayList<Position>(); neighbor.add(new Position(x, y -
-								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y -
-								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y));
-								 * neighbor.add(new Position(x + Map.squareWidth, y + Map.squareHeight));
-								 * neighbor.add(new Position(x, y + Map.squareHeight)); neighbor.add(new
-								 * Position(x - Map.squareWidth, y + Map.squareHeight)); neighbor.add(new
-								 * Position(x - Map.squareWidth, y)); neighbor.add(new Position(x -
-								 * Map.squareWidth, y - Map.squareHeight)); return neighbor; */
+	public ArrayList<Position> getTargetableNeighbor(int sightLigne) {/*
+																	 * ArrayList<
+																	 * Position>
+																	 * neighbor;
+																	 * 
+																	 * neighbor
+																	 * = new
+																	 * ArrayList
+																	 * <
+																	 * Position>
+																	 * ();
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x, y -
+																	 * Map
+																	 * .squareHeight
+																	 * ));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x + Map.
+																	 * squareWidth
+																	 * , y -
+																	 * Map.
+																	 * squareHeight
+																	 * ));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x + Map.
+																	 * squareWidth
+																	 * , y));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x + Map.
+																	 * squareWidth
+																	 * , y +
+																	 * Map.
+																	 * squareHeight
+																	 * ));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x, y +
+																	 * Map
+																	 * .squareHeight
+																	 * ));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x - Map.
+																	 * squareWidth
+																	 * , y +
+																	 * Map.
+																	 * squareHeight
+																	 * ));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x - Map.
+																	 * squareWidth
+																	 * , y));
+																	 * neighbor
+																	 * .add(new
+																	 * Position
+																	 * (x - Map.
+																	 * squareWidth
+																	 * , y -
+																	 * Map.
+																	 * squareHeight
+																	 * ));
+																	 * return
+																	 * neighbor;
+																	 */
 		return new ArrayList<Position>();
 	}
 
@@ -138,11 +269,11 @@ public class Position implements Comparable<Object> {
 	}
 
 	public boolean after(Position p) {
-		return compareTo (p) == 1 ;
+		return compareTo(p) == 1;
 	}
 
 	public boolean before(Position p) {
-		return compareTo (p) == -1 ;
+		return compareTo(p) == -1;
 	}
 
 	public int compareTo(Position p) {
@@ -160,19 +291,21 @@ public class Position implements Comparable<Object> {
 	public String toString() {
 		return String.format("[%d;%d]", x, y);
 	}
-	
-	public boolean isDiagonal (Position posEnd) {
+
+	public boolean isDiagonal(Position posEnd) {
 		return this.getX() != posEnd.getX() && this.getY() != posEnd.getY();
 	}
-	
-	public static int movementCounter (ArrayList <Position> path) {
-		int counter ;
+
+	public static int movementCounter(ArrayList<Position> path) {
+		int counter;
 		Position previousPos = path.get(0);
-		counter = 0 ;
+		counter = 0;
 		for (Position currentPos : path) {
-			if (currentPos.getX() != previousPos.getX()) ++counter ;
-			if (currentPos.getY() != previousPos.getY()) ++counter ;
-			previousPos = currentPos ;
+			if (currentPos.getX() != previousPos.getX())
+				++counter;
+			if (currentPos.getY() != previousPos.getY())
+				++counter;
+			previousPos = currentPos;
 		}
 		return counter;
 	}
