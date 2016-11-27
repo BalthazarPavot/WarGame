@@ -29,12 +29,14 @@ public class MapWidget extends JPanel implements GameWidget {
 	protected boolean relealed = false;
 	protected ArrayList<UnitDisplayer> unitDisplayers = new ArrayList<UnitDisplayer>();
 	protected ArrayList<UnitDisplayer> ennemyDisplayers = new ArrayList<UnitDisplayer>();
+	public InterfaceWidget interfaceWidget;
 
 	public MapWidget(Map map, int width, int height, SpriteHandler spriteHandler) {
 		this.map = map;
 		this.boundRect = new Rectangle(0, 0, width, height);
 		this.frame = new Rectangle(0, 0, width, height);
 		semiFog = new ImageWidget(new Rectangle(0, 0, 64, 64), spriteHandler.get("semi_fog").get(0));
+		interfaceWidget = new InterfaceWidget (frame) ;
 	}
 
 	public void freeFog() {
@@ -114,16 +116,7 @@ public class MapWidget extends JPanel implements GameWidget {
 	 * @param g
 	 */
 	public void paintComponent(Graphics g) {
-		paintComponent(g, true);
-	}
-
-	/**
-	 * draw the image at its position
-	 * 
-	 * @param g
-	 */
-	public void paintComponent(Graphics g, boolean displayUnits) {
-		this.paintComponent(g, zoom, displayUnits);
+		this.paintComponent(g, zoom);
 	}
 
 	/**
@@ -133,17 +126,7 @@ public class MapWidget extends JPanel implements GameWidget {
 	 * @param zoom
 	 */
 	public void paintComponent(Graphics g, int zoom) {
-		paintComponent (g, zoom, true) ;
-	}
-
-	/**
-	 * draw the image at its position
-	 * 
-	 * @param g
-	 * @param zoom
-	 */
-	public void paintComponent(Graphics g, int zoom, boolean displayUnits) {
-		paintComponent(g, zoom, 0, 0, displayUnits);
+		paintComponent(g, zoom, 0, 0);
 	}
 
 	/**
@@ -153,16 +136,6 @@ public class MapWidget extends JPanel implements GameWidget {
 	 * @param zoom
 	 */
 	public void paintComponent(Graphics g, int zoom, int dx, int dy) {
-		paintComponent(g, zoom, dx, dy, true) ;
-	}
-
-	/**
-	 * draw the image at its position
-	 * 
-	 * @param g
-	 * @param zoom
-	 */
-	public void paintComponent(Graphics g, int zoom, int dx, int dy, boolean displayUnits) {
 		super.paintComponent(g);
 		int x;
 		int y;
@@ -193,7 +166,8 @@ public class MapWidget extends JPanel implements GameWidget {
 			for (y = beginY; y <= frame.height - overY; y += Map.squareHeight / zoom)
 				g.drawLine(beginX - overX + dx, y + dy, (int) frame.width - 1 - overX, y);
 		}
-		if (displayUnits)
+		interfaceWidget.paintComponent(g, zoom);
+		if (!interfaceWidget.inAnimationLoop())
 			for (UnitDisplayer unitDisplayer : unitDisplayers) {
 				x = unitDisplayer.getX();
 				y = unitDisplayer.getY();
@@ -201,7 +175,6 @@ public class MapWidget extends JPanel implements GameWidget {
 						|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height))
 					unitDisplayer.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
 							y / zoom - (int) frame.y / zoom + dy);
-				;
 			}
 	}
 
@@ -270,5 +243,13 @@ public class MapWidget extends JPanel implements GameWidget {
 
 	public void setNotRelealed() {
 		relealed = false;
+	}
+
+	public Position getInGamePosition(Position position) {
+
+//	    return x * self.zoom - self.dx, y * self.zoom - self.dy, w / self.zoom, \
+//	      h / self.zoom
+		return new Position (position.getX() * zoom + (int) frame.x,
+							position.getY() * zoom + (int) frame.y) ;
 	}
 }
