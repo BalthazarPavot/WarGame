@@ -107,7 +107,7 @@ public abstract class GameScreen extends JPanel {
 		this.screenHasFinished = false;
 		for (Component widget : gameWidgets) {
 			this.add(widget);
-			((GameWidget) widget).bind() ;
+			((GameWidget) widget).bind();
 		}
 		this.display();
 		GameScreen.mainFrame.setVisible(true);
@@ -131,7 +131,7 @@ public abstract class GameScreen extends JPanel {
 	 */
 	protected void display() {
 		// this.removeAll();
-//		this.revalidate();
+		// this.revalidate();
 		this.repaint();
 	}
 
