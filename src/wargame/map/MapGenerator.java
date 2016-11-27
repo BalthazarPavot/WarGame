@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
-import wargame.basic_types.Position;
 import wargame.widgets.ImageWidget;
 
 /**
@@ -63,8 +62,8 @@ public class MapGenerator {
 			applySprites(treeShapes, rockShapes, waterShapes);
 			removePopAreas(4);
 		} while (!this.map.canCrossByWalking(map.getAlliePopArea(), map.getEnnemyPopArea()));
-		for (Position pos:map.pathByWalking (map.getAlliePopArea(), map.getEnnemyPopArea()))
-			map.getReal(pos).remove(map.getReal(pos).size()-1) ;
+//		for (Position pos:map.pathByWalking (map.getAlliePopArea(), map.getEnnemyPopArea()))
+//			map.getReal(pos).remove(map.getReal(pos).size()-1) ;
 	}
 
 	/**

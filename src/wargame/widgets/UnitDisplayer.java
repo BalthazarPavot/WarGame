@@ -43,7 +43,7 @@ public class UnitDisplayer extends ImageWidget {
 
 	@Override
 	public void paintComponent(Graphics g, int zoom, int x, int y) {
-		if (staticPositionImage[unit.staticPosition] != null)
-			g.drawImage(ImageWidget.zoomImage(staticPositionImage[unit.staticPosition], zoom), x, y, this);
+		if (staticPositionImage[unit.staticPosition%4] != null)
+			g.drawImage(ImageWidget.zoomImage(staticPositionImage[unit.staticPosition%4], zoom), x, y, this);
 	}
 }
