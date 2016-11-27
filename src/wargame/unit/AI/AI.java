@@ -99,11 +99,67 @@ public class AI {
 	 * @param map
 	 */
 	public void setBlocked(ArrayList<Unit> enemyList, Map map) {
-		/*
-		 * ArrayList<Position> = map.AStart(begin_x, int begin_y, int end_x, int
-		 * end_y, String methodName) {
-		 * 
-		 * for (Unit enemy : enemyList) { block }
-		 */
+
+		ArrayList<Position> reachablePosition = new ArrayList<Position>();
+
+		reachablePosition = getMovemmentPerimeter(map);
+		reachablePosition.add(this.unitLinked.getPosition());
+		for (Position pos : reachablePosition) {
+			for (Unit u : enemyList) {
+				if (this.unitLinked.getPosition().distance(u.getPosition()) <= u
+						.getCaracteristique().getNbCaseDep())
+					reachablePosition.remove(pos);
+			}
+		}
+		if (reachablePosition.size() != 0)
+			this.blocked = false;
+		else
+			this.blocked = true;
+	}
+
+	/**
+	 * Give a list of all positions at max range of the AI's unit movement
+	 * 
+	 * @param u
+	 * @return movementPerimeter
+	 */
+	public ArrayList<Position> getMovemmentPerimeter(Map map) {
+		ArrayList<Position> movementPerimeter = new ArrayList<Position>();
+		int dx;
+		int dy;
+		int i;
+		int movement;
+		Unit u;
+		Position pos;
+
+		dx = 1;
+		dy = -1;
+		i = 0;
+		u = this.unitLinked;
+		movement = u.caracteristique.getNbCaseDep();
+		pos.setX(u.getPosition().getX() + movement);
+		while (i < movement) {
+			pos.setX(pos.getX() + dx);
+			pos.setX(pos.getY() + dy);
+			if (u.canReach(map, pos)) {
+				Position posToAdd = new Position(pos.getX(), pos.getY());
+				movementPerimeter.add(posToAdd);
+			}
+			++i;
+			if (i % movement == 0) {
+				switch (i) {
+				case movement:
+					dx = -1;
+					break;
+				case movement:
+					dy = 1;
+					break;
+				case movement:
+					dx = 1;
+					break;
+				}
+			}
+		}
+		return movementPerimeter;
 	}
 }
