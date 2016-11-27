@@ -52,6 +52,9 @@ public class Engine {
 		updateFog(playerUnits);
 	}
 
+	/**
+	 * Update the fog using all ally units.
+	 */
 	public void updateFog() {
 		updateFog(playerUnits);
 	}
@@ -78,6 +81,11 @@ public class Engine {
 			currentPath = selectedAllie.canMove(map, position);
 	}
 
+	/**
+	 * Select/unselect units when the map is clicked, on execute actions.
+	 * 
+	 * @param position
+	 */
 	public void mapClicked(Position position) {
 		for (Unit unit : playerUnits)
 			if (unit.isClicked(position)) {
@@ -113,17 +121,32 @@ public class Engine {
 		currentPath = null;
 	}
 
+	/**
+	 * make an ally attack or whatever he can do to the enemy which we clicked on.
+	 * 
+	 * @param unit
+	 */
 	private void allieActOnEnnemy(Unit unit) {
 		if (!selectedAllie.inflictDamage(unit)) {
 		}
 	}
 
+	/**
+	 * make an ally attack or whatever he can do to the ally which we clicked on.
+	 * 
+	 * @param unit
+	 */
 	private void allieActOnAllie(Unit unit) {
 		if (!selectedAllie.heal(unit)) {
 
 		}
 	}
 
+	/**
+	 * return the selected enemy
+	 * 
+	 * @return
+	 */
 	public Unit getSelectedEnnemy() {
 		return selectedEnnemy;
 	}
@@ -136,26 +159,53 @@ public class Engine {
 		return autoGameMode;
 	}
 
+	/**
+	 * make the game play automatically
+	 */
 	public void setAutoGame() {
 		autoGameMode = true;
 	}
 
+	/**
+	 * make the game not to play automatically
+	 */
 	public void unSetAutoGame() {
 		autoGameMode = false;
 	}
 
+	/**
+	 * Return all the player's units.
+	 * 
+	 * @return
+	 */
 	public ArrayList<Unit> getPlayerUnits() {
 		return playerUnits;
 	}
 
+	/**
+	 * Return all the enemies.
+	 * 
+	 * @return
+	 */
 	public ArrayList<Unit> getEnnemyUnits() {
 		return ennemyUnits;
 	}
 
+	/**
+	 * Make the map display the given animation.
+	 * 
+	 * @param animation
+	 */
 	public void setAnimation (AnimationWidget animation) {
 		setAnimation (animation, 0, 0) ;
 	}
 
+	/**
+	 * make the map display the animation at the given position
+	 * 
+	 * @param animation
+	 * @param position
+	 */
 	public void setAnimation (AnimationWidget animation, Position position) {
 		setAnimation(animation, position.getX(), position.getY());
 	}

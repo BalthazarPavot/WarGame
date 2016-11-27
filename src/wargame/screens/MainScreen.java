@@ -91,6 +91,11 @@ public class MainScreen extends GameScreen {
 	}
 }
 
+/**
+ * Manage the actions of the buttons.
+ * @author Balthazar Pavot
+ *
+ */
 class MainScreenActionManager extends GameScreenActionManager {
 
 	public MainScreenActionManager(GameScreen gameScreen) {

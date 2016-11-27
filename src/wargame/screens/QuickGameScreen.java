@@ -46,6 +46,11 @@ public class QuickGameScreen extends GameScreen {
 	}
 }
 
+/**
+ * Manage the actions of the buttons.
+ * @author Balthazar Pavot
+ *
+ */
 class QuickGameScreenActionManager extends GameScreenActionManager {
 
 	public QuickGameScreenActionManager(GameScreen gameScreen) {

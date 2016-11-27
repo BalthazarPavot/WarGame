@@ -7,6 +7,12 @@ import wargame.map.Map;
 import wargame.map.SpriteHandler;
 import wargame.widgets.AnimationWidget;
 
+/**
+ * Represent a unit, and all its characteristics: its position, direction, stacked positions, animation...
+ * 
+ * @author Balthazar Pavot
+ *
+ */
 public class Unit {
 
 	public static final int NO_ACTION = 0;

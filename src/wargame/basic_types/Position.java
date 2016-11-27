@@ -36,7 +36,7 @@ public class Position implements Comparable<Object> {
 	}
 
 	public void move(Position position) {
-		move (position.getX(), position.getY()) ;
+		move(position.getX(), position.getY());
 	}
 
 	/**
@@ -142,11 +142,11 @@ public class Position implements Comparable<Object> {
 	}
 
 	public boolean after(Position p) {
-		return compareTo (p) == 1 ;
+		return compareTo(p) == 1;
 	}
 
 	public boolean before(Position p) {
-		return compareTo (p) == -1 ;
+		return compareTo(p) == -1;
 	}
 
 	public int compareTo(Position p) {

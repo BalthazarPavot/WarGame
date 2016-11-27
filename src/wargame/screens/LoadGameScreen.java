@@ -41,6 +41,11 @@ public class LoadGameScreen extends GameScreen {
 
 }
 
+/**
+ * Manage the actions of the buttons.
+ * @author Balthazar Pavot
+ *
+ */
 class LoadGameScreenActionManager extends GameScreenActionManager {
 
 	public LoadGameScreenActionManager(GameScreen gameScreen) {
