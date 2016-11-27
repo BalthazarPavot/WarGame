@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import wargame.basic_types.Position;
 import wargame.map.Map;
+import wargame.unit.AI.AI;
 
 public class Unit {
 	public static int UPWARD_DIRECRTION = 0;
@@ -15,6 +16,7 @@ public class Unit {
 	public ArrayList<Position> stackedPositions;
 	public int curentPosition;
 	public boolean hasPlayed = false;
+	public AI ai;
 
 	public Unit(Position position) {
 		this.position = position;
