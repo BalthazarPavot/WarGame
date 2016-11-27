@@ -20,20 +20,31 @@ public class Unit {
 	public static final int ATTACK_ACTION = 2;
 
 	public static final int UPWARD_DIRECRTION = 0;
-	public static final int RIGHTWARD_DIRECRTION = 1;
+	public static final int LEFTWARD_DIRECRTION = 1;
 	public static final int DOWNWARD_DIRECRTION = 2;
-	public static final int LEFTWARD_DIRECRTION = 3;
+	public static final int RIGHTWARD_DIRECRTION = 3;
+
+	public static final int UPLEFTWARD_DIRECRTION = 4;
+	public static final int UPRIGHTWARD_DIRECRTION = 5;
+	public static final int DOWNRIGHTWARD_DIRECRTION = 6;
+	public static final int DOWNLEFTWARD_DIRECRTION = 7;
 
 	public int staticPosition = DOWNWARD_DIRECRTION;
 	public Position position;
 	public ArrayList<Position> stackedPositions;
-	public int curentPosition;
+	public int currentPosition;
 	public boolean hasPlayed = false;
-	public AnimationWidget[] walkAnimations ;
+	public ArrayList<AnimationWidget> walkAnimations;
 
 	public Unit(Position position, SpriteHandler spriteHandler) {
 		this.position = position;
-		this.walkAnimations = spriteHandler.getUnitWalkSprites(this) ;
+		this.walkAnimations = spriteHandler.getUnitWalkSprites(this);
+	}
+
+	public ArrayList<Position> getPathToEnd() {
+		if (stackedPositions == null || !(currentPosition < stackedPositions.size() - 1))
+			return null;
+		return new ArrayList<Position> (stackedPositions.subList(currentPosition, stackedPositions.size() - 1));
 	}
 
 	public boolean isClicked(Position pos) {
@@ -52,25 +63,31 @@ public class Unit {
 
 	public void setMove(ArrayList<Position> currentPath) {
 		stackedPositions = currentPath;
-		this.curentPosition = 0;
+		this.currentPosition = 0;
 	}
 
 	public boolean move() {
 		Position nextPosition;
 		if (stackedPositions != null) {
-			if (curentPosition < stackedPositions.size()) {
-				if (curentPosition < stackedPositions.size() - 1) {
-					nextPosition = stackedPositions.get(curentPosition + 1);
-					if (nextPosition.getX() > position.getX())
-						staticPosition = LEFTWARD_DIRECRTION;
-					else if (nextPosition.getX() < position.getX())
-						staticPosition = RIGHTWARD_DIRECRTION;
-					else if (nextPosition.getY() > position.getY())
-						staticPosition = DOWNWARD_DIRECRTION;
-					else if (nextPosition.getY() < position.getY())
-						staticPosition = UPWARD_DIRECRTION;
-				}
-				this.position = stackedPositions.get(curentPosition++);
+			if (currentPosition < stackedPositions.size() - 1) {
+				nextPosition = stackedPositions.get(++currentPosition);
+				if (nextPosition.getX() > position.getX())
+					staticPosition = (nextPosition.getY() > position.getY()) ? DOWNRIGHTWARD_DIRECRTION
+							: (nextPosition.getY() < position.getY()) ? UPRIGHTWARD_DIRECRTION
+									: RIGHTWARD_DIRECRTION;
+				else if (nextPosition.getX() < position.getX())
+					staticPosition = (nextPosition.getY() > position.getY()) ? DOWNLEFTWARD_DIRECRTION
+							: (nextPosition.getY() < position.getY()) ? UPLEFTWARD_DIRECRTION
+									: LEFTWARD_DIRECRTION;
+				else if (nextPosition.getY() > position.getY())
+					staticPosition = (nextPosition.getX() > position.getX()) ? DOWNLEFTWARD_DIRECRTION
+							: (nextPosition.getX() < position.getX()) ? DOWNLEFTWARD_DIRECRTION
+									: DOWNWARD_DIRECRTION;
+				else if (nextPosition.getY() < position.getY())
+					staticPosition = (nextPosition.getX() > position.getX()) ? UPRIGHTWARD_DIRECRTION
+							: (nextPosition.getX() < position.getX()) ? UPLEFTWARD_DIRECRTION
+									: UPWARD_DIRECRTION;
+				this.position = nextPosition;
 			} else {
 				stackedPositions = null;
 				return false;
@@ -88,7 +105,7 @@ public class Unit {
 	public int play(ArrayList<Unit> playerUnits, ArrayList<Unit> ennemyUnits, Map map) {
 		if (!hasPlayed) {
 			hasPlayed = true;
-			return move() ? MOVE_ACTION : NO_ACTION ;
+			return move() ? MOVE_ACTION : NO_ACTION;
 		}
 		return NO_ACTION;
 	}
@@ -101,10 +118,13 @@ public class Unit {
 		return position;
 	}
 
+	public Position getPreviousPosition() {
+		if (stackedPositions == null)
+			return null;
+		return currentPosition != 0 ? stackedPositions.get(currentPosition - 1) : position;
+	}
+
 	public AnimationWidget getCurrentWalkAnimation() {
-		System.out.println(staticPosition);
-		System.out.println(walkAnimations);
-		System.out.println(walkAnimations[staticPosition]);
-		return walkAnimations[staticPosition];
+		return walkAnimations.get(staticPosition);
 	}
 }
