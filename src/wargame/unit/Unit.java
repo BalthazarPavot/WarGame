@@ -73,4 +73,21 @@ public class Unit {
 	public Position getPosition() {
 		return position;
 	}
+	
+	/**
+	 * Return true if the unit can reach the position endPos in 1 round
+	 * @param map
+	 * @param endPos
+	 * @return
+	 */
+	public boolean canReach (Map map, Position endPos) {
+		int distance ;
+		ArrayList <Position> path ;
+
+		path = this.canMove(map, endPos) ;
+		distance = Position.movementCounter (path);
+		// TODO Check if there are error at the next line
+		return distance <= this.getCaracteristique().getNbCaseDep() ;
+	}
+	
 }
