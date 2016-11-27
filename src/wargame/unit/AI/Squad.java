@@ -31,18 +31,18 @@ public class Squad {
 		}
 		computeCenter();
 	}
-	
-	public void computeCenter () {
+
+	public void computeCenter() {
 		int amountX;
 		int amountY;
-		
+
 		amountX = 0;
 		amountY = 0;
-		for (Unit u : this.unitList){
+		for (Unit u : this.unitList) {
 			amountX += u.getPosition().getX();
 			amountY += u.getPosition().getY();
 		}
-		this.center.setX((int) amountX/this.unitList.size());
-		this.center.setY((int) amountY/this.unitList.size());
+		this.center.setX((int) amountX / this.unitList.size());
+		this.center.setY((int) amountY / this.unitList.size());
 	}
 }
