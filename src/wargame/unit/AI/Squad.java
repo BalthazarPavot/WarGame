@@ -25,6 +25,11 @@ public class Squad {
 		computeCenter();
 	}
 
+	public void remove(Unit u) {
+		this.unitList.remove(u);
+		computeCenter();
+	}
+	
 	public void merge(Squad s) {
 		for (Unit u : s.unitList) {
 			add(u);
