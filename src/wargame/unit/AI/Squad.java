@@ -7,9 +7,11 @@ import wargame.unit.Unit;
 
 public class Squad {
 
+	/* Attribut of the class */
 	ArrayList<Unit> unitList;
 	Position center;
 
+	/* Constructor */
 	Squad(Unit u1, Unit u2) {
 		ArrayList<Unit> unitList = new ArrayList<Unit>();
 		unitList.add(u1);
@@ -19,6 +21,7 @@ public class Squad {
 		computeCenter();
 	}
 
+	/* Methods */
 	public void add(Unit u) {
 		this.unitList.add(u);
 		u.ai.setSquad(this);
@@ -29,7 +32,7 @@ public class Squad {
 		this.unitList.remove(u);
 		computeCenter();
 	}
-	
+
 	public void merge(Squad s) {
 		for (Unit u : s.unitList) {
 			add(u);
