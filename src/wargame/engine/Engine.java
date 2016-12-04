@@ -10,6 +10,7 @@ import wargame.unit.Unit;
 import wargame.widgets.AnimationWidget;
 import wargame.widgets.MapWidget;
 import wargame.widgets.SidePanel;
+import wargame.widgets.UnitDisplayer;
 
 /**
  * The engine handle the actions done by the player to make it's characters to attack, move etc. It updates
@@ -30,6 +31,13 @@ public class Engine {
 	public ArrayList<Position> currentPath = null;
 	private boolean autoGameMode = false;
 	private GameContext context = null;
+	private int enemyAppearanceFrequency = 4;
+	private int enemyHerdAppearanceFrequency = 20;
+	private int bigEnemyAppearanceFrequency = 50;
+	private int turnBeforeEnemyArearance = enemyAppearanceFrequency;
+	private int turnBeforeHerdArearance = 0;
+	private int turnBeforeBigEnemyArearance = bigEnemyAppearanceFrequency + 10 ;
+	private int enemyNumberInHerd = 5 ;
 
 	public Engine(GameContext context, MapWidget mapWidget, SidePanel sidePanel) {
 		this.map = context.getMap();
@@ -52,9 +60,41 @@ public class Engine {
 			displayAction(ennemy.play(playerUnits, ennemyUnits, map), ennemy);
 			ennemy.hasPlayed = false;
 		}
+		makeEnemiesPop();
 		updateFog(playerUnits);
 		selectAllie(null);
 		selectEnnemy(null);
+		turnBeforeEnemyArearance--;
+		turnBeforeHerdArearance--;
+		turnBeforeBigEnemyArearance--;
+	}
+
+	private void makeEnemiesPop() {
+		if (turnBeforeEnemyArearance == 0) {
+			turnBeforeEnemyArearance = enemyAppearanceFrequency;
+			makeEnemyPop(1);
+		}
+		if (turnBeforeHerdArearance == 0) {
+			turnBeforeHerdArearance = enemyHerdAppearanceFrequency;
+			makeEnemyPop(enemyNumberInHerd);
+		}
+		if (turnBeforeBigEnemyArearance == 0) {
+			turnBeforeBigEnemyArearance = bigEnemyAppearanceFrequency;
+			bigEnemyPop();
+		}
+	}
+
+	private void bigEnemyPop() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void makeEnemyPop(int i) {
+		while (i-- != 0) {
+			ennemyUnits.add(new Unit(map.getEnnemyPopArea(), context.getSpriteHandler()));
+			mapWidget.addUnitDisplayer(new UnitDisplayer(ennemyUnits.get(ennemyUnits.size()-1),
+					context.getSpriteHandler().getUnitStaticPositionSprites(ennemyUnits.get(ennemyUnits.size()-1))));
+		}
 	}
 
 	/**
@@ -137,6 +177,8 @@ public class Engine {
 	private void initPlayerUnits() {
 		playerUnits = new ArrayList<Unit>();
 		playerUnits.add(new Unit(map.getAlliePopArea(), context.getSpriteHandler()));
+		mapWidget.addUnitDisplayer(new UnitDisplayer(playerUnits.get(0),
+				context.getSpriteHandler().getUnitStaticPositionSprites(playerUnits.get(0))));
 		playerUnits.get(0).setMove(map.pathByWalking(map.getAlliePopArea(), map.getEnnemyPopArea()));
 	}
 
