@@ -14,7 +14,9 @@ all_sprites_names = \
   water_deep_straight;\
   water_deep_full;\
   side_panel_texture;\
-  semi_fog
+  semi_fog;\
+  magos_walking_poses;\
+  magos_static_poses
 
 
 allSources = \
@@ -22,7 +24,8 @@ allSources = \
   http://opengameart.org/content/2d-lost-garden-zelda-style-tiles-winter-theme-with-additions,\
   http://opengameart.org/content/lpc-plant-repack,\
   http://opengameart.org/content/smooth-wood-texture,\
-  http://opengameart.org/content/topdown-tileset
+  http://opengameart.org/content/topdown-tileset,\
+  http://opengameart.org/content/four-characters-my-lpc-entries
 
 
 grass_textures_path=images/ground_textures.png
@@ -133,13 +136,30 @@ side_panel_texture_image_width=128
 side_panel_texture_image_height=128
 side_panel_texture_source=http://opengameart.org/content/smooth-wood-texture
 
-
 semi_fog_path=images/semiFog.png
 semi_fog_x=0
 semi_fog_y=0
 semi_fog_width=64
 semi_fog_height=64
 semi_fog_source=personal
+
+
+magos_walking_poses_path=images/characters/magos_walk.png
+magos_walking_poses_x=0
+magos_walking_poses_y=0
+magos_walking_poses_width=576
+magos_walking_poses_height=256
+magos_walking_poses_source=http://opengameart.org/content/four-characters-my-lpc-entries
+
+
+
+
+magos_static_poses_path=images/characters/magos_walk.png
+magos_static_poses_x=0
+magos_static_poses_y=0
+magos_static_poses_width=64
+magos_static_poses_height=256
+magos_static_poses_source=http://opengameart.org/content/four-characters-my-lpc-entries
 
 
 
