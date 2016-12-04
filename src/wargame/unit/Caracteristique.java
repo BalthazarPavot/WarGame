@@ -1,4 +1,4 @@
-package UnitPackage;
+package wargame.unit;
 
 public class Caracteristique {
 

@@ -9,11 +9,8 @@ import wargame.widgets.AnimationWidget;
 
 /**
  * Represent a unit, and all its characteristics: its position, direction, stacked positions, animation...
- * 
- * @author Balthazar Pavot
- *
  */
-public class Unit {
+public abstract class Unit implements IUnit {
 
 	public static final int NO_ACTION = 0;
 	public static final int MOVE_ACTION = 1;
@@ -29,6 +26,7 @@ public class Unit {
 	public static final int DOWNRIGHTWARD_DIRECRTION = 6;
 	public static final int DOWNLEFTWARD_DIRECRTION = 7;
 
+	protected Caracteristique caracteristique;
 	public int staticPosition = DOWNWARD_DIRECRTION;
 	public Position position;
 	public ArrayList<Position> stackedPositions;
@@ -44,7 +42,8 @@ public class Unit {
 	public ArrayList<Position> getPathToEnd() {
 		if (stackedPositions == null || !(currentPosition < stackedPositions.size() - 1))
 			return null;
-		return new ArrayList<Position> (stackedPositions.subList(currentPosition, stackedPositions.size() - 1));
+		return new ArrayList<Position>(
+				stackedPositions.subList(currentPosition, stackedPositions.size() - 1));
 	}
 
 	public boolean isClicked(Position pos) {
@@ -110,8 +109,12 @@ public class Unit {
 		return NO_ACTION;
 	}
 
-	public Object getMaCara() {
-		return null;
+	public Caracteristique getCaracteristique() {
+		return caracteristique;
+	}
+
+	public void setCaracteristique(Caracteristique caracteristique) {
+		this.caracteristique = caracteristique;
 	}
 
 	public Position getPosition() {

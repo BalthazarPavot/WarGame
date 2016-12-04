@@ -1,4 +1,4 @@
-package UnitPackage;
+package wargame.unit;
 
 import wargame.basic_types.Position;
 
