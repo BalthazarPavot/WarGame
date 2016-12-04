@@ -19,6 +19,7 @@ import wargame.basic_types.Position;
 public class ImageWidget extends JLabel implements GameWidget {
 
 	private static HashMap<BufferedImage, ArrayList<BufferedImage>> zoomedImageBuffer = new HashMap<BufferedImage, ArrayList<BufferedImage>>();
+	private static HashMap<BufferedImage, BufferedImage> invertedImageBuffer = new HashMap<BufferedImage, BufferedImage>();
 	private static final long serialVersionUID = 1L;
 	protected Rectangle boundRect;
 	protected BufferedImage image;
@@ -76,6 +77,33 @@ public class ImageWidget extends JLabel implements GameWidget {
 		if (zoom == 1)
 			return image;
 		return image;
+	}
+
+	/**
+	 * Return the inverted image 
+	 * 
+	 * @param image
+	 * @return
+	 */
+	public static BufferedImage invertImage(BufferedImage image) {
+		BufferedImage inverted;
+
+		inverted = invertedImageBuffer.get(image);
+		if (inverted == null) {
+			inverted = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			invertedImageBuffer.put(image, inverted);
+			Graphics2D g = inverted.createGraphics();
+			g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
+			g.dispose();
+			for (int x = 0; x < inverted.getWidth(); x++) {
+				for (int y = 0; y < inverted.getHeight(); y++) {
+					Color current = new Color(inverted.getRGB(x, y), true);
+					inverted.setRGB(x, y, new Color(255 - current.getRed(), 255 - current.getGreen(),
+							255 - current.getBlue()).getRGB());
+				}
+			}
+		}
+		return inverted;
 	}
 
 	public ImageWidget() {
