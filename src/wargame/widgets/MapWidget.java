@@ -26,7 +26,7 @@ public class MapWidget extends JPanel implements GameWidget {
 	protected boolean drawGrid = true;
 	protected ImageWidget semiFog;
 	protected HashMap<Integer, HashMap<Integer, Integer>> fog = new HashMap<Integer, HashMap<Integer, Integer>>();
-	protected boolean relealed = false;
+	protected boolean revealed = false;
 	protected ArrayList<UnitDisplayer> unitDisplayers = new ArrayList<UnitDisplayer>();
 	protected ArrayList<UnitDisplayer> ennemyDisplayers = new ArrayList<UnitDisplayer>();
 	public InterfaceWidget interfaceWidget;
@@ -144,11 +144,11 @@ public class MapWidget extends JPanel implements GameWidget {
 			y = p.getY();
 			if (!(x < (int) frame.x - Map.squareWidth || y < (int) frame.y - Map.squareHeight
 					|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height
-					|| (fogAt(p) == 0 && !relealed))) {
+					|| (fogAt(p) == 0 && !revealed))) {
 				for (MapElement me : map.getReal(x, y))
 					me.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
 							y / zoom - (int) frame.y / zoom + dy);
-				if (fogAt(p) == 1 && !relealed)
+				if (fogAt(p) == 1 && !revealed)
 					semiFog.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
 							y / zoom - (int) frame.y / zoom + dy);
 			}
@@ -234,21 +234,18 @@ public class MapWidget extends JPanel implements GameWidget {
 	}
 
 	public boolean isRevealed() {
-		return relealed;
+		return revealed;
 	}
 
 	public void setRevealed() {
-		relealed = true;
+		revealed = true;
 	}
 
-	public void setNotRelealed() {
-		relealed = false;
+	public void setNotRevealed() {
+		revealed = false;
 	}
 
 	public Position getInGamePosition(Position position) {
-
-//	    return x * self.zoom - self.dx, y * self.zoom - self.dy, w / self.zoom, \
-//	      h / self.zoom
 		return new Position (position.getX() * zoom + (int) frame.x,
 							position.getY() * zoom + (int) frame.y) ;
 	}
