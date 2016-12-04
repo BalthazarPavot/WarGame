@@ -12,8 +12,6 @@ import java.awt.event.MouseEvent;
 import wargame.GameContext;
 import wargame.basic_types.Position;
 import wargame.engine.Engine;
-import wargame.map.Map;
-import wargame.unit.Unit;
 import wargame.widgets.*;
 
 /**
@@ -72,7 +70,6 @@ public class PlayGameScreen extends GameScreen {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(sidePanelKeyboardManager);
 		buildMapWidget();
 		buildSidePanel();
-		// engine.setAutoGame();
 		engine.updateFog();
 	}
 
@@ -85,13 +82,7 @@ public class PlayGameScreen extends GameScreen {
 		mapWidget.addKeyListener(keyboardManager);
 		mapWidget.setBackground(Color.BLACK);
 		mapWidget.setOpaque(true);
-		for (Unit unit : engine.getPlayerUnits())
-			mapWidget.addUnitDisplayer(new UnitDisplayer(unit,
-					gameContext.getSpriteHandler().getUnitStaticPositionSprites(unit)));
 		this.addWidgets(mapWidget);
-		// Map map = gameContext.getMap() ;
-		// mapWidget.interfaceWidget.setPathToDisplay(map.pathByWalking(map.getAlliePopArea(),
-		// map.getEnnemyPopArea()));
 	}
 
 	/**
@@ -106,7 +97,7 @@ public class PlayGameScreen extends GameScreen {
 		sidePanel.setLayout(null);
 		sidePanel.addWidget(new ButtonWidget("Next turn", 10, 20 + sidePanel.getMinimapHeight(),
 				sidePanel.getMinimapWidth(), 20, 12, Color.black, sidePanelActionManager));
-		sidePanel.addWidget(new ButtonWidget("Auto-play: " + (mapWidget.isVisible() ? "on" : "off"), 10,
+		sidePanel.addWidget(new ButtonWidget("Auto-play: " + (engine.isAutoGame() ? "on" : "off"), 10,
 				50 + sidePanel.getMinimapHeight(), sidePanel.getMinimapWidth(), 20, 12, Color.black,
 				sidePanelActionManager));
 		this.addWidgets(sidePanel);
