@@ -8,6 +8,7 @@ import wargame.unit.Unit;
 
 public class AI {
 
+	/* Enumerations */
 	protected enum healhPoint {
 		HIGH, MEDIUM, LOW, VERY_LOW
 	}
@@ -18,12 +19,8 @@ public class AI {
 	protected static final int LIMIT_LIFE_LOW = 10;
 	/* Constants used for the state "grouped" */
 	protected static final int THRESHOLD_GROUP = 3;
-	/* Constants used for the state */
-	private static final int BLOCK_NORTH = 1;
-	private static final int BLOCK_EAST = 2;
-	private static final int BLOCK_SOUTH = 4;
-	private static final int BLOCK_WEST = 8;
 
+	/* Attribut of the class */
 	/**
 	 * blocked is true when the unit can't flee (because of the map) grouped is
 	 * true if the unit is cloth to its team Aggressive is deduced using
@@ -37,11 +34,13 @@ public class AI {
 	private Squad squad;
 	private Action act;
 
+	/* Constructor */
 	public AI() {
 
 		/*
-		 * TODO Only enemy covered by the sight of the ally army TODO initialize
-		 * squads
+		 * TODO Only enemy covered by the sight of the ally army
+		 * TODO initialize squads when it's unit move
+		 * TODO compute the method canHit(pos) every time a unit of the player move
 		 */
 
 	}
@@ -55,7 +54,7 @@ public class AI {
 		int hitPointRate;
 		Caracteristique c;
 
-		c = unitLinked.getCaracteristique();
+		c = unitLinked.getMaCara()();
 		hitPointRate = (int) (c.getPv() * 100) / c.getPvMax();
 
 		if (c.pv > LIMIT_LIFE_HIGH) {
@@ -69,6 +68,7 @@ public class AI {
 		}
 	}
 
+	/* Methods */
 	public void setSquad(Squad squad) {
 		this.squad = squad;
 	}
@@ -107,7 +107,7 @@ public class AI {
 		for (Position pos : reachablePosition) {
 			for (Unit u : enemyList) {
 				if (this.unitLinked.getPosition().distance(u.getPosition()) <= u
-						.getCaracteristique().getNbCaseDep())
+						.getMaCara().getNbCaseDep())
 					reachablePosition.remove(pos);
 			}
 		}
@@ -136,9 +136,9 @@ public class AI {
 		dy = -1;
 		i = 0;
 		u = this.unitLinked;
-		movement = u.caracteristique.getNbCaseDep();
+		movement = u.getMaCara().getNbCaseDep();
 		pos.setX(u.getPosition().getX() + movement);
-		while (i < movement) {
+		while (i < movement * 4) {
 			pos.setX(pos.getX() + dx);
 			pos.setX(pos.getY() + dy);
 			if (u.canReach(map, pos)) {
@@ -162,4 +162,14 @@ public class AI {
 		}
 		return movementPerimeter;
 	}
+
+	public boolean isSafe(ArrayList<Unit> enemyList, Map map) {
+		for (Unit enemy : enemyList) {
+			if (enemy.canHit(this.unitLinked.getMovementArea(), map) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }
