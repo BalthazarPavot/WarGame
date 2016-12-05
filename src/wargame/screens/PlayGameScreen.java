@@ -28,6 +28,8 @@ public class PlayGameScreen extends GameScreen {
 	protected boolean rightScrolling = false;
 	protected boolean upScrolling = false;
 	protected boolean downScrolling = false;
+	protected boolean passingToNextTurn = false;
+
 	protected MapWidget mapWidget;
 	protected SidePanel sidePanel;
 	protected PlayGameScreenMouseManager mouseManager;
@@ -121,9 +123,18 @@ public class PlayGameScreen extends GameScreen {
 		sidePanel.updateFrame();
 		if (mapWidget.interfaceWidget.inAnimationLoop())
 			return;
+		if (isPassingToNextTurn()) {
+			if (engine.makeCurrentUnitAction())
+				return;
+			else {
+				turnTimer = System.currentTimeMillis();
+				engine.nextTurn();
+				turnTimer = System.currentTimeMillis();
+				setPassingToNextTurn(false);
+			}
+		}
 		if (engine.isAutoGame() && System.currentTimeMillis() - turnTimer > turnDuration) {
-			engine.nextTurn();
-			turnTimer = System.currentTimeMillis();
+			setPassingToNextTurn(true);
 		}
 	}
 
@@ -140,6 +151,16 @@ public class PlayGameScreen extends GameScreen {
 	protected void paintComponent(Graphics g) {
 		sidePanel.paintComponent(g);
 		mapWidget.paintComponent(g);
+	}
+
+	public boolean isPassingToNextTurn() {
+		return passingToNextTurn;
+	}
+
+	public void setPassingToNextTurn(boolean passingToNextTurn) {
+		this.passingToNextTurn = passingToNextTurn;
+		if (passingToNextTurn)
+			engine.currentActingUnit = 0 ;
 	}
 }
 
@@ -280,8 +301,8 @@ class SidePanelActionManager extends GameScreenActionManager {
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
 		if (e.getActionCommand().equals("Next turn")) {
-			engine.nextTurn();
-			;
+			// engine.nextTurn();
+			gameScreen.setPassingToNextTurn(true);
 		} else if (e.getActionCommand().equals("Auto-play: on")) {
 			((ButtonWidget) e.getSource()).setText("Auto-play: off");
 			engine.unSetAutoGame();
