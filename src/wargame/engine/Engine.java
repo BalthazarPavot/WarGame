@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import wargame.GameContext;
 import wargame.basic_types.Position;
 import wargame.map.Map;
-import wargame.unit.Unit;
+import wargame.unit.*;
 import wargame.widgets.AnimationWidget;
 import wargame.widgets.MapWidget;
 import wargame.widgets.SidePanel;
@@ -21,6 +21,8 @@ import wargame.widgets.UnitDisplayer;
  */
 public class Engine {
 
+	public ArrayList<Position> currentPath = null;
+	public int currentActingUnit = -1;
 	ArrayList<Unit> playerUnits = null;
 	ArrayList<Unit> ennemyUnits = null;
 	private MapWidget mapWidget = null;
@@ -28,7 +30,6 @@ public class Engine {
 	private Map map = null;
 	private Unit selectedAllie = null;
 	private Unit selectedEnnemy = null;
-	public ArrayList<Position> currentPath = null;
 	private boolean autoGameMode = false;
 	private GameContext context = null;
 	private int enemyAppearanceFrequency = 4;
@@ -36,8 +37,8 @@ public class Engine {
 	private int bigEnemyAppearanceFrequency = 50;
 	private int turnBeforeEnemyArearance = enemyAppearanceFrequency;
 	private int turnBeforeHerdArearance = 0;
-	private int turnBeforeBigEnemyArearance = bigEnemyAppearanceFrequency + 10 ;
-	private int enemyNumberInHerd = 5 ;
+	private int turnBeforeBigEnemyArearance = bigEnemyAppearanceFrequency + 10;
+	private int enemyNumberInHerd = 5;
 
 	public Engine(GameContext context, MapWidget mapWidget, SidePanel sidePanel) {
 		this.map = context.getMap();
@@ -48,12 +49,36 @@ public class Engine {
 		initEnnemyUnits();
 	}
 
+	public boolean makeCurrentUnitAction() {
+		Unit activeUnit = null;
+		int actionCode;
+
+		if (currentActingUnit != -1) {
+			activeUnit = playerUnits.get(currentActingUnit);
+			actionCode = activeUnit.play(playerUnits, ennemyUnits, map);
+			displayAction(actionCode, activeUnit);
+			if (actionCode == Unit.NO_ACTION) {
+				currentActingUnit += 1;
+				activeUnit.hasPlayed = true;
+			} else
+				updateFog (activeUnit) ;
+		}
+		if (currentActingUnit == playerUnits.size())
+			currentActingUnit = -1;
+		return currentActingUnit != -1;
+	}
+
 	/**
 	 * Dispatch all action to the given characters, update the fog and pass to the next turn.
 	 */
 	public void nextTurn() {
+		Characteristic charac;
+
 		for (Unit allie : playerUnits) {
-			displayAction(allie.play(playerUnits, ennemyUnits, map), allie);
+			charac = allie.getCharacteristics();
+			charac.currentMovePoints += charac.movePoints;
+			if (charac.currentMovePoints > charac.movePoints + 1)
+				charac.currentMovePoints = charac.movePoints + 1;
 			allie.hasPlayed = false;
 		}
 		for (Unit ennemy : ennemyUnits) {
@@ -67,6 +92,7 @@ public class Engine {
 		turnBeforeEnemyArearance--;
 		turnBeforeHerdArearance--;
 		turnBeforeBigEnemyArearance--;
+		currentActingUnit = -1;
 	}
 
 	private void makeEnemiesPop() {
@@ -91,9 +117,10 @@ public class Engine {
 
 	private void makeEnemyPop(int i) {
 		while (i-- != 0) {
-			ennemyUnits.add(new Unit(map.getEnnemyPopArea(), context.getSpriteHandler()));
-			mapWidget.addUnitDisplayer(new UnitDisplayer(ennemyUnits.get(ennemyUnits.size()-1),
-					context.getSpriteHandler().getUnitStaticPositionSprites(ennemyUnits.get(ennemyUnits.size()-1))));
+			ennemyUnits.add(new Wizard(map.getEnnemyPopArea(), context.getSpriteHandler()));
+			mapWidget.addUnitDisplayer(
+					new UnitDisplayer(ennemyUnits.get(ennemyUnits.size() - 1), context.getSpriteHandler()
+							.getUnitStaticPositionSprites(ennemyUnits.get(ennemyUnits.size() - 1))));
 		}
 	}
 
@@ -175,11 +202,21 @@ public class Engine {
 	 * Create and initialise the units of the player.
 	 */
 	private void initPlayerUnits() {
+		Unit unit;
+	
 		playerUnits = new ArrayList<Unit>();
-		playerUnits.add(new Unit(map.getAlliePopArea(), context.getSpriteHandler()));
-		mapWidget.addUnitDisplayer(new UnitDisplayer(playerUnits.get(0),
-				context.getSpriteHandler().getUnitStaticPositionSprites(playerUnits.get(0))));
-		playerUnits.get(0).setMove(map.pathByWalking(map.getAlliePopArea(), map.getEnnemyPopArea()));
+		unit = new Wizard(map.getAlliePopArea(), context.getSpriteHandler()) ;
+		playerUnits.add(unit);
+		mapWidget.addUnitDisplayer(new UnitDisplayer(unit,
+				context.getSpriteHandler().getUnitStaticPositionSprites(unit)));
+//		unit.setMove(map.pathByWalking(map.getAlliePopArea(), map.getEnnemyPopArea()));
+		unit.moveTo (map.getEnnemyPopArea(), map) ;
+		unit = new Bird(map.getAlliePopArea(), context.getSpriteHandler()) ;
+		playerUnits.add(unit);
+		mapWidget.addUnitDisplayer(new UnitDisplayer(unit,
+				context.getSpriteHandler().getUnitStaticPositionSprites(unit)));
+		unit.moveTo (map.getEnnemyPopArea(), map) ;
+//		unit.setMove(map.pathByWalking(map.getAlliePopArea(), map.getEnnemyPopArea()));
 	}
 
 	/**
@@ -216,18 +253,22 @@ public class Engine {
 	private void updateFog(ArrayList<Unit> units) {
 		mapWidget.freeFog();
 		for (Unit unit : units) {
-			Position position = unit.getPosition();
-			int sight = 4 * Map.squareWidth;
-			for (int x = position.getX() - sight; x < sight + position.getX()
-					+ Map.squareWidth; x += Map.squareWidth) {
-				for (int y = position.getY() - sight; y < sight + position.getY()
-						+ Map.squareHeight; y += Map.squareHeight) {
-					if (position.distance(x, y) <= sight)
-						mapWidget.setFog(x, y, 2);
-				}
-			}
+			updateFog(unit);
 		}
 		sidePanel.buildFog(mapWidget);
+	}
+
+	private void updateFog(Unit unit) {
+		Position position = unit.getPosition();
+		int sight = unit.getCharacteristics().sight * Map.squareWidth;
+		for (int x = position.getX() - sight; x < sight + position.getX()
+				+ Map.squareWidth; x += Map.squareWidth) {
+			for (int y = position.getY() - sight; y < sight + position.getY()
+					+ Map.squareHeight; y += Map.squareHeight) {
+				if (position.distance(x, y) <= sight)
+					mapWidget.setFog(x, y, 2);
+			}
+		}
 	}
 
 	/**
@@ -252,13 +293,13 @@ public class Engine {
 	}
 
 	/**
-	 * make an ally attack or whatever he can do to the ally which we clicked on.
+	 * make an ally heal or whatever he can do to the ally which we clicked on.
 	 * 
 	 * @param unit
 	 */
 	private void allieActOnAllie(Unit unit) {
-		if (!selectedAllie.heal(unit)) {
-
+		if (selectedAllie.heal(unit)) {
+			selectedAllie.hasPlayed = true;
 		}
 	}
 
