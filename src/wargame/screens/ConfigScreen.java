@@ -123,6 +123,9 @@ public class ConfigScreen extends GameScreen {
 		soundButtons[1].setSelected(!gameContext.getSound());
 	}
 
+	/**
+	 * save the current configuration.
+	 */
 	public void doSaveAction () {
 		String resolution ;
 		boolean autoSave ;
@@ -139,6 +142,11 @@ public class ConfigScreen extends GameScreen {
 	}
 }
 
+/**
+ * Class to manage the actions on radio buttons.
+ * @author Balthazar Pavot
+ *
+ */
 class ButtonsListener implements ItemListener {
 
 	public JRadioButton[] allButtons;
@@ -154,6 +162,11 @@ class ButtonsListener implements ItemListener {
 
 }
 
+/**
+ * Represents the whole form panel
+ * @author Balthazar Pavot
+ *
+ */
 class Form extends JPanel implements GameWidget {
 	private static final long serialVersionUID = -3867109949785876041L;
 	protected Rectangle boundRect;
@@ -245,6 +258,11 @@ class Form extends JPanel implements GameWidget {
 	}
 }
 
+/**
+ * manage the buttons actions.
+ * @author Balthazar Pavot
+ *
+ */
 class ConfigScreenActionManager extends GameScreenActionManager {
 
 	public ConfigScreenActionManager(GameScreen gameScreen) {

@@ -39,7 +39,11 @@ public class NewGameScreen extends GameScreen {
 
 }
 
-
+/**
+ * Manage the actions of the buttons.
+ * @author Balthazar Pavot
+ *
+ */
 class NewGameScreenActionManager extends GameScreenActionManager {
 
 	public NewGameScreenActionManager(GameScreen gameScreen) {

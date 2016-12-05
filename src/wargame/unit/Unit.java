@@ -1,39 +1,54 @@
 package wargame.unit;
 
-import java.lang.Math;
 import java.util.ArrayList;
 
 import wargame.basic_types.Position;
 import wargame.map.Map;
+import wargame.map.SpriteHandler;
+import wargame.widgets.AnimationWidget;
 import wargame.unit.AI.AI;
 
-public class Unit {
-	public static int UPWARD_DIRECRTION = 0;
-	public static int DOWNWARD_DIRECRTION = 2;
-	public static int RIGHTWARD_DIRECRTION = 1;
-	public static int LEFTWARD_DIRECRTION = 3;
+/**
+ * Represent a unit, and all its characteristics: its position, direction, stacked positions, animation...
+ */
+public abstract class Unit implements IUnit {
+
+	protected final static double CHARACTERISTIC_GAIN = 0.20;
+
+	public static final int NO_ACTION = 0;
+	public static final int MOVE_ACTION = 1;
+	public static final int ATTACK_ACTION = 2;
+
+	public static final int UPWARD_DIRECRTION = 0;
+	public static final int LEFTWARD_DIRECRTION = 1;
+	public static final int DOWNWARD_DIRECRTION = 2;
+	public static final int RIGHTWARD_DIRECRTION = 3;
+
+	public static final int UPLEFTWARD_DIRECRTION = 4;
+	public static final int UPRIGHTWARD_DIRECRTION = 5;
+	public static final int DOWNRIGHTWARD_DIRECRTION = 6;
+	public static final int DOWNLEFTWARD_DIRECRTION = 7;
+
+	protected Characteristic characteristics;
 	public int staticPosition = DOWNWARD_DIRECRTION;
 	public Position position;
 	private ArrayList<Position> movementArea;
 	public ArrayList<Position> stackedPositions;
-	public int curentPosition;
+	public int currentPosition;
 	public boolean hasPlayed = false;
 	public AI ai;
-	private boolean canFire;
+	public ArrayList<AnimationWidget> walkAnimations;
 
-	public Unit(Position position) {
+	public Unit(Position position, SpriteHandler spriteHandler) {
 		this.position = position;
-		this.setCanFire();
+		this.walkAnimations = spriteHandler.getUnitWalkSprites(this);
 	}
 
-	private void setCanFire() {
-		// TODO check if only ranger can fire
-		// TODO add a field "range" for rangers
-		if (this instanceof Ranger)
-			this.canFire = true;
-		else
-			this.canFire = false;
-
+	public ArrayList<Position> getPathToEnd() {
+		if (stackedPositions == null || !(currentPosition < stackedPositions.size() - 1))
+			return null;
+		return new ArrayList<Position>(
+				stackedPositions.subList(currentPosition, stackedPositions.size() - 1));
 	}
 
 	public boolean isClicked(Position pos) {
@@ -50,59 +65,79 @@ public class Unit {
 		return false;
 	}
 
-	public boolean heal(Unit unit) {
-		return false;
-	}
-
 	public void setMove(ArrayList<Position> currentPath) {
 		stackedPositions = currentPath;
-		this.curentPosition = 0;
+		this.currentPosition = 0;
 	}
 
-	public void move() {
+	public boolean move() {
 		Position nextPosition;
-		if (stackedPositions != null
-				&& curentPosition < stackedPositions.size()) {
-			if (curentPosition < stackedPositions.size() - 1) {
-				nextPosition = stackedPositions.get(curentPosition + 1);
-				if (nextPosition.getX() > position.getX())
-					staticPosition = LEFTWARD_DIRECRTION;
-				else if (nextPosition.getX() < position.getX())
-					staticPosition = RIGHTWARD_DIRECRTION;
-				else if (nextPosition.getY() > position.getY())
-					staticPosition = DOWNWARD_DIRECRTION;
-				else if (nextPosition.getY() < position.getY())
-					staticPosition = UPWARD_DIRECRTION;
+
+		if (characteristics.currentMovePoints <= 0)
+			return false;
+		if (stackedPositions != null) {
+			if (currentPosition < stackedPositions.size() - 1) {
+				nextPosition = stackedPositions.get(++currentPosition);
+				if (nextPosition.getX() > position.getX()) {
+					if (nextPosition.getY() > position.getY()) {
+						staticPosition = DOWNRIGHTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else if (nextPosition.getY() < position.getY()) {
+						staticPosition = UPRIGHTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else {
+						staticPosition = UPRIGHTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 1;
+					}
+				} else if (nextPosition.getX() < position.getX()) {
+					if (nextPosition.getY() > position.getY()) {
+						staticPosition = DOWNLEFTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else if (nextPosition.getY() < position.getY()) {
+						staticPosition = UPLEFTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else {
+						staticPosition = LEFTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 1;
+					}
+				} else if (nextPosition.getY() > position.getY()) {
+					if (nextPosition.getX() > position.getX()) {
+						staticPosition = DOWNLEFTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else if (nextPosition.getX() < position.getX()) {
+						staticPosition = DOWNLEFTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else {
+						staticPosition = DOWNWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 1;
+					}
+				} else if (nextPosition.getY() < position.getY()) {
+					if (nextPosition.getX() > position.getX()) {
+						staticPosition = UPRIGHTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else if (nextPosition.getX() < position.getX()) {
+						staticPosition = UPLEFTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else {
+						staticPosition = UPWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 1;
+					}
+				}
+				this.position = nextPosition;
+			} else {
+				stackedPositions = null;
+				return false;
 			}
-			this.position = stackedPositions.get(curentPosition++);
-		} else
-			stackedPositions = null;
-	}
-
-	/**
-	 * Return the path to go to the destination (different for Terrestre and
-	 * Aerien
-	 * 
-	 * @param map
-	 * @param destination
-	 * @return
-	 */
-	public ArrayList<Position> canMove(Map map, Position destination) {
-		ArrayList<Position> path = new ArrayList<Position>();
-		if (this instanceof Terrestre) {
-			path = map.pathByWalking(this.position, destination);
 		} else {
-			path = map.pathByWalking(this.position, destination);
+			return false;
 		}
-		return path;
+		return true;
 	}
 
-	public Object getMaCara() {
-		return null;
-	}
-
-	public Position getPosition() {
-		return position;
+	public ArrayList<Position> canMove(Map map, Position destination) {
+		if (canFly())
+			return map.pathByFlying(getPosition(), destination);
+		return map.pathByWalking(getPosition(), destination);
 	}
 
 	/**
@@ -122,183 +157,77 @@ public class Unit {
 		return distance <= this.getMaCara().getNbCaseDep();
 	}
 
-	/**
-	 * Return true if the unit can hit the unit at the pos posTarget, it can
-	 * make move the unit and also fire
-	 * 
-	 * @param posTarget
-	 * @param map
-	 * @return
-	 */
-	public boolean canHit(Position posTarget, Map map) {
-		if (this.canFire) {
-			for (Position posThis : getMovementArea()) {
-				if (this.canFireFrom(posThis, posTarget, map))
-					return true;
-			}
-		} else {
-			for (Position posThis : getMovementArea()) {
-				if (this.position.distance(posThis) == 1)
-					return true;
-			}
+	public int play(ArrayList<Unit> playerUnits, ArrayList<Unit> ennemyUnits, Map map) {
+		if (!hasPlayed) {
+			return move() ? MOVE_ACTION : NO_ACTION;
 		}
+		return NO_ACTION;
+	}
+
+	public Characteristic getCharacteristics() {
+		return characteristics;
+	}
+
+	public void setCharacteristics(Characteristic characteristics) {
+		this.characteristics = characteristics;
+	}
+
+	public Position getPosition() {
+		return position;
+	}
+
+	public Position getPreviousPosition() {
+		if (stackedPositions == null)
+			return null;
+		return currentPosition != 0 ? stackedPositions.get(currentPosition - 1) : position;
+	}
+
+	public AnimationWidget getCurrentWalkAnimation() {
+		return walkAnimations.get(staticPosition);
+	}
+
+	public void gainLife(int value) {
+		if (value > 0)
+			this.characteristics.currentLife += value;
+		if (this.characteristics.currentLife > this.characteristics.life)
+			this.characteristics.currentLife = this.characteristics.life;
+	}
+
+	public boolean heal(Unit unit) {
 		return false;
 	}
 
-	/* TODO Simplifie ça static ou pas */
-	public static boolean canFireFrom(Position posThis, Position posTarget,
-			Map map) {
-
-		int xUnit = posThis.getY();
-		int xTarget = posThis.getX();
-		int yUnit = posThis.getY();
-		int yTarget = posThis.getX();
-
-		int dx = java.lang.Math.abs(xUnit) - java.lang.Math.abs(xTarget);
-		int dy = java.lang.Math.abs(yUnit) - java.lang.Math.abs(yTarget);
-
-		boolean[][] aPos = new boolean[java.lang.Math.abs(dx)][java.lang.Math
-				.abs(dy)];
-
-		int xStart;
-		int yStart;
-
-		int xShift;
-		int yShift;
-
-		int xCnt;
-		int yCnt;
-		int xCnt2;
-		int yCnt2;
-		int xCntBehind;
-		int yCntBehind;
-
-		int xPtr;
-		int yPtr;
-		int xPtr2;
-		int yPtr2;
-		int xPtrBehind;
-		int yPtrBehind;
-
-		int dxObstacle;
-		int dyObstacle;
-
-		int xShadeLength;
-		int yShadeLength;
-
-		int xPxThis;
-		int yPxThis;
-
-		int xPxObstacleLimit1;
-		int yPxObstacleLimit1;
-        int xPxObstacleLimit2;
-		int yPxObstacleLimit2;
-		
-		int pxRange;
-		
-		float xyRate;
-		float yxRate;
-		
-		Position thisPosCenter = null;
-		Position posEnd1 = null;
-		Position posEnd2 = null;
-		Position posInArray = null;
-		ArrayList<Position> vertexList = new ArrayList<Position>();
-		
-/*TODO use that line		pxRange = this.range * Map.squareHeight;*/
-		pxRange = 5;
-		
-		if (0 <= dx) {
-			xStart = 0;
-			xShift = 1;
-		} else {
-			xStart = java.lang.Math.abs(dx - 1);
-			xShift = -1;
-		}
-		if (0 <= dy) {
-			yStart = 0;
-			yShift = 1;
-		} else {
-			yStart = java.lang.Math.abs(dx - 1);
-			yShift = -1;
-		}
-		xPxThis = (Map.squareWidth / 2) * xShift;
-		yPxThis = (Map.squareHeight / 2) * yShift;
-		
-		vertexList.add(thisPosCenter);
-		vertexList.add(posEnd1);
-		vertexList.add(posEnd2);
-		/* Inisialization of the Array 1 => can shot */
-		for (xCnt = 0; xCnt < java.lang.Math.abs(dx); ++xCnt) {
-			xPtr = xCnt * xShift + xStart;
-			for (yCnt = 0; yCnt < java.lang.Math.abs(dy); ++yCnt) {
-				yPtr = yCnt * yShift + yStart;
-				if (map.canShotThrough(xPtr, yPtr)) {
-					aPos[xPtr][yPtr] = true;
-				} else {
-					aPos[xPtr][yPtr] = false;
-				}
-			}
-		}
-
-		// TODO supprimer ça c'est de l'affichage
-		for (xCnt = 0; xCnt < java.lang.Math.abs(dx); ++xCnt) {
-			for (yCnt = 0; yCnt < java.lang.Math.abs(dy); ++yCnt) {
-				System.out.print(aPos[xCnt][yCnt]);
-			}
-			System.out.println();
-		}
-
-		for (xCnt = 0; xCnt < java.lang.Math.abs(dx); ++xCnt) {
-			xPtr = xCnt * xShift + xStart;
-			for (yCnt = 0; yCnt < java.lang.Math.abs(dy); ++yCnt) {
-				yPtr = yCnt * yShift + yStart;
-				if (!aPos[xPtr][yPtr]) {
-					xPxObstacleLimit1 = (xPtr + xShift) * Map.squareWidth;
-					yPxObstacleLimit1 = yPtr * Map.squareHeight;
-					xPxObstacleLimit2 = xPtr * Map.squareWidth;
-					yPxObstacleLimit2 = (yPtr + yShift) * Map.squareHeight;
-					yxRate = yPxObstacleLimit1 / xPxObstacleLimit1;
-					xyRate = xPxObstacleLimit1 / yPxObstacleLimit1;
-					posEnd1.setX((int) (xyRate * pxRange + xPxThis));
-					posEnd1.setY((int) (yxRate * pxRange + yPxThis));
-					yxRate = yPxObstacleLimit2 / xPxObstacleLimit2;
-					xyRate = xPxObstacleLimit2 / yPxObstacleLimit2;
-					posEnd2.setX((int) (xyRate * pxRange + xPxThis));
-					posEnd2.setY((int) (yxRate * pxRange + yPxThis));
-					for (xCnt2 = xCnt; xCnt2 < java.lang.Math.abs(dx); ++xCnt2) {
-						xPtr2 = xCnt2 * xShift + xStart;
-						for (yCnt2 = yCnt; yCnt2 < java.lang.Math.abs(dy); ++yCnt2) {
-							yPtr2 = yCnt2 * yShift + yStart;
-							posInArray.setX((int)(xPtr2 + 0.5) * Map.squareWidth);
-							posInArray.setY((int)(yPtr2 + 0.5) * Map.squareHeight);
-							if (posInArray.isInPolygone(vertexList))
-								aPos[xPtr2][yPtr2] = false;
-						}	
-					}
-				}
-			}
-		}
-
-		return search(aPos, xUnit, yUnit, xShift, yShift, xTarget, yTarget);
+	public boolean takePercingDamages(int value) {
+		return takeDamage(value - this.characteristics.defensePercing);
 	}
 
-	public static Boolean search(boolean[][] aPos, int xCnt, int yCnt,
-			int xShift, int yShift, int xTarget, int yTarget) {
-		if (xCnt == xTarget && yCnt == yTarget)
-			return true;
-		if (aPos[xCnt + xShift][yCnt])
-			return search(aPos, xCnt + xShift, yCnt, xShift, yShift, xTarget,
-					yTarget);
-		else if (aPos[xCnt][yCnt + yShift])
-			return search(aPos, xCnt, yCnt + yShift, xShift, yShift, xTarget,
-					yTarget);
-		return null;
+	public boolean takeBluntDamages(int value) {
+		return takeDamage(value - this.characteristics.defenseBlunt);
 	}
 
-	public ArrayList<Position> setMovemmentArea(Map map) {
-		ArrayList<Position> movementArea = new ArrayList();
+	public boolean takeMagicDamages(int value) {
+		return takeDamage(value - this.characteristics.defenseMagic);
+	}
 
+	public boolean takeSlachingDamages(int value) {
+		return takeDamage(value - this.characteristics.defenseSlashing);
+	}
+
+	private boolean takeDamage(int value) {
+		if (value > 0) {
+			this.characteristics.currentLife -= value;
+			if (this.characteristics.currentLife < 0)
+				this.characteristics.currentLife = 0;
+		}
+		return this.characteristics.currentLife == 0;
+	}
+
+	public void moveTo(Position destination, Map map) {
+		ArrayList<Position> path;
+
+		path = canMove(map, destination);
+		if (path != null)
+			setMove(path);
 	}
 
 }

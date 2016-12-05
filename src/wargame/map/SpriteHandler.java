@@ -10,7 +10,7 @@ import java.util.Properties;
 
 import wargame.ErrorManager;
 import wargame.basic_types.Position;
-import wargame.unit.Unit;
+import wargame.unit.*;
 import wargame.widgets.AnimationWidget;
 import wargame.widgets.ImageWidget;
 
@@ -186,9 +186,14 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		}
 	}
 
+	/**
+	 * Return the static position of the given character
+	 * @param unit
+	 * @return
+	 */
 	public BufferedImage[] getUnitStaticPositionSprites(Unit unit) {
 		ArrayList<BufferedImage> unitWalkImages = null;
-		if (unit.getClass() == Unit.class) {
+		if (unit.getClass() == Wizard.class || unit.getClass () == Bird.class) {
 			unitWalkImages = get("magos_static_poses");
 		}
 		if (unitWalkImages == null || unitWalkImages.size() < 3)
@@ -197,22 +202,42 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 				unitWalkImages.get(3) };
 	}
 
-	public AnimationWidget[] getUnitWalkSprites(Unit unit) {
+	/**
+	 * Return the animation used when the given unit is moving.
+	 * @param unit
+	 * @return
+	 */
+	public ArrayList<AnimationWidget> getUnitWalkSprites(Unit unit) {
 		ArrayList<BufferedImage> unitWalkImages = null;
-		AnimationWidget animation[] = new AnimationWidget[4];
+		ArrayList<AnimationWidget> animations = new ArrayList<AnimationWidget> ();
 		AnimationWidget currentAnimation;
-		Position[] vector = new Position[] {new Position (0, -6)} ;
+		Double[][] vector = new Double[][] {{0., -6.4}, {-6.4, 0.}, {0., 6.4}, {6.4, 0.}, {-6.4, -6.4}, {-6.4, -6.4}, {6.4, 6.4}, {6.4, 6.4}} ;
 
-		if (unit.getClass() == Unit.class) {
+		if (unit.getClass() == Wizard.class || unit.getClass () == Bird.class) {
 			unitWalkImages = get("magos_walking_poses");
 		}
 		if (unitWalkImages == null || unitWalkImages.size() < 3)
 			return null;
 		for (int animNo = 0; animNo < 4; animNo++) {
-			currentAnimation = new AnimationWidget(0.05);
-			for (int i = 0; i < 9; i++)
-				currentAnimation.addImage(unitWalkImages.get(animNo*9+i));
+			currentAnimation = new AnimationWidget(50);
+			double[] dPosition = {0., 0.} ;
+			for (int i = 0; i < 9; i++) {
+				currentAnimation.addImage(unitWalkImages.get(animNo*9+i), new Position ((int)dPosition[0], (int)dPosition[1]));
+				dPosition[0] += vector[animNo][0] ;
+				dPosition[1] += vector[animNo][1] ;
+			}
+			animations.add(currentAnimation) ;
 		}
-		return animation;
+		for (int animNo = 0; animNo < 4; animNo++) {
+			currentAnimation = new AnimationWidget(50);
+			double[] dPosition = {0., 0.} ;
+			for (int i = 0; i < 9; i++) {
+				currentAnimation.addImage(unitWalkImages.get(animNo*9+i), new Position ((int)dPosition[0], (int)dPosition[1]));
+				dPosition[0] += vector[animNo+4][0] ;
+				dPosition[1] += vector[animNo+4][1] ;
+			}
+			animations.add(currentAnimation) ;
+		}
+		return animations;
 	}
 }

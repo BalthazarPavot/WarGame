@@ -2,6 +2,7 @@
 package wargame.screens;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
@@ -11,11 +12,10 @@ import java.awt.event.MouseEvent;
 import wargame.GameContext;
 import wargame.basic_types.Position;
 import wargame.engine.Engine;
-import wargame.unit.Unit;
 import wargame.widgets.*;
 
 /**
- * Defines a screen of the game.
+ * Defines the main screen of the game (when we are playing).
  * 
  * @author Balthazar Pavot
  *
@@ -28,6 +28,8 @@ public class PlayGameScreen extends GameScreen {
 	protected boolean rightScrolling = false;
 	protected boolean upScrolling = false;
 	protected boolean downScrolling = false;
+	protected boolean passingToNextTurn = false;
+
 	protected MapWidget mapWidget;
 	protected SidePanel sidePanel;
 	protected PlayGameScreenMouseManager mouseManager;
@@ -53,14 +55,13 @@ public class PlayGameScreen extends GameScreen {
 		this.sidePanel = new SidePanel(gameContext.getMap(), this.gameContext.getWidth() - 150, 0, 150,
 				this.gameContext.getHeight(), gameContext.getSpriteHandler().get("side_panel_texture").get(0),
 				mapWidget.getFrame());
-		engine = new Engine(gameContext.getMap(), mapWidget, sidePanel);
+		engine = new Engine(gameContext, mapWidget, sidePanel);
 		sidePanelActionManager = new SidePanelActionManager(this, sidePanel, engine);
 		sidePanelMouseManager = new SidePanelMouseManager(this, sidePanel, mapWidget);
 		sidePanelMouseMotionManager = new SidePanelMouseMotionManager(this, sidePanel);
 		sidePanelKeyboardManager = new SidePanelKeyboardManager(this,
 				KeyboardFocusManager.getCurrentKeyboardFocusManager(), sidePanel);
 		turnTimer = System.currentTimeMillis();
-		// mapWidget.setRevealed();
 	}
 
 	/**
@@ -71,22 +72,24 @@ public class PlayGameScreen extends GameScreen {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(sidePanelKeyboardManager);
 		buildMapWidget();
 		buildSidePanel();
-		engine.setAutoGame();
 		engine.updateFog();
 	}
 
+	/**
+	 * Create and initialise the map widget
+	 */
 	private void buildMapWidget() {
 		mapWidget.addMouseListener(this.mouseManager);
 		mapWidget.addMouseMotionListener(this.mouseMotionManager);
 		mapWidget.addKeyListener(keyboardManager);
 		mapWidget.setBackground(Color.BLACK);
 		mapWidget.setOpaque(true);
-		for (Unit unit : engine.getPlayerUnits())
-			mapWidget.addUnitDisplayer(new UnitDisplayer(unit,
-					gameContext.getSpriteHandler().getUnitStaticPositionSprites(unit)));
 		this.addWidgets(mapWidget);
 	}
 
+	/**
+	 * Create and initialise the side panel
+	 */
 	private void buildSidePanel() {
 		sidePanel.addMouseListener(sidePanelMouseManager);
 		sidePanel.addMouseMotionListener(sidePanelMouseMotionManager);
@@ -96,31 +99,77 @@ public class PlayGameScreen extends GameScreen {
 		sidePanel.setLayout(null);
 		sidePanel.addWidget(new ButtonWidget("Next turn", 10, 20 + sidePanel.getMinimapHeight(),
 				sidePanel.getMinimapWidth(), 20, 12, Color.black, sidePanelActionManager));
-		sidePanel.addWidget(new ButtonWidget("Auto-play: " + (mapWidget.isVisible() ? "on" : "off"), 10,
+		sidePanel.addWidget(new ButtonWidget("Auto-play: " + (engine.isAutoGame() ? "on" : "off"), 10,
 				50 + sidePanel.getMinimapHeight(), sidePanel.getMinimapWidth(), 20, 12, Color.black,
 				sidePanelActionManager));
 		this.addWidgets(sidePanel);
 	}
 
+	/**
+	 * return the map widget
+	 * 
+	 * @return
+	 */
 	public MapWidget getMapWidget() {
 		return mapWidget;
 	}
 
+	/**
+	 * handle looping action like the map scrolling, the next turn actions etc.
+	 */
 	protected void windowManagement() {
 		mapWidget.moveFrame(leftScrolling ? -1 : rightScrolling ? 1 : 0,
 				upScrolling ? -1 : downScrolling ? 1 : 0);
 		sidePanel.updateFrame();
+		if (mapWidget.interfaceWidget.inAnimationLoop())
+			return;
+		if (isPassingToNextTurn()) {
+			if (engine.makeCurrentUnitAction())
+				return;
+			else {
+				turnTimer = System.currentTimeMillis();
+				engine.nextTurn();
+				turnTimer = System.currentTimeMillis();
+				setPassingToNextTurn(false);
+			}
+		}
 		if (engine.isAutoGame() && System.currentTimeMillis() - turnTimer > turnDuration) {
-			engine.nextTurn();
-			turnTimer = System.currentTimeMillis();
+			setPassingToNextTurn(true);
 		}
 	}
 
+	/**
+	 * repaint the component.
+	 */
 	protected void display() {
 		repaint();
 	}
+
+	/**
+	 * Display the map widget and the side panel
+	 */
+	protected void paintComponent(Graphics g) {
+		sidePanel.paintComponent(g);
+		mapWidget.paintComponent(g);
+	}
+
+	public boolean isPassingToNextTurn() {
+		return passingToNextTurn;
+	}
+
+	public void setPassingToNextTurn(boolean passingToNextTurn) {
+		this.passingToNextTurn = passingToNextTurn;
+		if (passingToNextTurn)
+			engine.currentActingUnit = 0 ;
+	}
 }
 
+/**
+ * Class used to manage the mouse on the map screen.
+ * 
+ * @author Balthazar Pavot
+ *
+ */
 class PlayGameScreenMouseManager extends GameScreenMouseManager {
 
 	protected PlayGameScreen gameScreen = null;
@@ -134,10 +183,19 @@ class PlayGameScreenMouseManager extends GameScreenMouseManager {
 		Position mapPosition;
 
 		mapPosition = new Position(event.getX(), event.getY());
-		gameScreen.engine.mapClicked(mapPosition);
+		if (event.getButton() == MouseEvent.BUTTON1)
+			gameScreen.engine.mapLeftClicked(mapPosition);
+		if (event.getButton() == MouseEvent.BUTTON3)
+			gameScreen.engine.mapRightClicked(mapPosition);
 	}
 }
 
+/**
+ * Class used to manage mouse motions on the map screen.
+ * 
+ * @author Balthazar Pavot
+ *
+ */
 class PlayGameScreenMouseMotionManager extends GameScreenMouseMotionManager {
 
 	protected PlayGameScreen gameScreen = null;
@@ -163,6 +221,12 @@ class PlayGameScreenMouseMotionManager extends GameScreenMouseMotionManager {
 	}
 }
 
+/**
+ * Class used to manage button action on the map screen.
+ * 
+ * @author Balthazar Pavot
+ *
+ */
 class PlayGameScreenActionManager extends GameScreenActionManager {
 
 	protected PlayGameScreen gameScreen = null;
@@ -178,6 +242,12 @@ class PlayGameScreenActionManager extends GameScreenActionManager {
 
 }
 
+/**
+ * Class used to manage the keyboard inputs on the map screen.
+ * 
+ * @author Balthazar Pavot
+ *
+ */
 class PlayGameScreenKeyboardManager extends GameScreenKeyboardManager implements KeyEventDispatcher {
 	protected PlayGameScreen gameScreen = null;
 	protected KeyboardFocusManager focusManager;
@@ -209,6 +279,12 @@ class PlayGameScreenKeyboardManager extends GameScreenKeyboardManager implements
 	}
 }
 
+/**
+ * Class used to manage buttons actions on the side panel.
+ * 
+ * @author Balthazar Pavot
+ *
+ */
 class SidePanelActionManager extends GameScreenActionManager {
 
 	protected PlayGameScreen gameScreen = null;
@@ -225,8 +301,8 @@ class SidePanelActionManager extends GameScreenActionManager {
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
 		if (e.getActionCommand().equals("Next turn")) {
-			engine.nextTurn();
-			;
+			// engine.nextTurn();
+			gameScreen.setPassingToNextTurn(true);
 		} else if (e.getActionCommand().equals("Auto-play: on")) {
 			((ButtonWidget) e.getSource()).setText("Auto-play: off");
 			engine.unSetAutoGame();
@@ -238,6 +314,12 @@ class SidePanelActionManager extends GameScreenActionManager {
 
 }
 
+/**
+ * Class used to manage the keyboard inputs on the side panel.
+ * 
+ * @author Balthazar Pavot
+ *
+ */
 class SidePanelKeyboardManager extends GameScreenKeyboardManager implements KeyEventDispatcher {
 	protected PlayGameScreen gameScreen = null;
 	protected KeyboardFocusManager focusManager;
@@ -272,6 +354,12 @@ class SidePanelKeyboardManager extends GameScreenKeyboardManager implements KeyE
 	}
 }
 
+/**
+ * Class used to manage mouse clicks on the side panel.
+ * 
+ * @author Balthazar Pavot
+ *
+ */
 class SidePanelMouseManager extends GameScreenMouseManager {
 
 	protected PlayGameScreen gameScreen = null;
@@ -301,6 +389,12 @@ class SidePanelMouseManager extends GameScreenMouseManager {
 	}
 }
 
+/**
+ * Class used to manage the mouse motion on the side panel.
+ * 
+ * @author Balthazar Pavot
+ *
+ */
 class SidePanelMouseMotionManager extends GameScreenMouseMotionManager {
 
 	protected PlayGameScreen gameScreen = null;
