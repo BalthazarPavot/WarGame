@@ -55,7 +55,7 @@ public class Position implements Comparable<Object> {
 	public void setY(int y) {
 		this.y = y;
 	}
-	
+
 	/**
 	 * @param x
 	 * @param y
@@ -192,5 +192,43 @@ public class Position implements Comparable<Object> {
 			previousPos = currentPos;
 		}
 		return counter;
+	}
+
+	public boolean isInPolygone(ArrayList<Position> vertexList) {
+		int n;
+		int p1x;
+		int p1y;
+		int p2x;
+		int p2y;
+		int i;
+		float xinters;
+		boolean inside;
+
+		n = vertexList.size();
+		inside = false;
+		xinters = 0;
+
+		p1x = vertexList.get(0).getX();
+		p1y = vertexList.get(0).getY();
+
+		for (i = 0; i < n + 1; ++i) {
+			p2x = vertexList.get(i % n).getX();
+			p2y = vertexList.get(i % n).getY();
+			if (this.y > Math.min(p1x, p2y)) {
+				if (this.y <= Math.max(p1y,p2y)){
+	            	if (this.x <= Math.max(p1x,p2x)){
+	                    if (p1y != p2y){
+	                        xinters = (this.y-p1y)*(p2x-p1x)/(p2y-p1y)+p1x;
+	                    }
+	                    if (p1x == p2x || this.x <= xinters){
+	                    	inside = !inside;
+	                    }
+	                }
+	            }
+			}
+			p1x = p2x;
+			p1y = p2y;
+		}
+		return inside;
 	}
 }
