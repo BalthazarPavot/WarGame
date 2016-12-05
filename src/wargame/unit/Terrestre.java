@@ -1,18 +1,18 @@
 package wargame.unit;
 
 import wargame.basic_types.Position;
+import wargame.map.SpriteHandler;
 
-public class Terrestre extends Unit {
+public abstract class Terrestre extends Unit {
 
-	Terrestre(int pvmax, double atkSlaching, double defSlaching, double atkBlunt, double defBlunt,
-			double atkPercing, double defPercing, double atkMagic, double defMagic,Position p) {
-		super(p);
-		caracteristique=new Caracteristique(pvmax,atkSlaching,defSlaching,atkBlunt,defBlunt,atkPercing,defPercing,atkMagic,defMagic);
-		
+	public Terrestre(Position position, SpriteHandler spriteHandler) {
+		super (position, spriteHandler) ;
 	}
 
-
-
+	public boolean canFly () {
+		return false ;
+	}
+/*
 	@Override
 	public void makeDamage(Unit u) {
 		double val = Math.random()*4;
@@ -94,5 +94,5 @@ public class Terrestre extends Unit {
 				val2=(int) (val-(caracteristique.getDefSlashing()*10));
 			caracteristique.setPv(caracteristique.getPv() - val2);
 		}
-
+*/
 }

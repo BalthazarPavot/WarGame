@@ -2,17 +2,19 @@ package wargame.unit;
 
 public interface IUnit {
 
-	public abstract void makeDamage(Unit u);
+	public abstract boolean inflictDamage(Unit u);
 
-	public abstract void makeheal(Unit u);
+	public abstract boolean heal(Unit val);
 
 	public abstract void gainLife(int val);
 
-	public abstract void takeDamagePercing(int val);
+	public abstract boolean takePercingDamages(int val);
 
-	public abstract void takeDamageBlunt(int val);
+	public abstract boolean takeBluntDamages(int val);
 
-	public abstract void takeDamageMagic(int val);
+	public abstract boolean takeMagicDamages(int val);
 
-	public abstract void takeDamageSlaching(int val);
+	public abstract boolean takeSlachingDamages(int val);
+
+	public abstract boolean canFly();
 }

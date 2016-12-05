@@ -12,6 +12,8 @@ import wargame.widgets.AnimationWidget;
  */
 public abstract class Unit implements IUnit {
 
+	protected final static double CHARACTERISTIC_GAIN = 0.20;
+
 	public static final int NO_ACTION = 0;
 	public static final int MOVE_ACTION = 1;
 	public static final int ATTACK_ACTION = 2;
@@ -26,7 +28,7 @@ public abstract class Unit implements IUnit {
 	public static final int DOWNRIGHTWARD_DIRECRTION = 6;
 	public static final int DOWNLEFTWARD_DIRECRTION = 7;
 
-	protected Caracteristique caracteristique;
+	protected Characteristic characteristics;
 	public int staticPosition = DOWNWARD_DIRECRTION;
 	public Position position;
 	public ArrayList<Position> stackedPositions;
@@ -56,10 +58,6 @@ public abstract class Unit implements IUnit {
 		return false;
 	}
 
-	public boolean heal(Unit unit) {
-		return false;
-	}
-
 	public void setMove(ArrayList<Position> currentPath) {
 		stackedPositions = currentPath;
 		this.currentPosition = 0;
@@ -67,25 +65,57 @@ public abstract class Unit implements IUnit {
 
 	public boolean move() {
 		Position nextPosition;
+
+		if (characteristics.currentMovePoints <= 0)
+			return false;
 		if (stackedPositions != null) {
 			if (currentPosition < stackedPositions.size() - 1) {
 				nextPosition = stackedPositions.get(++currentPosition);
-				if (nextPosition.getX() > position.getX())
-					staticPosition = (nextPosition.getY() > position.getY()) ? DOWNRIGHTWARD_DIRECRTION
-							: (nextPosition.getY() < position.getY()) ? UPRIGHTWARD_DIRECRTION
-									: RIGHTWARD_DIRECRTION;
-				else if (nextPosition.getX() < position.getX())
-					staticPosition = (nextPosition.getY() > position.getY()) ? DOWNLEFTWARD_DIRECRTION
-							: (nextPosition.getY() < position.getY()) ? UPLEFTWARD_DIRECRTION
-									: LEFTWARD_DIRECRTION;
-				else if (nextPosition.getY() > position.getY())
-					staticPosition = (nextPosition.getX() > position.getX()) ? DOWNLEFTWARD_DIRECRTION
-							: (nextPosition.getX() < position.getX()) ? DOWNLEFTWARD_DIRECRTION
-									: DOWNWARD_DIRECRTION;
-				else if (nextPosition.getY() < position.getY())
-					staticPosition = (nextPosition.getX() > position.getX()) ? UPRIGHTWARD_DIRECRTION
-							: (nextPosition.getX() < position.getX()) ? UPLEFTWARD_DIRECRTION
-									: UPWARD_DIRECRTION;
+				if (nextPosition.getX() > position.getX()) {
+					if (nextPosition.getY() > position.getY()) {
+						staticPosition = DOWNRIGHTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else if (nextPosition.getY() < position.getY()) {
+						staticPosition = UPRIGHTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else {
+						staticPosition = UPRIGHTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 1;
+					}
+				} else if (nextPosition.getX() < position.getX()) {
+					if (nextPosition.getY() > position.getY()) {
+						staticPosition = DOWNLEFTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else if (nextPosition.getY() < position.getY()) {
+						staticPosition = UPLEFTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else {
+						staticPosition = LEFTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 1;
+					}
+				} else if (nextPosition.getY() > position.getY()) {
+					if (nextPosition.getX() > position.getX()) {
+						staticPosition = DOWNLEFTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else if (nextPosition.getX() < position.getX()) {
+						staticPosition = DOWNLEFTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else {
+						staticPosition = DOWNWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 1;
+					}
+				} else if (nextPosition.getY() < position.getY()) {
+					if (nextPosition.getX() > position.getX()) {
+						staticPosition = UPRIGHTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else if (nextPosition.getX() < position.getX()) {
+						staticPosition = UPLEFTWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 2;
+					} else {
+						staticPosition = UPWARD_DIRECRTION;
+						characteristics.currentMovePoints -= 1;
+					}
+				}
 				this.position = nextPosition;
 			} else {
 				stackedPositions = null;
@@ -98,23 +128,24 @@ public abstract class Unit implements IUnit {
 	}
 
 	public ArrayList<Position> canMove(Map map, Position destination) {
-		return null;
+		if (canFly())
+			return map.pathByFlying(getPosition(), destination);
+		return map.pathByWalking(getPosition(), destination);
 	}
 
 	public int play(ArrayList<Unit> playerUnits, ArrayList<Unit> ennemyUnits, Map map) {
 		if (!hasPlayed) {
-			hasPlayed = true;
 			return move() ? MOVE_ACTION : NO_ACTION;
 		}
 		return NO_ACTION;
 	}
 
-	public Caracteristique getCaracteristique() {
-		return caracteristique;
+	public Characteristic getCharacteristics() {
+		return characteristics;
 	}
 
-	public void setCaracteristique(Caracteristique caracteristique) {
-		this.caracteristique = caracteristique;
+	public void setCharacteristics(Characteristic characteristics) {
+		this.characteristics = characteristics;
 	}
 
 	public Position getPosition() {
@@ -130,4 +161,49 @@ public abstract class Unit implements IUnit {
 	public AnimationWidget getCurrentWalkAnimation() {
 		return walkAnimations.get(staticPosition);
 	}
+
+	public void gainLife(int value) {
+		if (value > 0)
+			this.characteristics.currentLife += value;
+		if (this.characteristics.currentLife > this.characteristics.life)
+			this.characteristics.currentLife = this.characteristics.life;
+	}
+
+	public boolean heal(Unit unit) {
+		return false;
+	}
+
+	public boolean takePercingDamages(int value) {
+		return takeDamage(value - this.characteristics.defensePercing);
+	}
+
+	public boolean takeBluntDamages(int value) {
+		return takeDamage(value - this.characteristics.defenseBlunt);
+	}
+
+	public boolean takeMagicDamages(int value) {
+		return takeDamage(value - this.characteristics.defenseMagic);
+	}
+
+	public boolean takeSlachingDamages(int value) {
+		return takeDamage(value - this.characteristics.defenseSlashing);
+	}
+
+	private boolean takeDamage(int value) {
+		if (value > 0) {
+			this.characteristics.currentLife -= value;
+			if (this.characteristics.currentLife < 0)
+				this.characteristics.currentLife = 0;
+		}
+		return this.characteristics.currentLife == 0;
+	}
+
+	public void moveTo(Position destination, Map map) {
+		ArrayList<Position> path;
+
+		path = canMove(map, destination);
+		if (path != null)
+			setMove(path);
+	}
+
 }

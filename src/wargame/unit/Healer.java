@@ -1,30 +1,35 @@
 package wargame.unit;
 
 import wargame.basic_types.Position;
+import wargame.map.SpriteHandler;
 
 public class Healer extends Terrestre {
 
+	protected final static int LIFE = 50;
 
-	
-	Healer(int pvmax, double atkSlaching, double defSlaching, double atkBlunt, double defBlunt, double atkPercing,
-			double defPercing, double atkMagic, double defMagic,Position position) {
-		super(pvmax, atkSlaching, defSlaching, atkBlunt, defBlunt, atkPercing, defPercing, atkMagic, defMagic, position);
-		// TODO Auto-generated constructor stub
+	protected final static int ATTACK_SLASH = 0;
+	protected final static int ATTACK_BLUNT = 1;
+	protected final static int ATTACK_PIERCE = 0;
+	protected final static int ATTACK_MAGIC = 50;
+
+	protected final static int DEFENSE_SLASH = 0;
+	protected final static int DEFENSE_BLUNT = 0;
+	protected final static int DEFENSE_PIERCE = -5;
+	protected final static int DEFENSE_MAGIC = 10;
+
+	protected final static int RANGE = 3;
+	protected final static int SIGHT = 4;
+	protected final static int MOVE_POINTS = 4;
+
+	public Healer(Position position, SpriteHandler spriteHandler) {
+		super(position, spriteHandler);
+		characteristics = new Characteristic(LIFE, ATTACK_SLASH, DEFENSE_SLASH, ATTACK_BLUNT, DEFENSE_BLUNT,
+				ATTACK_PIERCE, DEFENSE_PIERCE, ATTACK_MAGIC, DEFENSE_MAGIC, RANGE, SIGHT, MOVE_POINTS);
 	}
 
-	public void makeheal(Unit u) {
-		if(u.caracteristique.getPv()<u.caracteristique.getPvMax())
-		{
-			
-			u.gainLife((int)(10*this.caracteristique.getAtkMagic()));
-			if (u.caracteristique.getPv()>u.caracteristique.getPvMax())
-					u.caracteristique.setPv(100);
-		}
-	}
-	
-	public void makedamage(Unit u)
-	{
-		u.takeDamageBlunt((int)(10*this.caracteristique.getAtkBlunt()));
+	public boolean heal(Unit unit) {
+		unit.gainLife(this.characteristics.attackMagic);
+		return true;
 	}
 
 }
