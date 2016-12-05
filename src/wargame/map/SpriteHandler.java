@@ -10,7 +10,7 @@ import java.util.Properties;
 
 import wargame.ErrorManager;
 import wargame.basic_types.Position;
-import wargame.unit.Unit;
+import wargame.unit.*;
 import wargame.widgets.AnimationWidget;
 import wargame.widgets.ImageWidget;
 
@@ -193,7 +193,7 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 	 */
 	public BufferedImage[] getUnitStaticPositionSprites(Unit unit) {
 		ArrayList<BufferedImage> unitWalkImages = null;
-		if (unit.getClass() == Unit.class) {
+		if (unit.getClass() == Wizard.class || unit.getClass () == Bird.class) {
 			unitWalkImages = get("magos_static_poses");
 		}
 		if (unitWalkImages == null || unitWalkImages.size() < 3)
@@ -213,7 +213,7 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		AnimationWidget currentAnimation;
 		Double[][] vector = new Double[][] {{0., -6.4}, {-6.4, 0.}, {0., 6.4}, {6.4, 0.}, {-6.4, -6.4}, {-6.4, -6.4}, {6.4, 6.4}, {6.4, 6.4}} ;
 
-		if (unit.getClass() == Unit.class) {
+		if (unit.getClass() == Wizard.class || unit.getClass () == Bird.class) {
 			unitWalkImages = get("magos_walking_poses");
 		}
 		if (unitWalkImages == null || unitWalkImages.size() < 3)
