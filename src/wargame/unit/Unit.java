@@ -9,7 +9,8 @@ import wargame.widgets.AnimationWidget;
 import wargame.unit.AI.AI;
 
 /**
- * Represent a unit, and all its characteristics: its position, direction, stacked positions, animation...
+ * Represent a unit, and all its characteristics: its position, direction,
+ * stacked positions, animation...
  */
 public abstract class Unit implements IUnit {
 
@@ -45,10 +46,11 @@ public abstract class Unit implements IUnit {
 	}
 
 	public ArrayList<Position> getPathToEnd() {
-		if (stackedPositions == null || !(currentPosition < stackedPositions.size() - 1))
+		if (stackedPositions == null
+				|| !(currentPosition < stackedPositions.size() - 1))
 			return null;
-		return new ArrayList<Position>(
-				stackedPositions.subList(currentPosition, stackedPositions.size() - 1));
+		return new ArrayList<Position>(stackedPositions.subList(
+				currentPosition, stackedPositions.size() - 1));
 	}
 
 	public boolean isClicked(Position pos) {
@@ -154,10 +156,11 @@ public abstract class Unit implements IUnit {
 		path = this.canMove(map, endPos);
 		distance = Position.movementCounter(path);
 		// TODO Check if there are error at the next line
-		return distance <= this.getMaCara().getNbCaseDep();
+		return distance <= this.getCharacteristics().currentMovePoints;
 	}
 
-	public int play(ArrayList<Unit> playerUnits, ArrayList<Unit> ennemyUnits, Map map) {
+	public int play(ArrayList<Unit> playerUnits, ArrayList<Unit> ennemyUnits,
+			Map map) {
 		if (!hasPlayed) {
 			return move() ? MOVE_ACTION : NO_ACTION;
 		}
@@ -179,7 +182,8 @@ public abstract class Unit implements IUnit {
 	public Position getPreviousPosition() {
 		if (stackedPositions == null)
 			return null;
-		return currentPosition != 0 ? stackedPositions.get(currentPosition - 1) : position;
+		return currentPosition != 0 ? stackedPositions.get(currentPosition - 1)
+				: position;
 	}
 
 	public AnimationWidget getCurrentWalkAnimation() {
@@ -230,4 +234,77 @@ public abstract class Unit implements IUnit {
 			setMove(path);
 	}
 
+	public ArrayList<ArrayList> getObstacleShade(Map map) {
+		ArrayList<ArrayList> triangleList = new ArrayList<ArrayList>();
+		Position currentPos = new Position();
+
+		int i;
+		int j;
+		int dx;
+		int dy;
+		int xShift;
+		int yShift;
+		float pxEndX;
+		float pxEndY;
+
+		for (i = this.position.getX() - this.getCharacteristics().range
+				* Map.defaultSquareNumberWidth; i < this.getCharacteristics().range; i += Map.defaultSquareNumberWidth) {
+			currentPos.setX(this.position.getX() + i);
+			for (j = this.position.getY() - this.getCharacteristics().range
+					* Map.defaultSquareNumberHeight; i < this
+					.getCharacteristics().range; i += Map.defaultSquareNumberHeight) {
+				currentPos.setY(this.position.getY() + j);
+				if (!map.canShotThrough(currentPos)) {
+					ArrayList<Position> vertexList = new ArrayList<Position>();
+					if (this.position.getX() < currentPos.getX())
+						xShift = +32;
+					else
+						xShift = -32;
+					if (this.position.getY() < currentPos.getY())
+						yShift = +32;
+					else
+						yShift = -32;
+					Position centerPosThis = new Position((this.getPosition()
+							.getX() + xShift),
+							(this.getPosition().getY() + yShift));
+					vertexList.add(centerPosThis);
+
+					dx = (currentPos.getX() + xShift);
+					dy = (currentPos.getY());
+					pxEndX = (dx / (dx + dy)) * this.getCharacteristics().range
+							* Map.defaultSquareNumberWidth;
+					pxEndY = (dy / (dy + dx)) * this.getCharacteristics().range
+							* Map.defaultSquareNumberHeight;
+					Position posLimit1 = new Position((int) pxEndX,
+							(int) pxEndY);
+					vertexList.add(posLimit1);
+
+					dx = currentPos.getX();
+					dy = currentPos.getY() + yShift;
+					pxEndX = (dx / (dx + dy)) * this.getCharacteristics().range
+							* Map.defaultSquareNumberWidth;
+					pxEndY = (dy / (dy + dx)) * this.getCharacteristics().range
+							* Map.defaultSquareNumberHeight;
+					Position posLimit2 = new Position((int) pxEndX,
+							(int) pxEndY);
+					vertexList.add(posLimit2);
+
+					triangleList.add(vertexList);
+				}
+			}
+		}
+		return triangleList;
+	}
+
+	public ArrayList<Unit> canHit(Map map, ArrayList<Unit> enemyList) {
+		ArrayList<Unit> enemyListOut = new ArrayList<Unit>(enemyList);
+		for (Unit enemy : enemyList) {
+			for (ArrayList<Position> triangle : getObstacleShade(map)) {
+				if (enemy.getPosition().isInPolygone(triangle)) {
+					enemyListOut.remove(enemy);
+				}
+			}
+		}
+		return enemyListOut;
+	}
 }
