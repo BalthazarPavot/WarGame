@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import wargame.basic_types.Position;
 import wargame.map.Map;
+import wargame.unit.Characteristic;
 import wargame.unit.Unit;
 
 public class AI {
@@ -52,16 +53,16 @@ public class AI {
 	 */
 	public void setLife() {
 		int hitPointRate;
-		Caracteristique c;
+		Characteristic c;
 
 		c = unitLinked.getMaCara()();
-		hitPointRate = (int) (c.getPv() * 100) / c.getPvMax();
+		hitPointRate = (int) (c.currentLife * 100) / c.life;
 
-		if (c.pv > LIMIT_LIFE_HIGH) {
+		if (c.life > LIMIT_LIFE_HIGH) {
 			this.life = healhPoint.HIGH;
-		} else if (c.pv > LIMIT_LIFE_MEDIUM) {
+		} else if (c.life > LIMIT_LIFE_MEDIUM) {
 			this.life = healhPoint.MEDIUM;
-		} else if (c.pv > LIMIT_LIFE_LOW) {
+		} else if (c.life > LIMIT_LIFE_LOW) {
 			this.life = healhPoint.HIGH;
 		} else {
 			this.life = healhPoint.VERY_LOW;
@@ -107,7 +108,7 @@ public class AI {
 		for (Position pos : reachablePosition) {
 			for (Unit u : enemyList) {
 				if (this.unitLinked.getPosition().distance(u.getPosition()) <= u
-						.getMaCara().getNbCaseDep())
+						.getCharacteristics().currentMovePoints)
 					reachablePosition.remove(pos);
 			}
 		}
@@ -128,15 +129,17 @@ public class AI {
 		int dx;
 		int dy;
 		int i;
+		int changeOrientation;
 		int movement;
 		Unit u;
-		Position pos;
+		Position pos = null;
 
 		dx = 1;
 		dy = -1;
 		i = 0;
 		u = this.unitLinked;
-		movement = u.getMaCara().getNbCaseDep();
+		changeOrientation = 0;
+		movement = this.unitLinked.getCharacteristics().currentMovePoints;
 		pos.setX(u.getPosition().getX() + movement);
 		while (i < movement * 4) {
 			pos.setX(pos.getX() + dx);
@@ -148,16 +151,17 @@ public class AI {
 			++i;
 			if (i % movement == 0) {
 				switch (i) {
-				case movement:
+				case 0:
 					dx = -1;
 					break;
-				case movement:
+				case 1:
 					dy = 1;
 					break;
-				case movement:
+				case 2:
 					dx = 1;
 					break;
 				}
+				++changeOrientation;
 			}
 		}
 		return movementPerimeter;
@@ -165,7 +169,7 @@ public class AI {
 
 	public boolean isSafe(ArrayList<Unit> enemyList, Map map) {
 		for (Unit enemy : enemyList) {
-			if (enemy.canHit(this.unitLinked.getMovementArea(), map) {
+			if (enemy.canHit(this.unitLinked.getCharacteristics().currentMovePoints, map) {
 				return false;
 			}
 		}
