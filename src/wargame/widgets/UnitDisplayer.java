@@ -1,9 +1,11 @@
 
 package wargame.widgets;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+import wargame.map.Map;
 import wargame.unit.Unit;
 
 public class UnitDisplayer extends ImageWidget {
@@ -17,18 +19,17 @@ public class UnitDisplayer extends ImageWidget {
 	}
 
 	public UnitDisplayer(Unit unit, BufferedImage[] staticPositionImage) {
-//		super(unit.position.getX(), unit.position.getY(), Map.squareWidth, Map.squareHeight);
-		super () ;
+		super();
 		this.unit = unit;
 		this.staticPositionImage = staticPositionImage;
 	}
 
-	public int getX () {
-		return unit.position.getX() ;
+	public int getX() {
+		return unit.position.getX();
 	}
 
-	public int getY () {
-		return unit.position.getY() ;
+	public int getY() {
+		return unit.position.getY();
 	}
 
 	@Override
@@ -43,7 +44,15 @@ public class UnitDisplayer extends ImageWidget {
 
 	@Override
 	public void paintComponent(Graphics g, int zoom, int x, int y) {
-		if (staticPositionImage[unit.staticPosition%4] != null)
-			g.drawImage(ImageWidget.zoomImage(staticPositionImage[unit.staticPosition%4], zoom), x, y, this);
+		double lifeRatio;
+
+		if (staticPositionImage[unit.staticPosition % 4] != null)
+			g.drawImage(ImageWidget.zoomImage(staticPositionImage[unit.staticPosition % 4], zoom), x, y,
+					this);
+		g.setColor(Color.black);
+		g.fillRect(x + 1, y - 10, Map.squareWidth / zoom - 2, 5);
+		lifeRatio = ((double) unit.getCharacteristics().currentLife / unit.getCharacteristics().life);
+		g.setColor(lifeRatio > 0.75 ? Color.green : lifeRatio > 0.5 ? Color.orange : Color.red);
+		g.fillRect(x + 2, y - 9, (int) ((Map.squareWidth / zoom - 4) * lifeRatio), 3);
 	}
 }
