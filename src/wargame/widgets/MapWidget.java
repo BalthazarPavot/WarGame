@@ -13,6 +13,7 @@ import wargame.basic_types.Position;
 import wargame.map.Map;
 import wargame.map.MapElement;
 import wargame.map.SpriteHandler;
+import wargame.unit.Unit;
 
 public class MapWidget extends JPanel implements GameWidget {
 
@@ -29,20 +30,30 @@ public class MapWidget extends JPanel implements GameWidget {
 	protected boolean revealed = false;
 	protected ArrayList<UnitDisplayer> unitDisplayers = new ArrayList<UnitDisplayer>();
 	protected ArrayList<UnitDisplayer> ennemyDisplayers = new ArrayList<UnitDisplayer>();
+	ArrayList<Unit> playerUnits = new ArrayList<Unit>();
 	public InterfaceWidget interfaceWidget;
+	public Unit unitInAction = null;
 
 	public MapWidget(Map map, int width, int height, SpriteHandler spriteHandler) {
 		this.map = map;
 		this.boundRect = new Rectangle(0, 0, width, height);
 		this.frame = new Rectangle(0, 0, width, height);
 		semiFog = new ImageWidget(new Rectangle(0, 0, 64, 64), spriteHandler.get("semi_fog").get(0));
-		interfaceWidget = new InterfaceWidget (frame) ;
+		interfaceWidget = new InterfaceWidget(frame);
 	}
 
 	public void freeFog() {
 		for (Integer x : fog.keySet())
 			for (Integer y : fog.get(x).keySet())
 				setFog(x, y, 1);
+	}
+
+	public void setFog(Position pos) {
+		setFog(pos, 2);
+	}
+
+	public void setFog(Position pos, int fogValue) {
+		setFog(pos.getX(), pos.getY(), fogValue);
 	}
 
 	public void setFog(int x, int y) {
@@ -167,19 +178,32 @@ public class MapWidget extends JPanel implements GameWidget {
 				g.drawLine(beginX - overX + dx, y + dy, (int) frame.width - 1 - overX, y);
 		}
 		interfaceWidget.paintComponent(g, zoom);
-		if (!interfaceWidget.inAnimationLoop())
-			for (UnitDisplayer unitDisplayer : unitDisplayers) {
-				x = unitDisplayer.getX();
-				y = unitDisplayer.getY();
-				if (!(x < (int) frame.x - Map.squareWidth || y < (int) frame.y - Map.squareHeight
-						|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height))
-					unitDisplayer.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
-							y / zoom - (int) frame.y / zoom + dy);
-			}
+		for (UnitDisplayer unitDisplayer : unitDisplayers) {
+			if (unitDisplayer.unit == unitInAction)
+				continue;
+			x = unitDisplayer.getX();
+			y = unitDisplayer.getY();
+			if (!(x < (int) frame.x - Map.squareWidth || y < (int) frame.y - Map.squareHeight
+					|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height))
+				unitDisplayer.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
+						y / zoom - (int) frame.y / zoom + dy);
+		}
+		for (UnitDisplayer enemyDisplayer : ennemyDisplayers) {
+			if (enemyDisplayer.unit == unitInAction
+					|| (!enemyDisplayer.unit.isVisibleBy(playerUnits) && !isRevealed()))
+				continue;
+			x = enemyDisplayer.getX();
+			y = enemyDisplayer.getY();
+			if (!(x < (int) frame.x - Map.squareWidth || y < (int) frame.y - Map.squareHeight
+					|| x > (int) frame.x + frame.width || y > (int) frame.y + frame.height))
+				enemyDisplayer.paintComponent(g, zoom, x / zoom - (int) frame.x / zoom + dx,
+						y / zoom - (int) frame.y / zoom + dy);
+		}
 	}
 
 	public void addUnitDisplayer(UnitDisplayer unitDisplayer) {
 		unitDisplayers.add(unitDisplayer);
+		playerUnits.add(unitDisplayer.unit);
 	}
 
 	public void addEnnemyDisplayer(UnitDisplayer unitDisplayer) {
@@ -246,7 +270,6 @@ public class MapWidget extends JPanel implements GameWidget {
 	}
 
 	public Position getInGamePosition(Position position) {
-		return new Position (position.getX() * zoom + (int) frame.x,
-							position.getY() * zoom + (int) frame.y) ;
+		return new Position(position.getX() * zoom + (int) frame.x, position.getY() * zoom + (int) frame.y);
 	}
 }
