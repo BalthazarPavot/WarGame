@@ -18,31 +18,23 @@ public class AI {
 	protected static final int LIMIT_LIFE_HIGH = 50;
 	protected static final int LIMIT_LIFE_MEDIUM = 25;
 	protected static final int LIMIT_LIFE_LOW = 10;
-	/* Constants used for the state "grouped" */
-	protected static final int THRESHOLD_GROUP = 3;
 
-	/* Attribut of the class */
-	/**
-	 * blocked is true when the unit can't flee (because of the map) grouped is
-	 * true if the unit is cloth to its team Aggressive is deduced using
-	 * previous states
-	 */
+	/* Attribute of the class */
+	/* blocked is true when the unit can't flee (because of the map and enemy) */
+	protected boolean blocked;
 	private healhPoint life;
-	private boolean blocked;
-	private boolean agressive;
-
-	private Unit unitLinked;
-	private Squad squad;
-	private Action act;
+	protected Unit unitLinked;
+	public Squad squad;
+	protected ArrayList<Action> actList;
 
 	/* Constructor */
 	public AI() {
-
 		/*
-		 * TODO Only enemy covered by the sight of the ally army
-		 * TODO initialize squads when it's unit move
-		 * TODO compute the method canHit(pos) every time a unit of the player move
+		 * TODO Only enemy covered by the sight of the ally army TODO initialize
+		 * squads when it's unit move TODO compute the method canHit(pos) every
+		 * time a unit of the player move
 		 */
+		this.setActList(new ArrayList<Action>());
 
 	}
 
@@ -55,27 +47,26 @@ public class AI {
 		int hitPointRate;
 		Characteristic c;
 
-		c = unitLinked.getMaCara()();
+		c = unitLinked.getCharacteristics();
 		hitPointRate = (int) (c.currentLife * 100) / c.life;
 
-		if (c.life > LIMIT_LIFE_HIGH) {
+		if (hitPointRate > LIMIT_LIFE_HIGH) {
 			this.life = healhPoint.HIGH;
-		} else if (c.life > LIMIT_LIFE_MEDIUM) {
+		} else if (hitPointRate > LIMIT_LIFE_MEDIUM) {
 			this.life = healhPoint.MEDIUM;
-		} else if (c.life > LIMIT_LIFE_LOW) {
+		} else if (hitPointRate > LIMIT_LIFE_LOW) {
 			this.life = healhPoint.HIGH;
 		} else {
 			this.life = healhPoint.VERY_LOW;
 		}
 	}
 
-	/* Methods */
-	public void setSquad(Squad squad) {
-		this.squad = squad;
+	public healhPoint getLife() {
+		return life;
 	}
 
+	/* Methods */
 	public void searchSquad(ArrayList<Unit> allyList, Unit thisUnit, Map map) {
-
 		for (Unit ally : allyList) {
 			if (ally != this.unitLinked
 					&& (ally.canReach(map, this.unitLinked.getPosition()) || (this.unitLinked
@@ -84,7 +75,7 @@ public class AI {
 					ally.ai.squad.add(this.unitLinked);
 				else if (this.squad != null && this.squad == null)
 					this.squad.add(ally.ai.unitLinked);
-				else if (this.squad != null && this.squad == null)
+				else if (this.squad == null && this.squad == null)
 					new Squad(ally.ai.unitLinked, this.unitLinked);
 				else if (this.squad != null && this.squad == null)
 					this.squad.merge(ally.ai.squad);
@@ -93,7 +84,7 @@ public class AI {
 	}
 
 	/**
-	 * The AI in considered as "blocked" if it can't flee against enemy
+	 * The AI in considered as "blocked" if it can't flee against enemy.
 	 * 
 	 * @param enemyList
 	 * @param thisUnit
@@ -118,10 +109,11 @@ public class AI {
 			this.blocked = true;
 	}
 
+	// TODO adapt position to pixel
 	/**
 	 * Give a list of all positions at max range of the AI's unit movement
 	 * 
-	 * @param u
+	 * @param map
 	 * @return movementPerimeter
 	 */
 	public ArrayList<Position> getMovemmentPerimeter(Map map) {
@@ -132,10 +124,10 @@ public class AI {
 		int changeOrientation;
 		int movement;
 		Unit u;
-		Position pos = null;
+		Position pos = new Position();
 
-		dx = 1;
-		dy = -1;
+		dx = 1 * Map.squareWidth;
+		dy = -1 * Map.squareHeight;
 		i = 0;
 		u = this.unitLinked;
 		changeOrientation = 0;
@@ -150,15 +142,15 @@ public class AI {
 			}
 			++i;
 			if (i % movement == 0) {
-				switch (i) {
+				switch (changeOrientation) {
 				case 0:
-					dx = -1;
+					dx = -Map.squareWidth;
 					break;
 				case 1:
-					dy = 1;
+					dy = Map.squareHeight;
 					break;
 				case 2:
-					dx = 1;
+					dx = Map.squareWidth;
 					break;
 				}
 				++changeOrientation;
@@ -167,10 +159,18 @@ public class AI {
 		return movementPerimeter;
 	}
 
+	/**
+	 * Check is there are one or more enemy who can hit this unit.
+	 * 
+	 * @param enemyList
+	 * @param map
+	 * @return boolean
+	 */
 	public boolean isSafe(ArrayList<Unit> enemyList, Map map) {
 		for (Unit enemy : enemyList) {
-			if (enemy.canHit(this.unitLinked.getCharacteristics().currentMovePoints, map) {
-				return false;
+			for (Unit ally : enemy.canHit(map, enemyList)) {
+				if (ally == this.unitLinked)
+					return false;
 			}
 		}
 		return true;
