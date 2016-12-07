@@ -176,4 +176,44 @@ public class AI {
 		return true;
 	}
 
+	/**
+	 * Method which return a list of target who can be reached by the AI, using
+	 * it's movement + range but ignoring obstacle (to decrease the complexity
+	 * of the algorithm. This methods have to be used as a first test and then
+	 * be completed using the method TODO / insert the name of the method here/
+	 * 
+	 * @param enemyList
+	 * @return targetList
+	 */
+	public ArrayList<Unit> getAllTargetInRange(ArrayList<Unit> enemyList) {
+		ArrayList<Unit> targetList = new ArrayList<Unit>();
+		for (Unit enemy : enemyList) {
+			if (enemy.position.distance(this.unitLinked.position) <= (this.unitLinked
+					.getCharacteristics().currentMovePoints + this.unitLinked
+					.getCharacteristics().range))
+				targetList.add(enemy);
+		}
+		return targetList;
+	}
+
+	public ArrayList<Action> getActList() {
+		return actList;
+	}
+
+	public void setActList(ArrayList<Action> actList) {
+		this.actList = actList;
+	}
+
+	public static Unit getUnitAtPos(Position pos, ArrayList<Unit> unitList) {
+		for (Unit u : unitList) {
+			if (u.position == pos)
+				return u;
+		}
+		return null;
+	}
+
+	// TODO
+	public void flee(ArrayList<Unit> enemyList) {
+
+	}
 }
