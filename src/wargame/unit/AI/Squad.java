@@ -7,7 +7,7 @@ import wargame.unit.Unit;
 
 public class Squad {
 
-	/* Attribut of the class */
+	/* Attribute of the class */
 	ArrayList<Unit> unitList;
 	Position center;
 
@@ -16,15 +16,15 @@ public class Squad {
 		ArrayList<Unit> unitList = new ArrayList<Unit>();
 		unitList.add(u1);
 		unitList.add(u2);
-		u1.ai.setSquad(this);
-		u2.ai.setSquad(this);
+		u1.ai.squad = this;
+		u2.ai.squad = this;
 		computeCenter();
 	}
 
 	/* Methods */
 	public void add(Unit u) {
 		this.unitList.add(u);
-		u.ai.setSquad(this);
+		u.ai.squad = this;
 		computeCenter();
 	}
 
