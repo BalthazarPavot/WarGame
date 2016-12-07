@@ -248,48 +248,47 @@ public abstract class Unit implements IUnit {
 		float pxEndY;
 
 		for (i = this.position.getX() - this.getCharacteristics().range
-				* Map.defaultSquareNumberWidth; i < this.getCharacteristics().range; i += Map.defaultSquareNumberWidth) {
+				* Map.squareWidth; i < this.getCharacteristics().range; i += Map.squareWidth) {
 			currentPos.setX(this.position.getX() + i);
 			for (j = this.position.getY() - this.getCharacteristics().range
-					* Map.defaultSquareNumberHeight; i < this
-					.getCharacteristics().range; i += Map.defaultSquareNumberHeight) {
+					* Map.squareHeight; i < this.getCharacteristics().range; i += Map.squareHeight) {
 				currentPos.setY(this.position.getY() + j);
 				if (!map.canShotThrough(currentPos)) {
-					ArrayList<Position> vertexList = new ArrayList<Position>();
+					ArrayList<Position> triangle = new ArrayList<Position>();
 					if (this.position.getX() < currentPos.getX())
-						xShift = +32;
+						xShift = Map.squareWidth;
 					else
-						xShift = -32;
+						xShift = -Map.squareWidth;
 					if (this.position.getY() < currentPos.getY())
-						yShift = +32;
+						yShift = Map.squareHeight;
 					else
-						yShift = -32;
+						yShift = -Map.squareHeight;
 					Position centerPosThis = new Position((this.getPosition()
 							.getX() + xShift),
 							(this.getPosition().getY() + yShift));
-					vertexList.add(centerPosThis);
+					triangle.add(centerPosThis);
 
 					dx = (currentPos.getX() + xShift);
 					dy = (currentPos.getY());
 					pxEndX = (dx / (dx + dy)) * this.getCharacteristics().range
-							* Map.defaultSquareNumberWidth;
+							* Map.squareWidth;
 					pxEndY = (dy / (dy + dx)) * this.getCharacteristics().range
-							* Map.defaultSquareNumberHeight;
+							* Map.squareHeight;
 					Position posLimit1 = new Position((int) pxEndX,
 							(int) pxEndY);
-					vertexList.add(posLimit1);
+					triangle.add(posLimit1);
 
 					dx = currentPos.getX();
 					dy = currentPos.getY() + yShift;
 					pxEndX = (dx / (dx + dy)) * this.getCharacteristics().range
-							* Map.defaultSquareNumberWidth;
+							* Map.squareWidth;
 					pxEndY = (dy / (dy + dx)) * this.getCharacteristics().range
-							* Map.defaultSquareNumberHeight;
+							* Map.squareHeight;
 					Position posLimit2 = new Position((int) pxEndX,
 							(int) pxEndY);
-					vertexList.add(posLimit2);
+					triangle.add(posLimit2);
 
-					triangleList.add(vertexList);
+					triangleList.add(triangle);
 				}
 			}
 		}
