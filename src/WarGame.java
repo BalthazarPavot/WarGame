@@ -1,4 +1,3 @@
-
 import wargame.ErrorManager;
 import wargame.GameContext;
 import wargame.GameScreenGenerator;
@@ -28,10 +27,11 @@ public class WarGame {
 	}
 
 	/**
-	 * Create the game context and the error manager, load the config and create the game screen generator
-	 * giving the context. <br />
-	 * Launch the mainloop that prepare the current screen, make it run, get the new game screen id and loop
-	 * again while the player does not decide to quit.
+	 * Create the game context and the error manager, load the config and create
+	 * the game screen generator giving the context. <br />
+	 * Launch the mainloop that prepare the current screen, make it run, get the
+	 * new game screen id and loop again while the player does not decide to
+	 * quit.
 	 * 
 	 * @param gameScreenID
 	 */
