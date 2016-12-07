@@ -54,7 +54,6 @@ public class ImageWidget extends JLabel implements GameWidget {
 
 		imageBuffer = zoomedImageBuffer.get(image);
 		if (imageBuffer == null) {
-			// System.out.println("buffer image creation for zoom");
 			imageBuffer = new ArrayList<BufferedImage>();
 			zoomedImageBuffer.put(image, imageBuffer);
 			for (int x = 2; x < 8; x <<= 1) {
