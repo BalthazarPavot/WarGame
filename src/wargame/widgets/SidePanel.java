@@ -7,9 +7,14 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import wargame.basic_types.Position;
 import wargame.map.Map;
+import wargame.unit.Characteristic;
+import wargame.unit.Unit;
 
 public class SidePanel extends JPanel implements GameWidget {
 
@@ -22,11 +27,13 @@ public class SidePanel extends JPanel implements GameWidget {
 	private int minimapY = 10;
 	private int minimapWidth = Map.defaultWidth / 30;
 	private int minimapHeight = Map.defaultHeight / 30;
-	private Rectangle minimapRectangle = new Rectangle(minimapX, minimapY, getMinimapWidth(), getMinimapHeight());
+	private Rectangle minimapRectangle = new Rectangle(minimapX, minimapY, getMinimapWidth(),
+			getMinimapHeight());
 	private Rectangle miniFrame;
 	private BufferedImage background;
 	private BufferedImage fogImage;
 	private Rectangle frame;
+	private HashMap<String, GameWidget> descriptionContent;
 
 	public SidePanel(Map map, int x, int y, int w, int h, BufferedImage backgroundImage, Rectangle frame) {
 		this(map, new Rectangle(x, y, w, h), backgroundImage, frame);
@@ -134,22 +141,23 @@ public class SidePanel extends JPanel implements GameWidget {
 				g.drawImage(background, x2, y2, 128, 128, this);
 		g.drawImage(minimap, x + minimapX, y + minimapY, this);
 		g.drawImage(fogImage, x + minimapX, y + minimapY, this);
-		g.drawLine(miniFrame.x, miniFrame.y, miniFrame.x + miniFrame.width, miniFrame.y); // ⁻
-		g.drawLine(miniFrame.x, miniFrame.y, miniFrame.x, miniFrame.y + miniFrame.height);// |
+		g.drawLine(miniFrame.x, miniFrame.y, miniFrame.x + miniFrame.width, miniFrame.y);
+		g.drawLine(miniFrame.x, miniFrame.y, miniFrame.x, miniFrame.y + miniFrame.height);
 		g.drawLine(miniFrame.x, miniFrame.y + miniFrame.height, miniFrame.x + miniFrame.width,
-				miniFrame.y + miniFrame.height);// _
+				miniFrame.y + miniFrame.height);
 		g.drawLine(miniFrame.x + miniFrame.width, miniFrame.y, miniFrame.x + miniFrame.width,
 				miniFrame.y + miniFrame.height);
 	}
 
 	public void addWidget(GameWidget widget) {
 		widgets.add(widget);
-		this.add((Component)widget);
+		this.add((Component) widget);
 		widget.bind();
 	}
 
 	private void buildImage() {
-		BufferedImage image = new BufferedImage(getMinimapWidth(), getMinimapHeight(), BufferedImage.TYPE_INT_RGB);
+		BufferedImage image = new BufferedImage(getMinimapWidth(), getMinimapHeight(),
+				BufferedImage.TYPE_INT_RGB);
 		int x;
 		int y;
 		int dx = map.getWidth() / getMinimapWidth();
@@ -187,7 +195,7 @@ public class SidePanel extends JPanel implements GameWidget {
 		for (x = 0; x < getMinimapWidth(); x += 1) {
 			for (y = 0; y < getMinimapHeight(); y += 1) {
 				switch (mapWidget.fogAt(x * dx / Map.squareWidth * Map.squareWidth,
-						y * dy / Map.squareHeight * Map.squareHeight)+(mapWidget.isRevealed()?2:0)) {
+						y * dy / Map.squareHeight * Map.squareHeight) + (mapWidget.isRevealed() ? 2 : 0)) {
 				case 0:
 					setFog(x, y);
 					break;
@@ -260,7 +268,8 @@ public class SidePanel extends JPanel implements GameWidget {
 	}
 
 	/**
-	 * @param minimapHeight the minimapHeight to set
+	 * @param minimapHeight
+	 *            the minimapHeight to set
 	 */
 	public void setMinimapHeight(int minimapHeight) {
 		this.minimapHeight = minimapHeight;
@@ -274,9 +283,48 @@ public class SidePanel extends JPanel implements GameWidget {
 	}
 
 	/**
-	 * @param minimapWidth the minimapWidth to set
+	 * @param minimapWidth
+	 *            the minimapWidth to set
 	 */
 	public void setMinimapWidth(int minimapWidth) {
 		this.minimapWidth = minimapWidth;
+	}
+
+	public void setSelectedAllie(Unit selectedAllie) {
+		if (selectedAllie != null)
+			((JLabel) descriptionContent.get("name")).setText(selectedAllie.getAllieName());
+		setDescriptionTexts(selectedAllie);
+	}
+
+	public void setSelectedEnemy(Unit selectedEnemy) {
+		if (selectedEnemy != null)
+			((JLabel) descriptionContent.get("name")).setText(selectedEnemy.getAllieName());
+		setDescriptionTexts(selectedEnemy);
+	}
+
+	private void setDescriptionTexts(Unit unit) {
+		if (unit != null) {
+			Characteristic chars = unit.getCharacteristics();
+			((JLabel) descriptionContent.get("life"))
+					.setText(String.format("%d / %d", chars.currentLife, chars.life));
+			((JLabel) descriptionContent.get("attack")).setText(unit.getAttackDescription());
+			((JLabel) descriptionContent.get("defPierce")).setText("Def Pierce: " + chars.defensePercing);
+			((JLabel) descriptionContent.get("defBlunt")).setText("Def Blunt: " + chars.defenseBlunt);
+			((JLabel) descriptionContent.get("defSlash")).setText("Def Slash: " + chars.defenseSlashing);
+			((JLabel) descriptionContent.get("defMagic")).setText("Def Magic: " + chars.defenseMagic);
+		} else {
+			((JLabel) descriptionContent.get("name")).setText("");
+			((JLabel) descriptionContent.get("life")).setText("");
+			((JLabel) descriptionContent.get("attack")).setText("");
+			((JLabel) descriptionContent.get("defPierce")).setText("");
+			((JLabel) descriptionContent.get("defBlunt")).setText("");
+			((JLabel) descriptionContent.get("defSlash")).setText("");
+			((JLabel) descriptionContent.get("defMagic")).setText("");
+		}
+	}
+
+	public void setDescriptionContent(HashMap<String, GameWidget> descCtnt) {
+		descriptionContent = descCtnt;
+
 	}
 }
