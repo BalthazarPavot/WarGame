@@ -1,7 +1,7 @@
 package wargame.unit;
 
+import wargame.GameContext;
 import wargame.basic_types.Position;
-import wargame.map.SpriteHandler;
 
 public class Wizard extends Terrestre {
 
@@ -21,10 +21,14 @@ public class Wizard extends Terrestre {
 	protected final static int SIGHT = 4;
 	protected final static int MOVE_POINTS = 4;
 
-	public Wizard(Position position, SpriteHandler spriteHandler) {
-		super(position, spriteHandler);
+	public Wizard(Position position, GameContext gameContext) {
+		super(position, gameContext);
 		characteristics = new Characteristic(LIFE, ATTACK_SLASH, DEFENSE_SLASH, ATTACK_BLUNT, DEFENSE_BLUNT,
 				ATTACK_PIERCE, DEFENSE_PIERCE, ATTACK_MAGIC, DEFENSE_MAGIC, RANGE, SIGHT, MOVE_POINTS);
+	}
+
+	public boolean inflictDamage(Unit unit) {
+		return unit.takeMagicDamages(characteristics.attackMagic);
 	}
 
 }
