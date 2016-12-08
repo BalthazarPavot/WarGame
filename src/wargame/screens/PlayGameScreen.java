@@ -5,9 +5,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+
+import javax.swing.JLabel;
 
 import wargame.GameContext;
 import wargame.basic_types.Position;
@@ -62,6 +66,7 @@ public class PlayGameScreen extends GameScreen {
 		sidePanelKeyboardManager = new SidePanelKeyboardManager(this,
 				KeyboardFocusManager.getCurrentKeyboardFocusManager(), sidePanel);
 		turnTimer = System.currentTimeMillis();
+		mapWidget.setRevealed();
 	}
 
 	/**
@@ -91,6 +96,10 @@ public class PlayGameScreen extends GameScreen {
 	 * Create and initialise the side panel
 	 */
 	private void buildSidePanel() {
+		HashMap<String, GameWidget> descCtnt;
+		GameWidget currentComponent;
+		int index = 0;
+
 		sidePanel.addMouseListener(sidePanelMouseManager);
 		sidePanel.addMouseMotionListener(sidePanelMouseMotionManager);
 		sidePanel.addKeyListener(sidePanelKeyboardManager);
@@ -98,11 +107,22 @@ public class PlayGameScreen extends GameScreen {
 		sidePanel.setOpaque(true);
 		sidePanel.setLayout(null);
 		sidePanel.addWidget(new ButtonWidget("Next turn", 10, 20 + sidePanel.getMinimapHeight(),
-				sidePanel.getMinimapWidth(), 20, 12, Color.black, sidePanelActionManager));
+				sidePanel.getMinimapWidth(), 20 + index++ * 30, 12, Color.black, sidePanelActionManager));
 		sidePanel.addWidget(new ButtonWidget("Auto-play: " + (engine.isAutoGame() ? "on" : "off"), 10,
-				50 + sidePanel.getMinimapHeight(), sidePanel.getMinimapWidth(), 20, 12, Color.black,
-				sidePanelActionManager));
+				20 + index++ * 30 + sidePanel.getMinimapHeight(), sidePanel.getMinimapWidth(), 20, 12,
+				Color.black, sidePanelActionManager));
+		descCtnt = new HashMap<String, GameWidget>();
+		index++;
+		for (String name : new String[] { "name", "life", "attack", "defPierce", "defBlunt", "defSlash",
+				"defMagic" }) {
+			currentComponent = new TextWidget("", new Rectangle(10,
+					20 + index++ * 30 + sidePanel.getMinimapHeight(), sidePanel.getMinimapWidth(), 20));
+			descCtnt.put(name, currentComponent);
+			((JLabel) currentComponent).setForeground(Color.white);
+			sidePanel.addWidget(currentComponent);
+		}
 		this.addWidgets(sidePanel);
+		sidePanel.setDescriptionContent(descCtnt);
 	}
 
 	/**
@@ -124,9 +144,9 @@ public class PlayGameScreen extends GameScreen {
 		if (mapWidget.interfaceWidget.inAnimationLoop())
 			return;
 		if (isPassingToNextTurn()) {
-			if (engine.makeCurrentUnitAction())
+			if (engine.makeCurrentUnitAction()) {
 				return;
-			else {
+			} else {
 				turnTimer = System.currentTimeMillis();
 				engine.nextTurn();
 				turnTimer = System.currentTimeMillis();
@@ -159,8 +179,12 @@ public class PlayGameScreen extends GameScreen {
 
 	public void setPassingToNextTurn(boolean passingToNextTurn) {
 		this.passingToNextTurn = passingToNextTurn;
-		if (passingToNextTurn)
-			engine.currentActingUnit = 0 ;
+		if (passingToNextTurn) {
+			if (engine.getPlayerUnits().size() != 0)
+				engine.currentActingUnit = 0;
+			if (engine.getEnnemyUnits().size() != 0)
+				engine.currentActingEnemy = 0;
+		}
 	}
 }
 

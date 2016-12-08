@@ -1,12 +1,12 @@
 package wargame.unit;
 
+import wargame.GameContext;
 import wargame.basic_types.Position;
-import wargame.map.SpriteHandler;
 
 public abstract class Terrestre extends Unit {
 
-	public Terrestre(Position position, SpriteHandler spriteHandler) {
-		super (position, spriteHandler) ;
+	public Terrestre(Position position, GameContext gameContext) {
+		super (position, gameContext) ;
 	}
 
 	public boolean canFly () {

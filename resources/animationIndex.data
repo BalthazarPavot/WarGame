@@ -1,0 +1,19 @@
+all_animations_names = \
+  magos_walk;\
+  beetle_walk
+
+beetle_walk_path = images/characters/beetle.png
+beetle_walk_x = 0
+beetle_walk_y = 0
+beetle_walk_end_x = 256
+beetle_walk_end_y = 192
+beetle_walk_same_diagonal = true
+beetle_walk_duration = 100
+
+magos_walk_path = images/characters/magos_walk.png
+magos_walk_x = 0
+magos_walk_y = 0
+magos_walk_end_x = 512
+magos_walk_end_y = 192
+magos_walk_same_diagonal = true
+magos_walk_duration = 50

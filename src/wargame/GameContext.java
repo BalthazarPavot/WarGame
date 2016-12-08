@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
+import wargame.map.AnimationHandler;
 import wargame.map.Map;
 import wargame.map.SpriteHandler;
 
@@ -35,6 +36,7 @@ public class GameContext {
 	private boolean sound = true;
 	private boolean confLoaded = false;
 	private SpriteHandler spriteHandler;
+	private AnimationHandler animationHandler ;
 	private Map map;
 
 	public GameContext(ErrorManager errorManager) {
@@ -43,6 +45,7 @@ public class GameContext {
 		this.errorManager = errorManager;
 		this.loadConf();
 		this.spriteHandler = new SpriteHandler(this.errorManager);
+		this.setAnimationHandler(new AnimationHandler(this.errorManager));
 	}
 
 	public void setMap(Map map) {
@@ -232,6 +235,20 @@ public class GameContext {
 
 	public void setSound(boolean sound) {
 		this.sound = sound;
+	}
+
+	/**
+	 * @return the animationHandler
+	 */
+	public AnimationHandler getAnimationHandler() {
+		return animationHandler;
+	}
+
+	/**
+	 * @param animationHandler the animationHandler to set
+	 */
+	public void setAnimationHandler(AnimationHandler animationHandler) {
+		this.animationHandler = animationHandler;
 	}
 
 }

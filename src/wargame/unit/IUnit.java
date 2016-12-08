@@ -17,4 +17,7 @@ public interface IUnit {
 	public abstract boolean takeSlachingDamages(int val);
 
 	public abstract boolean canFly();
+	public String getEnemyName() ;
+	public String getAllieName() ;
+
 }

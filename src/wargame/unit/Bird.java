@@ -1,7 +1,7 @@
 package wargame.unit;
 
+import wargame.GameContext;
 import wargame.basic_types.Position;
-import wargame.map.SpriteHandler;
 
 public class Bird extends Aerial {
 
@@ -19,12 +19,16 @@ public class Bird extends Aerial {
 
 	protected final static int RANGE = 1;
 	protected final static int SIGHT = 7;
-	protected final static int MOVE_POINTS = 6;
+	protected final static int MOVE_POINTS = 6*3;
 
-	public Bird(Position position, SpriteHandler spriteHandler) {
-		super(position, spriteHandler);
+	public Bird(Position position, GameContext gameContext) {
+		super(position, gameContext);
 		characteristics = new Characteristic(LIFE, ATTACK_SLASH, DEFENSE_SLASH, ATTACK_BLUNT, DEFENSE_BLUNT,
 				ATTACK_PIERCE, DEFENSE_PIERCE, ATTACK_MAGIC, DEFENSE_MAGIC, RANGE, SIGHT, MOVE_POINTS);
+	}
+
+	public boolean inflictDamage(Unit unit) {
+		return unit.takeBluntDamages(characteristics.attackBlunt);
 	}
 
 }

@@ -2,69 +2,67 @@ package wargame.unit;
 
 import java.util.ArrayList;
 
+import wargame.GameContext;
 import wargame.basic_types.Position;
 import wargame.map.Map;
-import wargame.map.SpriteHandler;
 import wargame.widgets.AnimationWidget;
 import wargame.unit.AI.AI;
 
 /**
- * Represent a unit, and all its characteristics: its position, direction,
- * stacked positions, animation...
+ * Represent a unit, and all its characteristics: its position, direction, stacked positions, animation...
  */
 public abstract class Unit implements IUnit {
 
 	protected final static double CHARACTERISTIC_GAIN = 0.20;
 
+	public static String NAME = "unit";
 	public static final int NO_ACTION = 0;
 	public static final int MOVE_ACTION = 1;
 	public static final int ATTACK_ACTION = 2;
 
+	/* public static final int UPWARD_DIRECRTION = 0; public static final int LEFTWARD_DIRECRTION = 1; public
+	 * static final int DOWNWARD_DIRECRTION = 2; public static final int RIGHTWARD_DIRECRTION = 3;
+	 * 
+	 * public static final int UPLEFTWARD_DIRECRTION = 4; public static final int UPRIGHTWARD_DIRECRTION = 5;
+	 * public static final int DOWNRIGHTWARD_DIRECRTION = 6; public static final int DOWNLEFTWARD_DIRECRTION =
+	 * 7; */
 	public static final int UPWARD_DIRECRTION = 0;
-	public static final int LEFTWARD_DIRECRTION = 1;
-	public static final int DOWNWARD_DIRECRTION = 2;
-	public static final int RIGHTWARD_DIRECRTION = 3;
+	public static final int DOWNWARD_DIRECRTION = 1;
+	public static final int RIGHTWARD_DIRECRTION = 2;
+	public static final int LEFTWARD_DIRECRTION = 3;
 
-	public static final int UPLEFTWARD_DIRECRTION = 4;
-	public static final int UPRIGHTWARD_DIRECRTION = 5;
-	public static final int DOWNRIGHTWARD_DIRECRTION = 6;
-	public static final int DOWNLEFTWARD_DIRECRTION = 7;
+	public static final int UPRIGHTWARD_DIRECRTION = 4;
+	public static final int DOWNRIGHTWARD_DIRECRTION = 5;
+	public static final int DOWNLEFTWARD_DIRECRTION = 6;
+	public static final int UPLEFTWARD_DIRECRTION = 7;
 
 	protected Characteristic characteristics;
 	public int staticPosition = DOWNWARD_DIRECRTION;
 	public Position position;
-	private ArrayList<Position> movementArea;
 	public ArrayList<Position> stackedPositions;
 	public int currentPosition;
 	public boolean hasPlayed = false;
-	public AI ai;
 	public ArrayList<AnimationWidget> walkAnimations;
 
-	public Unit(Position position, SpriteHandler spriteHandler) {
+	public Unit(Position position, GameContext gameContext) {
 		this.position = position;
-		this.walkAnimations = spriteHandler.getUnitWalkSprites(this);
+		if (position.equals(gameContext.getMap().getEnnemyPopArea()))
+			this.walkAnimations = gameContext.getAnimationHandler().getEnemyWalkSprites(this);
+		else
+			this.walkAnimations = gameContext.getAnimationHandler().getUnitWalkSprites(this);
 	}
 
 	public ArrayList<Position> getPathToEnd() {
-		if (stackedPositions == null
-				|| !(currentPosition < stackedPositions.size() - 1))
+		if (stackedPositions == null || !(currentPosition < stackedPositions.size() - 1))
 			return null;
-		return new ArrayList<Position>(stackedPositions.subList(
-				currentPosition, stackedPositions.size() - 1));
+		return new ArrayList<Position>(
+				stackedPositions.subList(currentPosition, stackedPositions.size() - 1));
 	}
 
 	public boolean isClicked(Position pos) {
 		return pos.getX() >= position.getX() && pos.getY() >= position.getY()
 				&& pos.getX() <= position.getX() + Map.squareWidth
 				&& pos.getY() <= position.getY() + Map.squareHeight;
-	}
-
-	ArrayList<Position> getMovementArea() {
-		return this.movementArea;
-	}
-
-	public boolean inflictDamage(Unit unit) {
-		return false;
 	}
 
 	public void setMove(ArrayList<Position> currentPath) {
@@ -88,7 +86,7 @@ public abstract class Unit implements IUnit {
 						staticPosition = UPRIGHTWARD_DIRECRTION;
 						characteristics.currentMovePoints -= 2;
 					} else {
-						staticPosition = UPRIGHTWARD_DIRECRTION;
+						staticPosition = RIGHTWARD_DIRECRTION;
 						characteristics.currentMovePoints -= 1;
 					}
 				} else if (nextPosition.getX() < position.getX()) {
@@ -104,7 +102,7 @@ public abstract class Unit implements IUnit {
 					}
 				} else if (nextPosition.getY() > position.getY()) {
 					if (nextPosition.getX() > position.getX()) {
-						staticPosition = DOWNLEFTWARD_DIRECRTION;
+						staticPosition = DOWNRIGHTWARD_DIRECRTION;
 						characteristics.currentMovePoints -= 2;
 					} else if (nextPosition.getX() < position.getX()) {
 						staticPosition = DOWNLEFTWARD_DIRECRTION;
@@ -142,25 +140,7 @@ public abstract class Unit implements IUnit {
 		return map.pathByWalking(getPosition(), destination);
 	}
 
-	/**
-	 * Return true if the unit can reach the position endPos in 1 round
-	 * 
-	 * @param map
-	 * @param endPos
-	 * @return
-	 */
-	public boolean canReach(Map map, Position endPos) {
-		int distance;
-		ArrayList<Position> path;
-
-		path = this.canMove(map, endPos);
-		distance = Position.movementCounter(path);
-		// TODO Check if there are error at the next line
-		return distance <= this.getCharacteristics().currentMovePoints;
-	}
-
-	public int play(ArrayList<Unit> playerUnits, ArrayList<Unit> ennemyUnits,
-			Map map) {
+	public int play(ArrayList<Unit> playerUnits, ArrayList<Unit> ennemyUnits, Map map) {
 		if (!hasPlayed) {
 			return move() ? MOVE_ACTION : NO_ACTION;
 		}
@@ -182,11 +162,12 @@ public abstract class Unit implements IUnit {
 	public Position getPreviousPosition() {
 		if (stackedPositions == null)
 			return null;
-		return currentPosition != 0 ? stackedPositions.get(currentPosition - 1)
-				: position;
+		return currentPosition != 0 ? stackedPositions.get(currentPosition - 1) : position;
 	}
 
 	public AnimationWidget getCurrentWalkAnimation() {
+		if (walkAnimations == null)
+			return null;
 		return walkAnimations.get(staticPosition);
 	}
 
@@ -232,6 +213,106 @@ public abstract class Unit implements IUnit {
 		path = canMove(map, destination);
 		if (path != null)
 			setMove(path);
+	}
+
+	public void moveTo(int x, int y, Map map) {
+		moveTo(new Position(x, y), map);
+	}
+
+	public ArrayList<Position> squaresInSight() {
+		return position.inRange(characteristics.sight);
+	}
+
+	public ArrayList<Position> squaresInRange() {
+		return position.inRange(characteristics.range);
+	}
+
+	public boolean isVisibleBy(ArrayList<Unit> units) {
+		for (Unit unit : units)
+			if (isVisibleBy(unit))
+				return true;
+		return false;
+	}
+
+	private boolean isVisibleBy(Unit unit) {
+		return unit.getPosition().distance(position) <= unit.getCharacteristics().sight * Map.squareWidth;
+	}
+
+	public boolean inAttackRangeOf(Unit unit) {
+		return unit.getPosition().distance(position) <= unit.getCharacteristics().range * Map.squareWidth;
+	}
+
+	public ArrayList<Position> movePossibilities(Map map) {
+		ArrayList<Position> movePossibilities;
+
+		movePossibilities = position.inRange(characteristics.currentMovePoints);
+		for (Position pos : new ArrayList<Position>(movePossibilities.subList(0, movePossibilities.size())))
+			if (canMove(map, pos) == null)
+				movePossibilities.remove(pos);
+		return movePossibilities;
+	}
+
+	public ArrayList<Position> attackPossibilities() {
+		return squaresInRange();
+	}
+
+	public String getAllieName() {
+		switch (this.getClass().getName()) {
+		case "wargame.unit.Bird":
+			return "Wyvern";
+		case "wargame.unit.Bowman":
+			return "Bowman";
+		case "wargame.unit.Healer":
+			return "White magican";
+		case "wargame.unit.Knight":
+			return "Knight";
+		case "wargame.unit.Soldier":
+			return "Soldier";
+		case "wargame.unit.Wizard":
+			return "Wizard";
+		default:
+			System.out.println(this.getClass().getName());
+			return "Allie unit";
+		}
+	}
+
+	public String getEnemyName() {
+		switch (this.getClass().getName()) {
+		case "wargame.unit.Bird":
+			return "Dragon";
+		case "wargame.unit.Bowman":
+			return "Troll";
+		case "wargame.unit.Healer":
+			return "Shaman";
+		case "wargame.unit.Knight":
+			return "No Head Knight";
+		case "wargame.unit.Soldier":
+			return "Beetle";
+		case "wargame.unit.Wizard":
+			return "Wizard";
+		default:
+			return "Enemy unit";
+		}
+	}
+
+	public String getAttackDescription() {
+		switch (this.getClass().getName()) {
+		case "wargame.unit.Bird":
+			return "Blunt: " + characteristics.attackBlunt;
+		case "wargame.unit.Bowman":
+			return "Pierce: " + characteristics.attackPercing;
+		case "wargame.unit.Healer":
+			return "Heal: " + characteristics.attackMagic;
+		case "wargame.unit.Knight":
+			return "Blunt: " + characteristics.attackBlunt;
+		case "wargame.unit.Soldier":
+			return "Slash: " + characteristics.attackSlashing;
+		case "wargame.unit.Wizard":
+			return "Magic: " + characteristics.attackMagic;
+		default:
+			return "???: " + (characteristics.attackBlunt + characteristics.attackSlashing
+					+ characteristics.attackPercing + characteristics.attackMagic);
+		}
 	}
 
 	public ArrayList<ArrayList> getObstacleShade(Map map) {
@@ -306,4 +387,22 @@ public abstract class Unit implements IUnit {
 		}
 		return enemyListOut;
 	}
+
+	/**
+	 * Return true if the unit can reach the position endPos in 1 round
+	 * 
+	 * @param map
+	 * @param endPos
+	 * @return
+	 */
+	public boolean canReach(Map map, Position endPos) {
+		int distance;
+		ArrayList<Position> path;
+
+		path = this.canMove(map, endPos);
+		distance = Position.movementCounter(path);
+		// TODO Check if there are error at the next line
+		return distance <= this.getCharacteristics().currentMovePoints;
+	}
 }
+

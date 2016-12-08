@@ -2,6 +2,7 @@
 package wargame.engine;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import wargame.GameContext;
 import wargame.basic_types.Position;
@@ -23,6 +24,7 @@ public class Engine {
 
 	public ArrayList<Position> currentPath = null;
 	public int currentActingUnit = -1;
+	public int currentActingEnemy = -1;
 	ArrayList<Unit> playerUnits = null;
 	ArrayList<Unit> ennemyUnits = null;
 	private MapWidget mapWidget = null;
@@ -61,11 +63,30 @@ public class Engine {
 				currentActingUnit += 1;
 				activeUnit.hasPlayed = true;
 			} else
-				updateFog (activeUnit) ;
+				updateFog();
+			if (currentActingUnit == playerUnits.size())
+				currentActingUnit = -1;
+			else if (currentActingUnit != -1)
+				mapWidget.unitInAction = playerUnits.get(currentActingUnit);
 		}
-		if (currentActingUnit == playerUnits.size())
-			currentActingUnit = -1;
-		return currentActingUnit != -1;
+		if (currentActingUnit == -1 && currentActingEnemy != -1) {
+			activeUnit = ennemyUnits.get(currentActingEnemy);
+			while (activeUnit.getPathToEnd() == null)
+				activeUnit.moveTo(new Random().nextInt(map.getWidth() / 64) * 64,
+						new Random().nextInt(map.getHeight() / 64) * 64, map);
+			actionCode = activeUnit.play(playerUnits, ennemyUnits, map);
+			displayAction(actionCode, activeUnit);
+			if (actionCode == Unit.NO_ACTION) {
+				currentActingEnemy += 1;
+				activeUnit.hasPlayed = true;
+			} else
+				updateFog();
+			if (currentActingEnemy == ennemyUnits.size())
+				currentActingEnemy = -1;
+			else if (currentActingEnemy != -1)
+				mapWidget.unitInAction = ennemyUnits.get(currentActingEnemy);
+		}
+		return currentActingUnit != -1 || currentActingEnemy != -1;
 	}
 
 	/**
@@ -82,7 +103,10 @@ public class Engine {
 			allie.hasPlayed = false;
 		}
 		for (Unit ennemy : ennemyUnits) {
-			displayAction(ennemy.play(playerUnits, ennemyUnits, map), ennemy);
+			charac = ennemy.getCharacteristics();
+			charac.currentMovePoints += charac.movePoints;
+			if (charac.currentMovePoints > charac.movePoints + 1)
+				charac.currentMovePoints = charac.movePoints + 1;
 			ennemy.hasPlayed = false;
 		}
 		makeEnemiesPop();
@@ -93,20 +117,25 @@ public class Engine {
 		turnBeforeHerdArearance--;
 		turnBeforeBigEnemyArearance--;
 		currentActingUnit = -1;
+		currentActingEnemy = -1;
+		mapWidget.unitInAction = null;
 	}
 
 	private void makeEnemiesPop() {
 		if (turnBeforeEnemyArearance == 0) {
 			turnBeforeEnemyArearance = enemyAppearanceFrequency;
 			makeEnemyPop(1);
+			turnBeforeEnemyArearance = enemyAppearanceFrequency;
 		}
 		if (turnBeforeHerdArearance == 0) {
 			turnBeforeHerdArearance = enemyHerdAppearanceFrequency;
 			makeEnemyPop(enemyNumberInHerd);
+			turnBeforeHerdArearance = enemyHerdAppearanceFrequency;
 		}
 		if (turnBeforeBigEnemyArearance == 0) {
 			turnBeforeBigEnemyArearance = bigEnemyAppearanceFrequency;
 			bigEnemyPop();
+			turnBeforeBigEnemyArearance = bigEnemyAppearanceFrequency;
 		}
 	}
 
@@ -117,10 +146,12 @@ public class Engine {
 
 	private void makeEnemyPop(int i) {
 		while (i-- != 0) {
-			ennemyUnits.add(new Wizard(map.getEnnemyPopArea(), context.getSpriteHandler()));
-			mapWidget.addUnitDisplayer(
-					new UnitDisplayer(ennemyUnits.get(ennemyUnits.size() - 1), context.getSpriteHandler()
-							.getUnitStaticPositionSprites(ennemyUnits.get(ennemyUnits.size() - 1))));
+			Unit newUnit;
+			newUnit = new Soldier(map.getEnnemyPopArea(), context);
+
+			ennemyUnits.add(newUnit);
+			mapWidget.addEnnemyDisplayer(new UnitDisplayer(newUnit,
+					context.getSpriteHandler().getEnemyStaticPositionSprites(newUnit)));
 		}
 	}
 
@@ -151,9 +182,10 @@ public class Engine {
 			if (unit.isClicked(position)) {
 				if (selectedAllie != null)
 					allieActOnAllie(unit);
-				else {
+				else if (!unit.hasPlayed) {
 					selectAllie(unit);
-				}
+				} else
+					sidePanel.setSelectedAllie(unit);
 				return;
 			}
 		}
@@ -163,6 +195,7 @@ public class Engine {
 					allieActOnEnnemy(unit);
 				else {
 					selectedAllie = null;
+					mapWidget.interfaceWidget.setSelectedAllie(null);
 					selectEnnemy(unit);
 				}
 				return;
@@ -182,10 +215,34 @@ public class Engine {
 	}
 
 	private void selectAllie(Unit unit) {
+		ArrayList<Position> pathToEnd;
+		ArrayList<Position> enemiesToHighlight = null;
+
 		selectedAllie = unit;
 		selectedEnnemy = null;
-		mapWidget.interfaceWidget
-				.setPathToDisplay(selectedAllie == null ? null : selectedAllie.getPathToEnd());
+		updateEnemySelection();
+		if (selectedAllie != null && !selectedAllie.hasPlayed) {
+			mapWidget.interfaceWidget.setSelectedAllie(selectedAllie.getPosition());
+			pathToEnd = selectedAllie.getPathToEnd();
+			if (pathToEnd != null)
+				mapWidget.interfaceWidget.setPathToDisplay(new ArrayList<Position>(pathToEnd.subList(0,
+						Math.min(selectedAllie.getCharacteristics().sight, pathToEnd.size()))));
+			else
+				mapWidget.interfaceWidget.setPathToDisplay(null);
+			enemiesToHighlight = new ArrayList<Position>();
+			for (Unit enemy : ennemyUnits)
+				if (enemy.inAttackRangeOf(selectedAllie))
+					enemiesToHighlight.add(enemy.getPosition());
+			mapWidget.interfaceWidget.setMovePossibilities(selectedAllie.movePossibilities(map));
+			mapWidget.interfaceWidget.setAttackPossibilities(selectedAllie.attackPossibilities());
+		} else {
+			mapWidget.interfaceWidget.setSelectedAllie(null);
+			mapWidget.interfaceWidget.setPathToDisplay(null);
+			mapWidget.interfaceWidget.setMovePossibilities(null);
+			mapWidget.interfaceWidget.setAttackPossibilities(null);
+		}
+		mapWidget.interfaceWidget.setEnemiesToHighlight(enemiesToHighlight);
+		sidePanel.setSelectedAllie(selectedAllie);
 	}
 
 	/**
@@ -196,6 +253,15 @@ public class Engine {
 	public void selectEnnemy(Unit selectedEnnemy) {
 		selectAllie(null);
 		this.selectedEnnemy = selectedEnnemy;
+		updateEnemySelection();
+		sidePanel.setSelectedEnemy(selectedEnnemy);
+	}
+
+	private void updateEnemySelection() {
+		if (selectedEnnemy != null)
+			mapWidget.interfaceWidget.setSelectedEnemy(selectedEnnemy.getPosition());
+		else
+			mapWidget.interfaceWidget.setSelectedEnemy(null);
 	}
 
 	/**
@@ -203,20 +269,18 @@ public class Engine {
 	 */
 	private void initPlayerUnits() {
 		Unit unit;
-	
+
 		playerUnits = new ArrayList<Unit>();
-		unit = new Wizard(map.getAlliePopArea(), context.getSpriteHandler()) ;
+		unit = new Wizard(map.getAlliePopArea(), context);
 		playerUnits.add(unit);
-		mapWidget.addUnitDisplayer(new UnitDisplayer(unit,
-				context.getSpriteHandler().getUnitStaticPositionSprites(unit)));
-//		unit.setMove(map.pathByWalking(map.getAlliePopArea(), map.getEnnemyPopArea()));
-		unit.moveTo (map.getEnnemyPopArea(), map) ;
-		unit = new Bird(map.getAlliePopArea(), context.getSpriteHandler()) ;
+		mapWidget.addUnitDisplayer(
+				new UnitDisplayer(unit, context.getSpriteHandler().getUnitStaticPositionSprites(unit)));
+		unit.moveTo(map.getEnnemyPopArea(), map);
+		unit = new Bird(map.getAlliePopArea(), context);
 		playerUnits.add(unit);
-		mapWidget.addUnitDisplayer(new UnitDisplayer(unit,
-				context.getSpriteHandler().getUnitStaticPositionSprites(unit)));
-		unit.moveTo (map.getEnnemyPopArea(), map) ;
-//		unit.setMove(map.pathByWalking(map.getAlliePopArea(), map.getEnnemyPopArea()));
+		mapWidget.addUnitDisplayer(
+				new UnitDisplayer(unit, context.getSpriteHandler().getUnitStaticPositionSprites(unit)));
+		unit.moveTo(map.getEnnemyPopArea(), map);
 	}
 
 	/**
@@ -259,15 +323,9 @@ public class Engine {
 	}
 
 	private void updateFog(Unit unit) {
-		Position position = unit.getPosition();
-		int sight = unit.getCharacteristics().sight * Map.squareWidth;
-		for (int x = position.getX() - sight; x < sight + position.getX()
-				+ Map.squareWidth; x += Map.squareWidth) {
-			for (int y = position.getY() - sight; y < sight + position.getY()
-					+ Map.squareHeight; y += Map.squareHeight) {
-				if (position.distance(x, y) <= sight)
-					mapWidget.setFog(x, y, 2);
-			}
+		for (Position position : unit.squaresInSight()) {
+			mapWidget.setFog(position, 2);
+
 		}
 	}
 
@@ -277,9 +335,30 @@ public class Engine {
 	 * @param position
 	 */
 	private void allieMoveTo(Position position) {
-		if (currentPath != null)
-			selectedAllie.setMove(currentPath);
-		currentPath = null;
+		int cost;
+		Position previous;
+		ArrayList<Position> currentPath;
+
+		selectedAllie.moveTo(position.getX() / Map.squareWidth * Map.squareWidth,
+				position.getY() / Map.squareHeight * Map.squareHeight, map);
+		currentPath = selectedAllie.getPathToEnd();
+		if (currentPath != null) {
+			cost = 0;
+			previous = currentPath.get(0);
+			for (Position pos : currentPath.subList(1, currentPath.size())) {
+				if (pos.getX() == previous.getX() || pos.getY() == previous.getY())
+					cost += 1;
+				else
+					cost += 2;
+				previous = pos;
+			}
+			if (cost <= selectedAllie.getCharacteristics().currentMovePoints) {
+				displayAction(selectedAllie.play(playerUnits, ennemyUnits, map), selectedAllie);
+				selectedAllie.hasPlayed = false;
+				selectAllie(selectedAllie);
+			} else
+				mapWidget.interfaceWidget.setPathToDisplay(currentPath);
+		}
 	}
 
 	/**
@@ -288,8 +367,13 @@ public class Engine {
 	 * @param unit
 	 */
 	private void allieActOnEnnemy(Unit unit) {
-		if (!selectedAllie.inflictDamage(unit)) {
+		if (!selectedAllie.hasPlayed && unit.inAttackRangeOf(selectedAllie)) {
+			selectedAllie.hasPlayed = true;
+			if (selectedAllie.inflictDamage(unit)) {
+				ennemyUnits.remove(selectedAllie);
+			}
 		}
+		selectAllie(null);
 	}
 
 	/**

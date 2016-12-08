@@ -180,6 +180,21 @@ public class Position implements Comparable<Object> {
 		return String.format("[%d;%d]", x, y);
 	}
 
+	public ArrayList<Position> inRange(int range) {
+		ArrayList<Position> inRange = new ArrayList<Position>();
+
+		range *= Map.squareWidth;
+		for (int x = getX() - range; x < range + getX()
+				+ Map.squareWidth; x += Map.squareWidth) {
+			for (int y = getY() - range; y < range + getY()
+					+ Map.squareHeight; y += Map.squareHeight) {
+				if (distance(x, y) <= range)
+					inRange.add(new Position (x, y));
+			}
+		}
+		return inRange;
+	}
+
 	public boolean isDiagonal(Position posEnd) {
 		return this.getX() != posEnd.getX() && this.getY() != posEnd.getY();
 	}
@@ -235,4 +250,5 @@ public class Position implements Comparable<Object> {
 		}
 		return inside;
 	}
+
 }
