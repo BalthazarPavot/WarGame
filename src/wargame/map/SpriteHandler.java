@@ -223,7 +223,7 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 	 */
 	public BufferedImage[] getEnemyStaticPositionSprites(Unit unit) {
 		ArrayList<BufferedImage> unitWalkImages = null;
-		if (unit.getClass() == Soldier.class || unit.getClass() == Bird.class) {
+		if (unit.getClass() == Soldier.class ||unit.getClass() == Bowman.class || unit.getClass() == Bird.class) {
 			unitWalkImages = get("beetle_static_poses");
 		}
 		if (unitWalkImages == null || unitWalkImages.size() < 3)
