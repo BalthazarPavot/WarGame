@@ -8,9 +8,9 @@ public class Action {
 
 	/* Enumerations */
 	public enum operation {
-		MOVE, ATTACK, HEAL, WAIT;
+		MOVE, ATTACK, HEAL, REST;
 	}
-	
+
 	/* Attribute of the class */
 	public ArrayList<Position> position;
 	public operation ope;
