@@ -147,7 +147,7 @@ public class Engine {
 	private void makeEnemyPop(int i) {
 		while (i-- != 0) {
 			Unit newUnit;
-			newUnit = new Soldier(map.getEnnemyPopArea(), context);
+			newUnit = new Bowman(map.getEnnemyPopArea(), context);
 
 			ennemyUnits.add(newUnit);
 			mapWidget.addEnnemyDisplayer(new UnitDisplayer(newUnit,
