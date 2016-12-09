@@ -2,7 +2,6 @@
 package wargame.engine;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import wargame.GameContext;
 import wargame.basic_types.Position;
@@ -71,9 +70,6 @@ public class Engine {
 		}
 		if (currentActingUnit == -1 && currentActingEnemy != -1) {
 			activeUnit = ennemyUnits.get(currentActingEnemy);
-			while (activeUnit.getPathToEnd() == null)
-				activeUnit.moveTo(new Random().nextInt(map.getWidth() / 64) * 64,
-						new Random().nextInt(map.getHeight() / 64) * 64, map);
 			actionCode = activeUnit.play(playerUnits, ennemyUnits, map);
 			displayAction(actionCode, activeUnit);
 			if (actionCode == Unit.NO_ACTION) {
@@ -284,7 +280,7 @@ public class Engine {
 	}
 
 	/**
-	 * Create and initialise the enemy units.
+	 * Create and initialize the enemy units.
 	 */
 	private void initEnnemyUnits() {
 		ennemyUnits = new ArrayList<Unit>();
