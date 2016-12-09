@@ -2,6 +2,7 @@ package wargame.unit;
 
 import wargame.GameContext;
 import wargame.basic_types.Position;
+import wargame.unit.AI.AIBowman;
 
 public class Bowman extends Terrestre {
 
@@ -25,6 +26,10 @@ public class Bowman extends Terrestre {
 		super(position, gameContext);
 		characteristics = new Characteristic(LIFE, ATTACK_SLASH, DEFENSE_SLASH, ATTACK_BLUNT, DEFENSE_BLUNT,
 				ATTACK_PIERCE, DEFENSE_PIERCE, ATTACK_MAGIC, DEFENSE_MAGIC, RANGE, SIGHT, MOVE_POINTS);
+		if (position.equals(gameContext.getMap().getEnnemyPopArea()))
+			this.ai = new AIBowman(this);
+		else
+			this.ai = null;
 	}
 
 	public boolean inflictDamage(Unit unit) {
