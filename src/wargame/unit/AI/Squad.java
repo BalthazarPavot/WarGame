@@ -8,16 +8,24 @@ import wargame.unit.Unit;
 public class Squad {
 
 	/* Attribute of the class */
-	ArrayList<Unit> unitList;
-	Position center;
+	public ArrayList<Unit> unitList;
+	public Position center;
 
-	/* Constructor */
+	/* Constructors */
 	Squad(Unit u1, Unit u2) {
-		ArrayList<Unit> unitList = new ArrayList<Unit>();
+		unitList = new ArrayList<Unit>();
+		center = new Position();
 		unitList.add(u1);
 		unitList.add(u2);
 		u1.ai.squad = this;
 		u2.ai.squad = this;
+		computeCenter();
+	}
+	Squad(Unit u1) {
+		unitList = new ArrayList<Unit>();
+		center = new Position();
+		unitList.add(u1);
+		u1.ai.squad = this;
 		computeCenter();
 	}
 
@@ -44,13 +52,20 @@ public class Squad {
 		int amountX;
 		int amountY;
 
+		float averageX;
+		float averageY;
+		
 		amountX = 0;
 		amountY = 0;
+		
+		
 		for (Unit u : this.unitList) {
 			amountX += u.getPosition().getX();
 			amountY += u.getPosition().getY();
 		}
-		this.center.setX((int) amountX / this.unitList.size());
-		this.center.setY((int) amountY / this.unitList.size());
+		averageX = amountX / this.unitList.size();
+		averageY = amountY / this.unitList.size();
+		center.setX((int) averageX) ;
+		center.setY((int) averageY);
 	}
 }
