@@ -258,7 +258,7 @@ public class AnimationHandler extends HashMap<String, ArrayList<AnimationWidget>
 	 * @return
 	 */
 	public ArrayList<AnimationWidget> getEnemyWalkSprites(Unit unit) {
-		if (unit.getClass() == Soldier.class || unit.getClass() == Bird.class) {
+		if (unit.getClass() == Soldier.class || unit.getClass() == Bowman.class || unit.getClass() == Bird.class) {
 			return get("beetle_walk");
 		}
 		return null;
