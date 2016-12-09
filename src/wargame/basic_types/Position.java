@@ -200,17 +200,23 @@ public class Position implements Comparable<Object> {
 	}
 
 	public static int movementCounter(ArrayList<Position> path) {
-		int counter;
-		Position previousPos = path.get(0);
-		counter = 0;
-		for (Position currentPos : path) {
-			if (currentPos.getX() != previousPos.getX())
-				++counter;
-			if (currentPos.getY() != previousPos.getY())
-				++counter;
-			previousPos = currentPos;
+		try {
+			if (path.size() == 0)
+				return 0;
+			int counter;
+			Position previousPos = path.get(0);
+			counter = 0;
+			for (Position currentPos : path) {
+				if (currentPos.getX() != previousPos.getX())
+					++counter;
+				if (currentPos.getY() != previousPos.getY())
+					++counter;
+				previousPos = currentPos;
+			}
+			return counter;
+		} catch (NullPointerException e){
+			return 0;
 		}
-		return counter;
 	}
 
 	public boolean isInPolygone(ArrayList<Position> vertexList) {
