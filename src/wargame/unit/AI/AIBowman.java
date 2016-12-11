@@ -7,7 +7,12 @@ import wargame.map.Map;
 import wargame.unit.Unit;
 import wargame.unit.AI.Action.operation;
 
-public class AIBowman extends AI implements IAI, IMarksman {
+/**
+ * 
+ * @author Romain Pelegrin
+ *
+ */
+public class AIBowman extends AI implements IAI {
 
 	public AIBowman(Unit unit) {
 		super(unit);
@@ -42,31 +47,34 @@ public class AIBowman extends AI implements IAI, IMarksman {
 	 * 
 	 * @param enemyList
 	 */
-	public void fillAction(ArrayList<Unit> enemyList, Map map) {
+	public void fillAction(ArrayList<Unit> enemyList, ArrayList<Unit> allyList, Map map) {
 		this.actList.clear();
 		if (isSafe(enemyList, map)
-				&& (this.getLife() == healhPoint.LOW || this.getLife() == healhPoint.VERY_LOW))
+				&& (this.getLife() == healhPoint.MEDIUM
+						|| this.getLife() == healhPoint.LOW || this.getLife() == healhPoint.VERY_LOW))
 			rest();
 		else if (!this.blocked
-				&& (this.getLife() == healhPoint.LOW || this.getLife() == healhPoint.VERY_LOW))
-			flee(enemyList, map);
+				&& (this.getLife() == healhPoint.MEDIUM
+						|| this.getLife() == healhPoint.LOW || this.getLife() == healhPoint.VERY_LOW))
+			flee(enemyList, allyList, map);
 		else
-			fight(enemyList, map);
+			fight(enemyList, allyList, map);
 	}
 
 	/**
 	 * Sort enemy depending on their distance, their life and their weakness.
 	 */
-	public void fight(ArrayList<Unit> enemyList, Map map) {
+	public void fight(ArrayList<Unit> enemyList, ArrayList<Unit> allyList, Map map) {
 		ArrayList<Unit> enemyInRange = new ArrayList<Unit>();
 		ArrayList<Unit> enemyInRangeSorted = new ArrayList<Unit>();
 		enemyInRange = getAllTargetInRange(enemyList);
 		enemyInRangeSorted = getSortedTarget(enemyInRange);
-		this.actList = getBestAction(enemyInRangeSorted, enemyList, map);
+		this.actList = getBestAction(enemyInRangeSorted, enemyList, allyList, map);
 	}
 
 	/**
 	 * Sort by Weakness the list of enemy.
+	 * 
 	 * @param enemyInRange
 	 * @return
 	 */
@@ -100,28 +108,33 @@ public class AIBowman extends AI implements IAI, IMarksman {
 
 	/**
 	 * Compute the best action the AI can do.
+	 * 
 	 * @param enemyInRangeSorted
 	 * @param enemyList
 	 * @param map
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public ArrayList<Action> getBestAction(ArrayList<Unit> enemyInRangeSorted,
-			ArrayList<Unit> enemyList, Map map) {
+			ArrayList<Unit> enemyList, ArrayList<Unit> allyList, Map map) {
 		ArrayList<Action> bestActionList = new ArrayList<Action>();
 		float currentScore;
 		float bestScore;
+		ArrayList<Unit> units ;
+		units = (ArrayList<Unit>) allyList.clone() ;
+		units.addAll(enemyList) ;
 
 		Position oldPos = this.unitLinked.position;
 		bestScore = 0;
-		
+
 		for (Unit u : enemyInRangeSorted) {
-			for (Position pos : this.unitLinked.movePossibilities(map)) {
+			for (Position pos : this.unitLinked.movePossibilities(map, units)) {
 				currentScore = 0;
 				if (isSafe(enemyList, map)) {
 					currentScore += SCORE_SAFE_BOWMAN;
 					if (canKill(u)) {
 						this.unitLinked.position = oldPos;
-						return getActionAttackList(map, oldPos, pos, u);
+						return getActionAttackList(map, oldPos, pos, u, units);
 					} else if (this.unitLinked.canHit(map, enemyList).contains(
 							u)) {
 						currentScore += ((this.unitLinked.getCharacteristics().attackPercing - u
@@ -135,20 +148,20 @@ public class AIBowman extends AI implements IAI, IMarksman {
 					bestScore = currentScore;
 					if (currentScore != SCORE_GO_TO_THE_FIGHT)
 						bestActionList = getActionAttackList(map, oldPos, pos,
-								u);
+								u, units);
 				}
 			}
 		}
-		if (bestScore <= SCORE_GO_TO_THE_FIGHT){
+		if (bestScore <= SCORE_GO_TO_THE_FIGHT) {
 			bestActionList.clear();
-			bestActionList = goToTheFight(enemyList, map);
+			bestActionList = goToTheFight(enemyList, allyList, map);
 		}
 		this.unitLinked.position = oldPos;
 		return bestActionList;
 	}
 
 	public ArrayList<Action> getActionAttackList(Map map, Position oldPos,
-			Position pos, Unit u) {
+			Position pos, Unit u, ArrayList<Unit>units) {
 		ArrayList<Action> actionList = new ArrayList<Action>();
 		ArrayList<Position> moveList = new ArrayList<Position>();
 		ArrayList<Position> attackList = new ArrayList<Position>();
@@ -156,16 +169,14 @@ public class AIBowman extends AI implements IAI, IMarksman {
 		Action act1 = new Action();
 		Action act2 = new Action();
 
-		act1.position = map.pathByWalking(oldPos, pos);
+		act1.position = map.pathByWalking(oldPos, pos, units);
 		act1.ope = operation.MOVE;
 		actionList.add(act1);
 		moveList.add(u.position);
-		act2.position = moveList;
 		act2.ope = operation.ATTACK;
 		attackList.add(u.position);
 		act2.position = attackList;
 		actionList.add(act2);
-
 		return actionList;
 	}
 

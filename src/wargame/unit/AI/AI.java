@@ -17,6 +17,8 @@ import wargame.unit.AI.Action.operation;
 /**
  * That class regroup methods and attribute common with all AI
  * 
+ * @author Romain Pelegrin
+ * 
  */
 public abstract class AI implements IAI {
 
@@ -95,11 +97,11 @@ public abstract class AI implements IAI {
 	 * @param allyList
 	 * @param map
 	 */
-	public void searchSquad(ArrayList<Unit> allyList, Map map) {
+	public void searchSquad(ArrayList<Unit> allyList, Map map, ArrayList<Unit> units) {
 		for (Unit ally : allyList) {
 			if (ally != this.unitLinked
-					&& (ally.canReach(map, this.unitLinked.getPosition()) || (this.unitLinked
-							.canReach(map, ally.getPosition())))) {
+					&& (ally.canReach(map, this.unitLinked.getPosition(), units) || (this.unitLinked
+							.canReach(map, ally.getPosition(), units)))) {
 				if (this.squad == null && ally.ai.squad != null)
 					ally.ai.squad.add(this.unitLinked);
 				else if (this.squad != null && this.squad == null)
@@ -121,12 +123,16 @@ public abstract class AI implements IAI {
 	 * @param thisUnit
 	 * @param map
 	 */
-	public void setBlocked(ArrayList<Unit> enemyList, Map map) {
+	@SuppressWarnings("unchecked")
+	public void setBlocked(ArrayList<Unit> enemyList, ArrayList<Unit> allyList, Map map) {
+		ArrayList<Unit> units ;
+		units = (ArrayList<Unit>) allyList.clone() ;
+		units.addAll(enemyList) ;
 
 		ArrayList<Position> reachablePosition = new ArrayList<Position>();
 		ArrayList<Position> remainingPosition = new ArrayList<Position>();
 
-		reachablePosition = getMovemmentPerimeter(map);
+		reachablePosition = getMovemmentPerimeter(map, units);
 		reachablePosition.add(this.unitLinked.getPosition());
 		for (Position pos : reachablePosition) {
 			for (Unit u : enemyList) {
@@ -151,13 +157,17 @@ public abstract class AI implements IAI {
 	 * @param enemyList
 	 * @param map
 	 */
+	@SuppressWarnings("unchecked")
 	public void play(ArrayList<Unit> allyList, ArrayList<Unit> enemyList,
 			Map map) {
+		ArrayList<Unit> units ;
+		units = (ArrayList<Unit>) allyList.clone() ;
+		units.addAll(enemyList) ;
 		setActList(new ArrayList<Action>());
-		searchSquad(allyList, map);
+		searchSquad(allyList, map, units);
 		setLife();
-		setBlocked(enemyList, map);
-		fillAction(enemyList, map);
+		setBlocked(enemyList, allyList, map);
+		fillAction(enemyList, allyList, map);
 		executeActions(allyList, enemyList);
 		this.unitLinked.hasPlayed = true;
 	}
@@ -168,7 +178,7 @@ public abstract class AI implements IAI {
 	 * @param map
 	 * @return movementPerimeter
 	 */
-	public ArrayList<Position> getMovemmentPerimeter(Map map) {
+	public ArrayList<Position> getMovemmentPerimeter(Map map, ArrayList<Unit> units) {
 		ArrayList<Position> movementPerimeter = new ArrayList<Position>();
 		int dx;
 		int dy;
@@ -188,7 +198,7 @@ public abstract class AI implements IAI {
 		while (i < movement * 4) {
 			pos.setX(pos.getX() + dx);
 			pos.setX(pos.getY() + dy);
-			if (u.canReach(map, pos)) {
+			if (u.canReach(map, pos, units)) {
 				Position posToAdd = new Position(pos.getX(), pos.getY());
 				movementPerimeter.add(posToAdd);
 			}
@@ -263,13 +273,17 @@ public abstract class AI implements IAI {
 	 * @param enemyList
 	 * @param map
 	 */
-	public void flee(ArrayList<Unit> enemyList, Map map) {
+	@SuppressWarnings("unchecked")
+	public void flee(ArrayList<Unit> enemyList, ArrayList<Unit> allyList, Map map) {
 		Position enemyCenter = new Position();
 		Position finalPos = new Position();
 		ArrayList<Position> path;
 		ArrayList<Position> pathMax = new ArrayList<Position>();
 		ArrayList<Action> actionList = new ArrayList<Action>();
 		Action act = new Action();
+		ArrayList<Unit> units ;
+		units = (ArrayList<Unit>) allyList.clone() ;
+		units.addAll(enemyList) ;
 
 		int xFinalPos;
 		int yFinalPos;
@@ -297,7 +311,7 @@ public abstract class AI implements IAI {
 		else
 			finalPos.setY(yFinalPos);
 
-		path = this.unitLinked.canMove(map, finalPos);
+		path = this.unitLinked.canMove(map, finalPos, units);
 		if (path != null) {
 			try {
 				pathMax = new ArrayList<Position>(path.subList(0,
@@ -353,7 +367,8 @@ public abstract class AI implements IAI {
 	 * @param map
 	 * @return path to fight
 	 */
-	public ArrayList<Action> goToTheFight(ArrayList<Unit> enemyList, Map map) {
+	@SuppressWarnings("unchecked")
+	public ArrayList<Action> goToTheFight(ArrayList<Unit> enemyList, ArrayList<Unit> allyList, Map map) {
 		ArrayList<Position> path = new ArrayList<Position>();
 		ArrayList<Position> safePos = new ArrayList<Position>();
 		ArrayList<Action> actionList = new ArrayList<Action>();
@@ -362,14 +377,17 @@ public abstract class AI implements IAI {
 		int j;
 		Position posEnemy = new Position();
 		Position oldPos;
+		ArrayList<Unit> units ;
+		units = (ArrayList<Unit>) allyList.clone() ;
+		units.addAll(enemyList) ;
 
 		oldPos = this.unitLinked.position;
 		i = 0;
 		j = 0;
 		posEnemy = closestEnemyFromSquad(enemyList);
-		path = this.unitLinked.canMove(map, posEnemy);
+		path = this.unitLinked.canMove(map, posEnemy, units);
 		while (path == null && j < enemyList.size()) {
-			path = this.unitLinked.canMove(map, enemyList.get(j).position);
+			path = this.unitLinked.canMove(map, enemyList.get(j).position, units);
 		}
 		if (path != null) {
 			while (i < this.unitLinked.getCharacteristics().movePoints

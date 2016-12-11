@@ -6,7 +6,8 @@ import wargame.basic_types.Position;
 
 /**
  * A class which wrap the action the AI do
- *
+ * 
+ * @author Romain Pelegrin
  */
 public class Action {
 
