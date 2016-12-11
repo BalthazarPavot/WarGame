@@ -402,11 +402,7 @@ public abstract class Unit implements IUnit {
 		for (Unit enemy : enemyList) {
 			if (posInRange.contains(enemy.position))
 				enemyListOut.add(enemy);
-/*			for (ArrayList<Position> triangle : getObstacleShade(map)) {
-				if (enemy.getPosition().isInPolygone(triangle)) {
-					enemyListOut.remove(enemy);
-				}
-			}*/			
+		
 		}
 		return enemyListOut;
 	}
