@@ -21,8 +21,11 @@ import wargame.unit.AI.Action.operation;
 public abstract class AI implements IAI {
 
 	protected final static int SCORE_GO_TO_THE_FIGHT = 0;
-	protected final static int SCORE_SAFE_MARKSMAN = 25;
-	protected final static int SCORE_SAFE_MELEE = 10;
+	protected final static int SCORE_SAFE_BOWMAN = 25;
+	protected final static int SCORE_SAFE_WIZARD = 25;
+	protected final static int SCORE_SAFE_BIRD = 15;
+	protected final static int SCORE_SAFE_SOLDIER = 10;
+	protected final static int SCORE_SAFE_KNIGHT = 5;
 
 	/* Enumerations */
 	protected enum healhPoint {
