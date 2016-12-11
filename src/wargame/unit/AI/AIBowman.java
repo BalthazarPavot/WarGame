@@ -118,7 +118,7 @@ public class AIBowman extends AI implements IAI, IMarksman {
 			for (Position pos : this.unitLinked.movePossibilities(map)) {
 				currentScore = 0;
 				if (isSafe(enemyList, map)) {
-					currentScore += SCORE_SAFE_MARKSMAN;
+					currentScore += SCORE_SAFE_BOWMAN;
 					if (canKill(u)) {
 						this.unitLinked.position = oldPos;
 						return getActionAttackList(map, oldPos, pos, u);
