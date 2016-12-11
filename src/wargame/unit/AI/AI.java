@@ -163,26 +163,30 @@ public abstract class AI implements IAI {
 		System.out.println(unitLinked + new Object() {
 		}.getClass().getEnclosingMethod().getName());
 		ArrayList<Unit> units;
-		Action currentAction ;
+		Action currentAction;
 		units = (ArrayList<Unit>) allyList.clone();
 		units.addAll(enemyList);
-		if (! getActList().isEmpty ()) {
+		if (!getActList().isEmpty()) {
 			executeActions(allyList, enemyList);
-			currentAction = getActList().get(0) ;
-			setActList(new ArrayList<>(getActList().subList(0, getActList().size ())));
+			currentAction = getActList().get(0);
+			setActList(new ArrayList<>(getActList().subList(1, getActList().size())));
+			if (!getActList().isEmpty()) {
+				unitLinked.hasPlayed = true ;
+			}
 			return currentAction.ope == Action.operation.ATTACK ? Unit.ATTACK_ACTION
-					: currentAction.ope == Action.operation.MOVE ? Unit.MOVE_ACTION : Unit.NO_ACTION;
+					: currentAction.ope == Action.operation.MOVE ? Unit.MOVE_ACTION
+									: Unit.NO_ACTION;
 		} else {
 			setActList(new ArrayList<Action>());
 			searchSquad(allyList, map, units);
 			setLife();
 			setBlocked(enemyList, allyList, map);
 			fillAction(enemyList, allyList, map);
-			executeActions(allyList, enemyList);
-			this.unitLinked.hasPlayed = true;
+			return play(allyList, enemyList, map);
+			// executeActions(allyList, enemyList);
 		}
-		return actList.get(0).ope == Action.operation.ATTACK ? Unit.ATTACK_ACTION
-				: actList.get(0).ope == Action.operation.MOVE ? Unit.MOVE_ACTION : Unit.NO_ACTION;
+		// return actList.get(0).ope == Action.operation.ATTACK ? Unit.ATTACK_ACTION
+		// : actList.get(0).ope == Action.operation.MOVE ? Unit.MOVE_ACTION : Unit.NO_ACTION;
 	}
 
 	/**
@@ -335,13 +339,13 @@ public abstract class AI implements IAI {
 			} catch (java.lang.IndexOutOfBoundsException e) {
 				pathMax = new ArrayList<Position>(path);
 			}
-			for (Position pos : pathMax) 
-				actionList.add(new Action (pos, operation.MOVE)) ;
+			for (Position pos : pathMax)
+				actionList.add(new Action(pos, operation.MOVE));
 		} else {
 			path = new ArrayList<Position>();
 			path.add(this.unitLinked.position);
-			for (Position pos : path) 
-				actionList.add(new Action (pos, operation.MOVE)) ;
+			for (Position pos : path)
+				actionList.add(new Action(pos, operation.MOVE));
 		}
 		this.actList = actionList;
 	}
@@ -373,7 +377,7 @@ public abstract class AI implements IAI {
 		System.out.println(unitLinked + new Object() {
 		}.getClass().getEnclosingMethod().getName());
 		unitLinked.gainLife(unitLinked.getCharacteristics().life / 10);
-		this.actList.add(new Action(this.unitLinked.position, operation.REST) );
+		this.actList.add(new Action(this.unitLinked.position, operation.REST));
 	}
 
 	/**
@@ -417,7 +421,7 @@ public abstract class AI implements IAI {
 			this.unitLinked.position = oldPos;
 			if (safePos != null) {
 				for (Position position : safePos) {
-					actionList.add(new Action (position, operation.MOVE));
+					actionList.add(new Action(position, operation.MOVE));
 				}
 			}
 			return actionList;

@@ -1,7 +1,6 @@
 package wargame.unit.AI;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import wargame.basic_types.Position;
 import wargame.map.Map;
@@ -27,7 +26,9 @@ public class AIWizard extends AI implements IAI {
 		int i;
 		for (Action action : this.getActList()) {
 			if (action.ope == operation.MOVE) {
-				this.unitLinked.setMove((ArrayList<Position>) Arrays.asList(action.position));
+				ArrayList<Position> pos = new ArrayList<Position> () ;
+				pos.add(action.position) ;
+				unitLinked.addMove(action.position);
 				this.unitLinked.move();
 			} else if (action.ope == operation.ATTACK) {
 				u = getUnitAtPos(action.position, enemyList);

@@ -72,6 +72,14 @@ public abstract class Unit implements IUnit, Serializable {
 		this.currentPosition = 0;
 	}
 
+	public void addMove(Position pos) {
+		if (stackedPositions == null) 
+			stackedPositions = new ArrayList<Position>() ;
+		if (stackedPositions.isEmpty())
+			stackedPositions.add(position) ;
+		stackedPositions.add(pos) ;
+	}
+
 	public boolean move() {
 		Position nextPosition;
 
