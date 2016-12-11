@@ -278,12 +278,22 @@ public abstract class AI implements IAI {
 				+ (this.unitLinked.position.getX() - enemyCenter.getX());
 		yFinalPos = this.unitLinked.position.getY()
 				+ (this.unitLinked.position.getY() - enemyCenter.getY());
+		/* Check limits of the map */
 		if (xFinalPos < 0)
 			finalPos.setX(0);
 		else
 			finalPos.setX(xFinalPos);
 		if (yFinalPos < 0)
+			finalPos.setY(0);
+		else
 			finalPos.setY(yFinalPos);
+
+		if (xFinalPos > map.getWidth())
+			finalPos.setX(map.getWidth());
+		else
+			finalPos.setX(xFinalPos);
+		if (yFinalPos > map.getHeight())
+			finalPos.setY(map.getHeight());
 		else
 			finalPos.setY(yFinalPos);
 
