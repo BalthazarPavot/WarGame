@@ -24,6 +24,10 @@ public class Bowman extends Terrestre {
 	protected final static int SIGHT = 6;
 	protected final static int MOVE_POINTS = 4;
 
+	public Bowman(int x, int y, GameContext gameContext) {
+		this (new Position(x, y), gameContext) ;
+	}
+
 	public Bowman(Position position, GameContext gameContext) {
 		super(position, gameContext);
 		characteristics = new Characteristic(LIFE, ATTACK_SLASH, DEFENSE_SLASH, ATTACK_BLUNT, DEFENSE_BLUNT,

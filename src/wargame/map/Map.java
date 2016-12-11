@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
+
 import wargame.basic_types.Position;
+import wargame.unit.Unit;
 
 /**
  * This class represents two sets of MapElement associated to their position. <br />
@@ -270,10 +273,11 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param end_y
 	 * @return true if two positions can be joined by walking
 	 */
-	public ArrayList<Position> pathByWalking(int begin_x, int begin_y, int end_x, int end_y) {
+	public ArrayList<Position> pathByWalking(int begin_x, int begin_y, int end_x, int end_y,
+			ArrayList<Unit> units) {
 		if (!testFloor(end_x, end_y, MapElement.isWalkableString))
-			return null ;
-		return AStart(end_x, end_y, begin_x, begin_y, MapElement.isWalkableString);
+			return null;
+		return AStart(end_x, end_y, begin_x, begin_y, MapElement.isWalkableString, units);
 	}
 
 	/**
@@ -283,8 +287,8 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param end
 	 * @return true if two positions can be joined by walking
 	 */
-	public ArrayList<Position> pathByWalking(Position begin, Position end) {
-		return pathByWalking(begin.getX(), begin.getY(), end.getX(), end.getY());
+	public ArrayList<Position> pathByWalking(Position begin, Position end, ArrayList<Unit> units) {
+		return pathByWalking(begin.getX(), begin.getY(), end.getX(), end.getY(), units);
 	}
 
 	/**
@@ -296,10 +300,11 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param end_y
 	 * @return true if two positions can be joined by walking
 	 */
-	public ArrayList<Position> pathByFlying(int begin_x, int begin_y, int end_x, int end_y) {
+	public ArrayList<Position> pathByFlying(int begin_x, int begin_y, int end_x, int end_y,
+			ArrayList<Unit> units) {
 		if (!testFloor(end_x, end_y, MapElement.isFlyableString))
-			return null ;
-		return AStart(end_x, end_y, begin_x, begin_y, MapElement.isFlyableString);
+			return null;
+		return AStart(end_x, end_y, begin_x, begin_y, MapElement.isFlyableString, units);
 	}
 
 	/**
@@ -309,8 +314,8 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param end
 	 * @return true if two positions can be joined by walking
 	 */
-	public ArrayList<Position> pathByFlying(Position begin, Position end) {
-		return pathByFlying(begin.getX(), begin.getY(), end.getX(), end.getY());
+	public ArrayList<Position> pathByFlying(Position begin, Position end, ArrayList<Unit> units) {
+		return pathByFlying(begin.getX(), begin.getY(), end.getX(), end.getY(), units);
 	}
 
 	/**
@@ -322,8 +327,8 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param end_y
 	 * @return true if two positions can be joined by walking
 	 */
-	public boolean canCrossByFlying(int begin_x, int begin_y, int end_x, int end_y) {
-		return pathByFlying (begin_x, begin_y, end_x, end_y) != null;
+	public boolean canCrossByFlying(int begin_x, int begin_y, int end_x, int end_y, ArrayList<Unit> units) {
+		return pathByFlying(begin_x, begin_y, end_x, end_y, units) != null;
 	}
 
 	/**
@@ -333,8 +338,8 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param end
 	 * @return true if two positions can be joined by walking
 	 */
-	public boolean canCrossByFlying(Position begin, Position end) {
-		return canCrossByFlying (begin.getX(), begin.getY(), end.getX(), end.getY());
+	public boolean canCrossByFlying(Position begin, Position end, ArrayList<Unit> units) {
+		return canCrossByFlying(begin.getX(), begin.getY(), end.getX(), end.getY(), units);
 	}
 
 	/**
@@ -346,8 +351,8 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param end_y
 	 * @return true if two positions can be joined by walking
 	 */
-	public boolean canCrossByWalking(int begin_x, int begin_y, int end_x, int end_y) {
-		return pathByWalking(begin_x,  begin_y, end_x, end_y) != null;
+	public boolean canCrossByWalking(int begin_x, int begin_y, int end_x, int end_y, ArrayList<Unit> units) {
+		return pathByWalking(begin_x, begin_y, end_x, end_y, units) != null;
 	}
 
 	/**
@@ -357,8 +362,8 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param end
 	 * @return true if two positions can be joined by walking
 	 */
-	public boolean canCrossByWalking(Position begin, Position end) {
-		return canCrossByWalking (begin.getX(), begin.getY(), end.getX(), end.getY());
+	public boolean canCrossByWalking(Position begin, Position end, ArrayList<Unit> units) {
+		return canCrossByWalking(begin.getX(), begin.getY(), end.getX(), end.getY(), units);
 	}
 
 	/**
@@ -372,7 +377,9 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	 * @param methodName
 	 * @return the list of position to go from the begin to the end positions.
 	 */
-	private ArrayList<Position> AStart(int begin_x, int begin_y, int end_x, int end_y, String methodName) {
+	private ArrayList<Position> AStart(int begin_x, int begin_y, int end_x, int end_y, String methodName,
+			ArrayList<Unit> units) {
+		HashMap<Position, Boolean> unitsPositions;
 		ArrayList<Position> evaluatedNodes = new ArrayList<Position>(); // closedSet
 		ArrayList<Position> nodesToExplore = new ArrayList<Position>(); // openSet
 		HashMap<Position, Position> bestPreviousNode = new HashMap<Position, Position>(); // cameFrom
@@ -383,6 +390,10 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 		Double currentScore;
 		ArrayList<Position> fullPath;
 
+		unitsPositions = new HashMap<Position, Boolean>();
+		if (units != null)
+			for (Unit unit : units)
+				unitsPositions.put(unit.getPosition(), true);
 		currentNode = new Position(begin_x, begin_y);
 		nodesToExplore.add(currentNode);
 		fullPath = new ArrayList<Position>();
@@ -390,24 +401,22 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 		fromStartScore.put(currentNode, 0.0);
 		fromStartToEndScore.put(currentNode, currentNode.distance(goalNode));
 		while (!nodesToExplore.isEmpty()) {
-			// currentNode = nodesToExplore.get(0);
 			currentNode = getBetterNode(nodesToExplore, fromStartToEndScore);
 			if (currentNode.equals(goalNode))
 				return reconstructPath(fullPath, bestPreviousNode, currentNode);
 			nodesToExplore.remove(currentNode);
 			evaluatedNodes.add(currentNode);
 			for (Position neighbor : currentNode.getNeighbor()) {
-				if (evaluatedNodes.contains(neighbor) || !testFloor(neighbor, methodName))
-					continue;// Ignore the neighbor which is already evaluated.
-				// The distance from start to a neighbor
+				if (evaluatedNodes.contains(neighbor) || !testFloor(neighbor, methodName)
+						|| (units != null && unitsPositions.get(neighbor) != null))
+					continue;
 				currentScore = (fromStartScore.get(currentNode) + currentNode.distance(neighbor)
 						* (currentNode.getX() != neighbor.getX() && currentNode.getY() != neighbor.getY() ? 2
 								: 1));
-				if (!nodesToExplore.contains(neighbor)) // Discover a new node
+				if (!nodesToExplore.contains(neighbor))
 					nodesToExplore.add(neighbor);
 				else if (fromStartScore.get(neighbor) != null && currentScore >= fromStartScore.get(neighbor))
-					continue; // This is not a better path.
-				// This path is the best until now. Record it!
+					continue;
 				bestPreviousNode.put(neighbor, currentNode);
 				fromStartScore.put(neighbor, currentScore);
 				fromStartToEndScore.put(neighbor, fromStartScore.get(neighbor) + neighbor.distance(goalNode));
@@ -511,7 +520,8 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	}
 
 	/**
-	 * @param alliePopArea the alliePopArea to set
+	 * @param alliePopArea
+	 *            the alliePopArea to set
 	 */
 	public void setAlliePopArea(Position alliePopArea) {
 		this.alliePopArea = alliePopArea;
@@ -525,7 +535,8 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	}
 
 	/**
-	 * @param ennemyPopArea the ennemyPopArea to set
+	 * @param ennemyPopArea
+	 *            the ennemyPopArea to set
 	 */
 	public void setEnnemyPopArea(Position ennemyPopArea) {
 		this.ennemyPopArea = ennemyPopArea;

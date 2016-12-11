@@ -164,6 +164,7 @@ public class PlayGameScreen extends GameScreen {
 		sidePanel.updateFrame();
 		if (mapWidget.interfaceWidget.inAnimationLoop())
 			return;
+		mapWidget.unitInAction = null ;
 		if (isPassingToNextTurn()) {
 			if (engine.makeCurrentUnitAction()) {
 				return;

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import wargame.GameContext;
 import wargame.basic_types.Position;
+import wargame.unit.AI.AIBird;
 
 public class Bird extends Aerial implements Serializable{
 
@@ -25,10 +26,18 @@ public class Bird extends Aerial implements Serializable{
 	protected final static int SIGHT = 7;
 	protected final static int MOVE_POINTS = 6;
 
+	public Bird(int x, int y, GameContext gameContext) {
+		this (new Position(x, y), gameContext) ;
+	}
+
 	public Bird(Position position, GameContext gameContext) {
 		super(position, gameContext);
 		characteristics = new Characteristic(LIFE, ATTACK_SLASH, DEFENSE_SLASH, ATTACK_BLUNT, DEFENSE_BLUNT,
 				ATTACK_PIERCE, DEFENSE_PIERCE, ATTACK_MAGIC, DEFENSE_MAGIC, RANGE, SIGHT, MOVE_POINTS);
+		if (position.equals(gameContext.getMap().getEnnemyPopArea()))
+			this.ai = new AIBird(this);
+		else
+			this.ai = null;
 	}
 
 	public boolean inflictDamage(Unit unit) {

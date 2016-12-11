@@ -62,7 +62,7 @@ public class MapGenerator {
 			generateGround();
 			applySprites(treeShapes, rockShapes, waterShapes);
 			removePopAreas(4);
-		} while (!this.map.canCrossByWalking(map.getAlliePopArea(), map.getEnnemyPopArea()));
+		} while (!this.map.canCrossByWalking(map.getAlliePopArea(), map.getEnnemyPopArea(), null));
 //		for (Position pos:map.pathByWalking (map.getAlliePopArea(), map.getEnnemyPopArea()))
 //			map.getReal(pos).remove(map.getReal(pos).size()-1) ;
 	}

@@ -2,6 +2,7 @@ package wargame.unit;
 
 import wargame.GameContext;
 import wargame.basic_types.Position;
+import wargame.unit.AI.AISoldier;
 
 public class Soldier extends Terrestre {
 
@@ -23,10 +24,18 @@ public class Soldier extends Terrestre {
 	protected final static int SIGHT = 3;
 	protected final static int MOVE_POINTS = 3;
 
+	public Soldier(int x, int y, GameContext gameContext) {
+		this (new Position(x, y), gameContext) ;
+	}
+
 	public Soldier(Position position, GameContext gameContext) {
 		super(position, gameContext);
 		characteristics = new Characteristic(LIFE, ATTACK_SLASH, DEFENSE_SLASH, ATTACK_BLUNT, DEFENSE_BLUNT,
 				ATTACK_PIERCE, DEFENSE_PIERCE, ATTACK_MAGIC, DEFENSE_MAGIC, RANGE, SIGHT, MOVE_POINTS);
+		if (position.equals(gameContext.getMap().getEnnemyPopArea()))
+			this.ai = new AISoldier(this);
+		else
+			this.ai = null;
 	}
 
 	public boolean inflictDamage(Unit unit) {

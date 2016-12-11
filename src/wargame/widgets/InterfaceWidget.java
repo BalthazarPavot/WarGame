@@ -16,7 +16,7 @@ import wargame.map.Map;
  * @author Balthazar Pavot
  *
  */
-public class InterfaceWidget implements Serializable{
+public class InterfaceWidget implements Serializable {
 	private static final long serialVersionUID = 3940437638758402909L;
 	private static final Color pathColor = new Color(0, 0, 255, 64);
 	private static final Color allieColor = new Color(0, 255, 0, 64);

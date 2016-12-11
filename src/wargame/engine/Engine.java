@@ -2,6 +2,7 @@
 package wargame.engine;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import wargame.GameContext;
 import wargame.basic_types.Position;
@@ -173,7 +174,7 @@ public class Engine {
 	private void makeEnemyPop(int i) {
 		while (i-- != 0) {
 			Unit newUnit;
-			switch (new Random().nextInt(5)) {
+			switch (new Random().nextInt(6)) {
 			case 0:
 				newUnit = new Bird(map.getEnnemyPopArea(), context);
 				break;
@@ -210,7 +211,7 @@ public class Engine {
 	 */
 	public void mapMotioned(Position position) {
 		if (selectedAllie != null)
-			currentPath = selectedAllie.canMove(map, position);
+			currentPath = selectedAllie.canMove(map, position, null);
 	}
 
 	/**
@@ -289,7 +290,7 @@ public class Engine {
 			for (Unit enemy : ennemyUnits)
 				if (enemy.inAttackRangeOf(selectedAllie))
 					enemiesToHighlight.add(enemy.getPosition());
-			mapWidget.interfaceWidget.setMovePossibilities(selectedAllie.movePossibilities(map));
+			mapWidget.interfaceWidget.setMovePossibilities(selectedAllie.movePossibilities(map, getAllUnits ()));
 			mapWidget.interfaceWidget.setAttackPossibilities(selectedAllie.attackPossibilities());
 		} else {
 			mapWidget.interfaceWidget.setSelectedAllie(null);
@@ -299,6 +300,15 @@ public class Engine {
 		}
 		mapWidget.interfaceWidget.setEnemiesToHighlight(enemiesToHighlight);
 		sidePanel.setSelectedAllie(selectedAllie);
+	}
+
+	@SuppressWarnings("unchecked")
+	private ArrayList<Unit> getAllUnits() {
+		ArrayList<Unit> units ;
+
+		units = (ArrayList<Unit>) playerUnits.clone() ;
+		units.addAll(ennemyUnits) ;
+		return units ;
 	}
 
 	/**
@@ -334,15 +344,15 @@ public class Engine {
 		playerUnits = new ArrayList<Unit>();
 		unit = new Bird(map.getAlliePopArea(), context);
 		playerUnits.add(unit);
-		unit = new Bowman(map.getAlliePopArea(), context);
+		unit = new Bowman(map.getAlliePopArea().getX()+Map.squareWidth, map.getAlliePopArea().getY(), context);
 		playerUnits.add(unit);
-		unit = new Healer(map.getAlliePopArea(), context);
+		unit = new Healer(map.getAlliePopArea().getX()-Map.squareWidth, map.getAlliePopArea().getY(), context);
 		playerUnits.add(unit);
-		unit = new Knight(map.getAlliePopArea(), context);
+		unit = new Knight(map.getAlliePopArea().getX()+Map.squareWidth, map.getAlliePopArea().getY()+Map.squareHeight, context);
 		playerUnits.add(unit);
-		unit = new Soldier(map.getAlliePopArea(), context);
+		unit = new Soldier(map.getAlliePopArea().getX()-Map.squareWidth, map.getAlliePopArea().getY()-Map.squareHeight, context);
 		playerUnits.add(unit);
-		unit = new Wizard(map.getAlliePopArea(), context);
+		unit = new Wizard(map.getAlliePopArea().getX(), map.getAlliePopArea().getY()-Map.squareHeight, context);
 		playerUnits.add(unit);
 		for (Unit u: playerUnits)
 			mapWidget.addUnitDisplayer(
@@ -411,7 +421,7 @@ public class Engine {
 		if (won || lost)
 			return;
 		selectedAllie.moveTo(position.getX() / Map.squareWidth * Map.squareWidth,
-				position.getY() / Map.squareHeight * Map.squareHeight, map);
+				position.getY() / Map.squareHeight * Map.squareHeight, map, getAllUnits());
 		currentPath = selectedAllie.getPathToEnd();
 		if (currentPath != null) {
 			cost = 0;
@@ -425,6 +435,7 @@ public class Engine {
 			}
 			if (cost <= selectedAllie.getCharacteristics().currentMovePoints) {
 				displayAction(selectedAllie.play(playerUnits, ennemyUnits, map), selectedAllie);
+				mapWidget.unitInAction = selectedAllie ;
 				selectedAllie.hasPlayed = false;
 				selectAllie(selectedAllie);
 			} else

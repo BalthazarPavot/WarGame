@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import wargame.basic_types.Position;
 import wargame.unit.Unit;
 
+/**
+ * @author Romain Pelegrin
+ */
 public class Squad {
 
 	/* Attribute of the class */
@@ -21,6 +24,7 @@ public class Squad {
 		u2.ai.squad = this;
 		computeCenter();
 	}
+
 	Squad(Unit u1) {
 		unitList = new ArrayList<Unit>();
 		center = new Position();
@@ -54,18 +58,17 @@ public class Squad {
 
 		float averageX;
 		float averageY;
-		
+
 		amountX = 0;
 		amountY = 0;
-		
-		
+
 		for (Unit u : this.unitList) {
 			amountX += u.getPosition().getX();
 			amountY += u.getPosition().getY();
 		}
 		averageX = amountX / this.unitList.size();
 		averageY = amountY / this.unitList.size();
-		center.setX((int) averageX) ;
+		center.setX((int) averageX);
 		center.setY((int) averageY);
 	}
 }
