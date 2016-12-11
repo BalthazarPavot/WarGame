@@ -1,4 +1,3 @@
-
 package wargame.screens;
 
 import java.awt.Component;
@@ -15,7 +14,7 @@ import wargame.widgets.*;
  * Defines a screen of the game and the methods it implements/overwrites.
  * 
  * @author Balthazar Pavot
- *
+ * 
  */
 public abstract class GameScreen extends JPanel {
 
@@ -77,7 +76,8 @@ public abstract class GameScreen extends JPanel {
 	 * Must be overwritten.
 	 */
 	public void prepare() throws IllegalStateException {
-		throw new IllegalStateException("The screen did not overwite the method prepare");
+		throw new IllegalStateException(
+				"The screen did not overwite the method prepare");
 	}
 
 	public void screenTermination() {
@@ -93,12 +93,14 @@ public abstract class GameScreen extends JPanel {
 	private void initGameScreen() {
 		GameScreen.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setPreferredSize(this.gameContext.getDimension());
-		GameScreen.mainFrame.setBounds(0, 0, this.gameContext.getWidth(), this.gameContext.getHeight());
+		GameScreen.mainFrame.setBounds(0, 0, this.gameContext.getWidth(),
+				this.gameContext.getHeight());
 		GameScreen.mainFrame.setResizable(false);
 	}
 
 	/**
-	 * Initialize the screen with a new frame, a layout and trigger the first display.
+	 * Initialize the screen with a new frame, a layout and trigger the first
+	 * display.
 	 */
 	protected void initRun() {
 		this.setLayout(null); // deletion of layout manager
@@ -117,8 +119,8 @@ public abstract class GameScreen extends JPanel {
 	}
 
 	/**
-	 * Trigger the game termination by finishing the display loop and saying that the new screen is the exit
-	 * screen.
+	 * Trigger the game termination by finishing the display loop and saying
+	 * that the new screen is the exit screen.
 	 */
 	private void gameTermination() {
 		this.nextScreenID = GameScreen.QUIT_SCREEN;

@@ -21,7 +21,7 @@ public class Wizard extends Terrestre {
 
 	protected final static int RANGE = 3;
 	protected final static int SIGHT = 4;
-	protected final static int MOVE_POINTS = 4;
+	protected final static int MOVE_POINTS = 25;//TODO change to 4
 
 	public Wizard(Position position, GameContext gameContext) {
 		super(position, gameContext);
