@@ -266,7 +266,8 @@ public abstract class AI implements IAI {
 	public void flee(ArrayList<Unit> enemyList, Map map) {
 		Position enemyCenter = new Position();
 		Position finalPos = new Position();
-		ArrayList<Position> path = new ArrayList<Position>();
+		ArrayList<Position> path;
+		ArrayList<Position> pathMax = new ArrayList<Position>();
 		ArrayList<Action> actionList = new ArrayList<Action>();
 		Action act = new Action();
 
@@ -288,8 +289,13 @@ public abstract class AI implements IAI {
 
 		path = this.unitLinked.canMove(map, finalPos);
 		if (path != null) {
-			path.subList(0, this.unitLinked.getCharacteristics().movePoints - 1);
-			act.position = path;
+			try {
+				pathMax = new ArrayList<Position>(path.subList(0,
+						this.unitLinked.getCharacteristics().movePoints));
+			} catch (java.lang.IndexOutOfBoundsException e) {
+				pathMax = new ArrayList<Position>(path);
+			}
+			act.position = pathMax;
 			act.ope = operation.MOVE;
 			actionList.add(act);
 		} else {
@@ -299,6 +305,7 @@ public abstract class AI implements IAI {
 			act.ope = operation.REST;
 			actionList.add(act);
 		}
+		this.actList = actionList;
 	}
 
 	/**
