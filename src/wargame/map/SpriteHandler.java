@@ -1,14 +1,15 @@
 
 package wargame.map;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
 import wargame.ErrorManager;
+import wargame.basic_types.SerializableBufferedImage;
 import wargame.unit.*;
 import wargame.widgets.ImageWidget;
 
@@ -19,7 +20,8 @@ import wargame.widgets.ImageWidget;
  * @author Balthazar Pavot
  *
  */
-public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
+public class SpriteHandler extends HashMap<String, ArrayList<SerializableBufferedImage>>
+		implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private final static String spriteIndex = "/spriteIndex.data";
@@ -111,7 +113,7 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 			throws IOException, IllegalArgumentException {
 
 		for (String spriteName : spriteNames) {
-			this.put(spriteName, new ArrayList<BufferedImage>());
+			this.put(spriteName, new ArrayList<SerializableBufferedImage>());
 			loadSprites(spriteName, this.get(spriteName), confProperties);
 		}
 	}
@@ -124,18 +126,19 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 	 * @param spriteList
 	 * @param confProperties
 	 */
-	private void loadSprites(String spriteName, ArrayList<BufferedImage> spriteList,
+	private void loadSprites(String spriteName, ArrayList<SerializableBufferedImage> spriteList,
 			Properties confProperties) {
 		int x = 0;
 		int y = 0;
 		int w = 0;
 		int h = 0;
+		int resize = 1;
 		int imageWidth;
 		int imageHeight;
 		int initX = 0;
 		String spriteOrder = "";
-		BufferedImage wholeImage;
-		ArrayList<BufferedImage> badOrder;
+		SerializableBufferedImage wholeImage;
+		ArrayList<SerializableBufferedImage> badOrder;
 
 		try {
 			initX = x = Integer.parseInt(confProperties.getProperty(spriteName + "_x"));
@@ -148,6 +151,11 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		} catch (NumberFormatException e) {
 			errorManager.exitError(
 					String.format("Couln not find property %s_y in sprite index file\n", spriteName));
+		}
+		try {
+			resize = Integer.parseInt(confProperties.getProperty(spriteName + "_resize"));
+		} catch (NumberFormatException e) {
+			resize = 1;
 		}
 		try {
 			w = Integer.parseInt(confProperties.getProperty(spriteName + "_width"));
@@ -180,10 +188,13 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 		if (wholeImage == null)
 			errorManager.exitError(
 					String.format("Couln not find file at %s_path in sprite index file\n", spriteName));
-		badOrder = new ArrayList<BufferedImage>();
+		badOrder = new ArrayList<SerializableBufferedImage>();
 		while (y < h) {
 			while (x < w) {
-				badOrder.add(wholeImage.getSubimage(x, y, imageWidth, imageHeight));
+				badOrder.add(ImageWidget
+						.zoomImage(wholeImage.getSubimage(x, y, imageWidth, imageHeight), resize, false)
+						.getSubimage(imageWidth - imageWidth / resize,
+								imageHeight - imageHeight / resize, imageWidth, imageHeight));
 				System.out.printf("Loaded %s %d;%d\n", spriteName, x, y);
 				x += imageWidth;
 			}
@@ -194,8 +205,8 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 			for (String goodIndex : spriteOrder.split(";"))
 				spriteList.add(badOrder.get(Integer.parseInt(goodIndex)));
 		else
-			for (BufferedImage img : badOrder)
-				spriteList.add(img) ;
+			for (SerializableBufferedImage img : badOrder)
+				spriteList.add(img);
 	}
 
 	/**
@@ -204,15 +215,18 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 	 * @param unit
 	 * @return
 	 */
-	public BufferedImage[] getUnitStaticPositionSprites(Unit unit) {
-		ArrayList<BufferedImage> unitWalkImages = null;
-		if (unit.getClass() == Wizard.class || unit.getClass() == Bird.class) {
+	public SerializableBufferedImage[] getUnitStaticPositionSprites(Unit unit) {
+		ArrayList<SerializableBufferedImage> unitWalkImages = null;
+		if (unit.getClass() == Bird.class) {
+			unitWalkImages = get("red_wyvern_static_poses");
+		} else if (unit.getClass() == Healer.class) {
+			unitWalkImages = get("white_magican_static_poses");
+		} else
 			unitWalkImages = get("magos_static_poses");
-		}
 		if (unitWalkImages == null || unitWalkImages.size() < 3)
 			return null;
-		return new BufferedImage[] { unitWalkImages.get(0), unitWalkImages.get(1), unitWalkImages.get(2),
-				unitWalkImages.get(3) };
+		return new SerializableBufferedImage[] { unitWalkImages.get(0), unitWalkImages.get(1),
+				unitWalkImages.get(2), unitWalkImages.get(3) };
 	}
 
 	/**
@@ -221,37 +235,15 @@ public class SpriteHandler extends HashMap<String, ArrayList<BufferedImage>> {
 	 * @param unit
 	 * @return
 	 */
-	public BufferedImage[] getEnemyStaticPositionSprites(Unit unit) {
-		ArrayList<BufferedImage> unitWalkImages = null;
-		if (unit.getClass() == Soldier.class || unit.getClass() == Bird.class) {
+	public SerializableBufferedImage[] getEnemyStaticPositionSprites(Unit unit) {
+		ArrayList<SerializableBufferedImage> unitWalkImages = null;
+		if (unit.getClass() == Bird.class) {
+			unitWalkImages = get("green_wyvern_static_poses");
+		} else
 			unitWalkImages = get("beetle_static_poses");
-		}
 		if (unitWalkImages == null || unitWalkImages.size() < 3)
 			return null;
-		return new BufferedImage[] { unitWalkImages.get(0), unitWalkImages.get(1), unitWalkImages.get(2),
-				unitWalkImages.get(3) };
+		return new SerializableBufferedImage[] { unitWalkImages.get(0), unitWalkImages.get(1),
+				unitWalkImages.get(2), unitWalkImages.get(3) };
 	}
-
-	/**
-	 * Return the animation used when the given unit is moving.
-	 * 
-	 * @param unit
-	 * @return public ArrayList<AnimationWidget> getUnitWalkSprites(Unit unit) { ArrayList
-	 *         <BufferedImage> unitWalkImages = null; ArrayList<AnimationWidget> animations = new ArrayList
-	 *         <AnimationWidget>(); AnimationWidget currentAnimation; Double[][] vector = new Double[][] { {
-	 *         0., -6.4 }, { -6.4, 0. }, { 0., 6.4 }, { 6.4, 0. }, { -6.4, -6.4 }, { -6.4, -6.4 }, { 6.4, 6.4
-	 *         }, { 6.4, 6.4 } };
-	 * 
-	 *         if (unit.getClass() == Wizard.class || unit.getClass() == Bird.class) { unitWalkImages =
-	 *         get("magos_walking_poses"); } if (unitWalkImages == null || unitWalkImages.size() < 3) return
-	 *         null; for (int animNo = 0; animNo < 4; animNo++) { currentAnimation = new AnimationWidget(50);
-	 *         double[] dPosition = { 0., 0. }; for (int i = 0; i < 9; i++) {
-	 *         currentAnimation.addImage(unitWalkImages.get(animNo * 9 + i), new Position((int) dPosition[0],
-	 *         (int) dPosition[1])); dPosition[0] += vector[animNo][0]; dPosition[1] += vector[animNo][1]; }
-	 *         animations.add(currentAnimation); } for (int animNo = 0; animNo < 4; animNo++) {
-	 *         currentAnimation = new AnimationWidget(50); double[] dPosition = { 0., 0. }; for (int i = 0; i
-	 *         < 9; i++) { currentAnimation.addImage(unitWalkImages.get(animNo * 9 + i), new Position((int)
-	 *         dPosition[0], (int) dPosition[1])); dPosition[0] += vector[animNo + 4][0]; dPosition[1] +=
-	 *         vector[animNo + 4][1]; } animations.add(currentAnimation); } return animations; }
-	 */
 }

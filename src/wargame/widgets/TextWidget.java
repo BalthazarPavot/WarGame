@@ -6,12 +6,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.io.Serializable;
 
 import javax.swing.JLabel;
 
 import wargame.basic_types.Position;
 
-public class TextWidget extends JLabel implements GameWidget {
+public class TextWidget extends JLabel implements GameWidget, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	protected Rectangle boundRect;
@@ -139,6 +140,7 @@ public class TextWidget extends JLabel implements GameWidget {
 
 	@Override
 	public void paintComponent(Graphics g, int zoom, int x, int y) {
+		super.paintComponent(g);
 	}
 
 }

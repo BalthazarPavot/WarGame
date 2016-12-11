@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,9 +14,10 @@ import wargame.basic_types.Position;
 import wargame.map.Map;
 import wargame.map.MapElement;
 import wargame.map.SpriteHandler;
+import wargame.screens.GameScreenActionManager;
 import wargame.unit.Unit;
 
-public class MapWidget extends JPanel implements GameWidget {
+public class MapWidget extends JPanel implements GameWidget, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static final int scollSpeed = 16;
@@ -26,6 +28,8 @@ public class MapWidget extends JPanel implements GameWidget {
 	protected int zoom = 1;
 	protected boolean drawGrid = true;
 	protected ImageWidget semiFog;
+	protected ButtonWidget winDisplaying;
+	protected ButtonWidget lostDisplaying;
 	protected HashMap<Integer, HashMap<Integer, Integer>> fog = new HashMap<Integer, HashMap<Integer, Integer>>();
 	protected boolean revealed = false;
 	protected ArrayList<UnitDisplayer> unitDisplayers = new ArrayList<UnitDisplayer>();
@@ -33,11 +37,23 @@ public class MapWidget extends JPanel implements GameWidget {
 	ArrayList<Unit> playerUnits = new ArrayList<Unit>();
 	public InterfaceWidget interfaceWidget;
 	public Unit unitInAction = null;
+	protected boolean won = false;
+	protected boolean lost = false;
 
-	public MapWidget(Map map, int width, int height, SpriteHandler spriteHandler) {
+	public MapWidget(Map map, int width, int height, SpriteHandler spriteHandler,
+			GameScreenActionManager actionManager) {
 		this.map = map;
 		this.boundRect = new Rectangle(0, 0, width, height);
 		this.frame = new Rectangle(0, 0, width, height);
+		this.winDisplaying = new ButtonWidget("YOU WIN", width / 2, height / 2, 200, 50, 60, Color.black,
+				actionManager);
+		this.lostDisplaying = new ButtonWidget("YOU LOSE", width / 2, height / 2, 200, 50, 60, Color.black,
+				actionManager);
+		this.add(winDisplaying);
+		this.add(lostDisplaying);
+		winDisplaying.setVisible(false);
+		lostDisplaying.setVisible(false);
+		lostDisplaying.bind();
 		semiFog = new ImageWidget(new Rectangle(0, 0, 64, 64), spriteHandler.get("semi_fog").get(0));
 		interfaceWidget = new InterfaceWidget(frame);
 	}
@@ -210,6 +226,25 @@ public class MapWidget extends JPanel implements GameWidget {
 		ennemyDisplayers.add(unitDisplayer);
 	}
 
+	public void removeUnitDisplayer(Unit unit) {
+		for (UnitDisplayer unitDisplayer : unitDisplayers) {
+			if (unit == unitDisplayer.unit) {
+				unitDisplayers.remove(unitDisplayer);
+				break;
+			}
+		}
+		playerUnits.remove(unit);
+	}
+
+	public void removeEnnemyDisplayer(Unit unit) {
+		for (UnitDisplayer unitDisplayer : ennemyDisplayers) {
+			if (unit == unitDisplayer.unit) {
+				ennemyDisplayers.remove(unitDisplayer);
+				break;
+			}
+		}
+	}
+
 	public Rectangle getFrame() {
 		return frame;
 	}
@@ -271,5 +306,15 @@ public class MapWidget extends JPanel implements GameWidget {
 
 	public Position getInGamePosition(Position position) {
 		return new Position(position.getX() * zoom + (int) frame.x, position.getY() * zoom + (int) frame.y);
+	}
+
+	public void win() {
+		winDisplaying.setVisible(true);
+		won = true;
+	}
+
+	public void lose() {
+		lostDisplaying.setVisible(true);
+		lost = true;
 	}
 }

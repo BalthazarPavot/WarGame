@@ -1,6 +1,7 @@
 
 package wargame.basic_types;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import wargame.map.Map;
@@ -11,8 +12,9 @@ import wargame.map.Map;
  * @author Balthazar Pavot
  *
  */
-public class Position implements Comparable<Object> {
+public class Position implements Comparable<Object>, Serializable {
 
+	private static final long serialVersionUID = -8815402665057150965L;
 	private int x = 0;
 	private int y = 0;
 
@@ -101,40 +103,6 @@ public class Position implements Comparable<Object> {
 		return neighbor;
 	}
 
-	/**
-	 * @return All the positions reachable giving the amount of moving points.
-	 */
-	public ArrayList<Position> getReachableNeighbor(
-			int movePoints) {/* ArrayList<Position> neighbor;
-								 * 
-								 * neighbor = new ArrayList<Position>(); neighbor.add(new Position(x, y -
-								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y -
-								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y));
-								 * neighbor.add(new Position(x + Map.squareWidth, y + Map.squareHeight));
-								 * neighbor.add(new Position(x, y + Map.squareHeight)); neighbor.add(new
-								 * Position(x - Map.squareWidth, y + Map.squareHeight)); neighbor.add(new
-								 * Position(x - Map.squareWidth, y)); neighbor.add(new Position(x -
-								 * Map.squareWidth, y - Map.squareHeight)); return neighbor; */
-		return new ArrayList<Position>();
-	}
-
-	/**
-	 * @return All the positions targetable by a character, giving his sight line.
-	 */
-	public ArrayList<Position> getTargetableNeighbor(
-			int sightLigne) {/* ArrayList<Position> neighbor;
-								 * 
-								 * neighbor = new ArrayList<Position>(); neighbor.add(new Position(x, y -
-								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y -
-								 * Map.squareHeight)); neighbor.add(new Position(x + Map.squareWidth, y));
-								 * neighbor.add(new Position(x + Map.squareWidth, y + Map.squareHeight));
-								 * neighbor.add(new Position(x, y + Map.squareHeight)); neighbor.add(new
-								 * Position(x - Map.squareWidth, y + Map.squareHeight)); neighbor.add(new
-								 * Position(x - Map.squareWidth, y)); neighbor.add(new Position(x -
-								 * Map.squareWidth, y - Map.squareHeight)); return neighbor; */
-		return new ArrayList<Position>();
-	}
-
 	public int compareTo(Object o) {
 		if (o.getClass() != this.getClass())
 			return -1;
@@ -169,15 +137,13 @@ public class Position implements Comparable<Object> {
 		ArrayList<Position> inRange = new ArrayList<Position>();
 
 		range *= Map.squareWidth;
-		for (int x = getX() - range; x < range + getX()
-				+ Map.squareWidth; x += Map.squareWidth) {
-			for (int y = getY() - range; y < range + getY()
-					+ Map.squareHeight; y += Map.squareHeight) {
+		for (int x = getX() - range; x < range + getX() + Map.squareWidth; x += Map.squareWidth) {
+			for (int y = getY() - range; y < range + getY() + Map.squareHeight; y += Map.squareHeight) {
 				if (distance(x, y) <= range)
-					inRange.add(new Position (x, y));
+					inRange.add(new Position(x, y));
 			}
 		}
 		return inRange;
 	}
-	
+
 }

@@ -3,6 +3,7 @@ package wargame.map;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.io.Serializable;
 
 import wargame.basic_types.Position;
 import wargame.widgets.ImageWidget;
@@ -15,8 +16,9 @@ import wargame.widgets.ImageWidget;
  * @author Balthazar Pavot
  *
  */
-public class MapElement {
+public class MapElement implements Serializable {
 
+	private static final long serialVersionUID = -710242186552490787L;
 	final public static int WALKABLE = 2;
 	final public static int FLYABLE = 4;
 	final public static int SWIMMABLE = 8;

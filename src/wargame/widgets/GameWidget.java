@@ -7,7 +7,7 @@ import java.awt.Rectangle;
 
 import wargame.basic_types.Position;
 
-public interface GameWidget {
+public interface GameWidget  {
 
 	/**
 	 * The function to put the widget at its place.

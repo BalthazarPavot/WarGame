@@ -1,5 +1,6 @@
 package wargame.unit;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import wargame.GameContext;
@@ -10,7 +11,9 @@ import wargame.widgets.AnimationWidget;
 /**
  * Represent a unit, and all its characteristics: its position, direction, stacked positions, animation...
  */
-public abstract class Unit implements IUnit {
+public abstract class Unit implements IUnit, Serializable {
+
+	private static final long serialVersionUID = 5393378027928712536L;
 
 	protected final static double CHARACTERISTIC_GAIN = 0.20;
 

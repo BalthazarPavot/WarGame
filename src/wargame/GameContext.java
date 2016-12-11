@@ -36,8 +36,10 @@ public class GameContext {
 	private boolean sound = true;
 	private boolean confLoaded = false;
 	private SpriteHandler spriteHandler;
-	private AnimationHandler animationHandler ;
+	private AnimationHandler animationHandler;
 	private Map map;
+	public boolean isLoaded = false;
+	public File loadedFile;
 
 	public GameContext(ErrorManager errorManager) {
 		if (errorManager == null)
@@ -245,7 +247,8 @@ public class GameContext {
 	}
 
 	/**
-	 * @param animationHandler the animationHandler to set
+	 * @param animationHandler
+	 *            the animationHandler to set
 	 */
 	public void setAnimationHandler(AnimationHandler animationHandler) {
 		this.animationHandler = animationHandler;

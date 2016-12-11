@@ -5,6 +5,8 @@ import wargame.basic_types.Position;
 
 public class Healer extends Terrestre {
 
+	private static final long serialVersionUID = -883691851873714232L;
+
 	protected final static int LIFE = 50;
 
 	protected final static int ATTACK_SLASH = 0;

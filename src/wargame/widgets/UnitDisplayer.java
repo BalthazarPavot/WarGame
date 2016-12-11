@@ -3,22 +3,23 @@ package wargame.widgets;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
+import wargame.basic_types.SerializableBufferedImage;
 import wargame.map.Map;
 import wargame.unit.Unit;
 
-public class UnitDisplayer extends ImageWidget {
+public class UnitDisplayer extends ImageWidget implements Serializable{
 	private static final long serialVersionUID = 447515459555241432L;
-	public BufferedImage[] staticPositionImage;
+	public SerializableBufferedImage[] staticPositionImage;
 	public AnimationWidget[] movingAnimations;
 	public Unit unit;
 
 	public UnitDisplayer(Unit unit) {
-		this(unit, new BufferedImage[4]);
+		this(unit, new SerializableBufferedImage[4]);
 	}
 
-	public UnitDisplayer(Unit unit, BufferedImage[] staticPositionImage) {
+	public UnitDisplayer(Unit unit, SerializableBufferedImage[] staticPositionImage) {
 		super();
 		this.unit = unit;
 		this.staticPositionImage = staticPositionImage;

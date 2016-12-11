@@ -16,7 +16,10 @@ all_sprites_names = \
   side_panel_texture;\
   semi_fog;\
   magos_static_poses;\
-  beetle_static_poses
+  white_magican_static_poses;\
+  beetle_static_poses;\
+  red_wyvern_static_poses;\
+  green_wyvern_static_poses
 
 
 allSources = \
@@ -150,12 +153,37 @@ magos_static_poses_width=64
 magos_static_poses_height=256
 magos_static_poses_source=http://opengameart.org/content/four-characters-my-lpc-entries
 
+white_magican_static_poses_path=images/characters/white_magican.png
+white_magican_static_poses_x=0
+white_magican_static_poses_y=0
+white_magican_static_poses_width=64
+white_magican_static_poses_height=256
+white_magican_static_poses_source=http://opengameart.org/content/four-characters-my-lpc-entries
+
 beetle_static_poses_path=images/characters/beetle.png
 beetle_static_poses_x=0
 beetle_static_poses_y=0
 beetle_static_poses_width=64
 beetle_static_poses_height=256
 beetle_static_poses_source=http://opengameart.org/content/four-characters-my-lpc-entries
+
+
+red_wyvern_static_poses_path=images/characters/red_wyvern.png
+red_wyvern_static_poses_x=0
+red_wyvern_static_poses_y=0
+red_wyvern_static_poses_width=64
+red_wyvern_static_poses_height=512
+red_wyvern_static_poses_resize=2
+red_wyvern_static_poses_source=http://opengameart.org/content/four-characters-my-lpc-entries
+
+
+green_wyvern_static_poses_path=images/characters/green_wyvern.png
+green_wyvern_static_poses_x=0
+green_wyvern_static_poses_y=0
+green_wyvern_static_poses_width=64
+green_wyvern_static_poses_height=512
+green_wyvern_static_poses_resize=2
+green_wyvern_static_poses_source=http://opengameart.org/content/four-characters-my-lpc-entries
 
 
 

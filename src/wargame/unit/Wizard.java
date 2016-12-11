@@ -5,6 +5,8 @@ import wargame.basic_types.Position;
 
 public class Wizard extends Terrestre {
 
+	private static final long serialVersionUID = 8905518988015497675L;
+
 	protected final static int LIFE = 75;
 
 	protected final static int ATTACK_SLASH = 0;

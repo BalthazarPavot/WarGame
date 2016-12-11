@@ -41,6 +41,8 @@ public class Engine {
 	private int turnBeforeHerdArearance = 0;
 	private int turnBeforeBigEnemyArearance = bigEnemyAppearanceFrequency + 10;
 	private int enemyNumberInHerd = 5;
+	private boolean won = false;
+	private boolean lost = false;
 
 	public Engine(GameContext context, MapWidget mapWidget, SidePanel sidePanel) {
 		this.map = context.getMap();
@@ -51,15 +53,25 @@ public class Engine {
 		initEnnemyUnits();
 	}
 
+	/**
+	 * Make the current unit execute its current action.
+	 * 
+	 * @return
+	 */
 	public boolean makeCurrentUnitAction() {
 		Unit activeUnit = null;
 		int actionCode;
 
+		if (won || lost)
+			return false;
 		if (currentActingUnit != -1) {
 			activeUnit = playerUnits.get(currentActingUnit);
 			actionCode = activeUnit.play(playerUnits, ennemyUnits, map);
 			displayAction(actionCode, activeUnit);
 			if (actionCode == Unit.NO_ACTION) {
+				if (activeUnit.getCharacteristics().currentMovePoints == activeUnit
+						.getCharacteristics().movePoints)
+					activeUnit.gainLife(activeUnit.getCharacteristics().life / 10);
 				currentActingUnit += 1;
 				activeUnit.hasPlayed = true;
 			} else
@@ -71,12 +83,15 @@ public class Engine {
 		}
 		if (currentActingUnit == -1 && currentActingEnemy != -1) {
 			activeUnit = ennemyUnits.get(currentActingEnemy);
-			while (activeUnit.getPathToEnd() == null)
-				activeUnit.moveTo(new Random().nextInt(map.getWidth() / 64) * 64,
-						new Random().nextInt(map.getHeight() / 64) * 64, map);
+//			while (activeUnit.getPathToEnd() == null)
+//				activeUnit.moveTo(new Random().nextInt(map.getWidth() / 64) * 64,
+//						new Random().nextInt(map.getHeight() / 64) * 64, map);
 			actionCode = activeUnit.play(playerUnits, ennemyUnits, map);
 			displayAction(actionCode, activeUnit);
 			if (actionCode == Unit.NO_ACTION) {
+				if (activeUnit.getCharacteristics().currentMovePoints == activeUnit
+						.getCharacteristics().movePoints)
+					activeUnit.gainLife(activeUnit.getCharacteristics().life / 10);
 				currentActingEnemy += 1;
 				activeUnit.hasPlayed = true;
 			} else
@@ -85,6 +100,8 @@ public class Engine {
 				currentActingEnemy = -1;
 			else if (currentActingEnemy != -1)
 				mapWidget.unitInAction = ennemyUnits.get(currentActingEnemy);
+			if (playerUnits.size() == 0)
+				lose();
 		}
 		return currentActingUnit != -1 || currentActingEnemy != -1;
 	}
@@ -95,6 +112,8 @@ public class Engine {
 	public void nextTurn() {
 		Characteristic charac;
 
+		if (won || lost)
+			return;
 		for (Unit allie : playerUnits) {
 			charac = allie.getCharacteristics();
 			charac.currentMovePoints += charac.movePoints;
@@ -113,14 +132,15 @@ public class Engine {
 		updateFog(playerUnits);
 		selectAllie(null);
 		selectEnnemy(null);
-		turnBeforeEnemyArearance--;
-		turnBeforeHerdArearance--;
-		turnBeforeBigEnemyArearance--;
 		currentActingUnit = -1;
 		currentActingEnemy = -1;
 		mapWidget.unitInAction = null;
 	}
 
+	/**
+	 * Decrease the number of remaining turn before next enemy appearance and creates new enemy units when
+	 * necessary.
+	 */
 	private void makeEnemiesPop() {
 		if (turnBeforeEnemyArearance == 0) {
 			turnBeforeEnemyArearance = enemyAppearanceFrequency;
@@ -137,18 +157,44 @@ public class Engine {
 			bigEnemyPop();
 			turnBeforeBigEnemyArearance = bigEnemyAppearanceFrequency;
 		}
+		turnBeforeEnemyArearance--;
+		turnBeforeHerdArearance--;
+		turnBeforeBigEnemyArearance--;
 	}
 
+	/**
+	 * Create abig enemy ; we have no big enemies for the moment, do nothing.
+	 */
 	private void bigEnemyPop() {
-		// TODO Auto-generated method stub
-
+		;
 	}
 
+	/**
+	 * Create the asked number of enemies, randomly.
+	 * 
+	 * @param i
+	 */
 	private void makeEnemyPop(int i) {
 		while (i-- != 0) {
 			Unit newUnit;
-			newUnit = new Soldier(map.getEnnemyPopArea(), context);
-
+			switch (new Random().nextInt(5)) {
+			case 0:
+				newUnit = new Bird(map.getEnnemyPopArea(), context);
+				break;
+			case 1:
+				newUnit = new Bowman(map.getEnnemyPopArea(), context);
+				break;
+			case 2:
+				newUnit = new Knight(map.getEnnemyPopArea(), context);
+				break;
+			default:
+			case 4:
+				newUnit = new Soldier(map.getEnnemyPopArea(), context);
+				break;
+			case 5:
+				newUnit = new Wizard(map.getEnnemyPopArea(), context);
+				break;
+			}
 			ennemyUnits.add(newUnit);
 			mapWidget.addEnnemyDisplayer(new UnitDisplayer(newUnit,
 					context.getSpriteHandler().getEnemyStaticPositionSprites(newUnit)));
@@ -177,6 +223,8 @@ public class Engine {
 	 * @param position
 	 */
 	public void mapLeftClicked(Position position) {
+		if (won || lost)
+			return;
 		position = mapWidget.getInGamePosition(position);
 		for (Unit unit : playerUnits) {
 			if (unit.isClicked(position)) {
@@ -205,19 +253,31 @@ public class Engine {
 			allieMoveTo(position);
 			return;
 		}
-		// selectAllie (null);
-		// selectEnnemy(null);
 	}
 
+	/**
+	 * Unselect the selected units.
+	 * 
+	 * @param mapPosition
+	 */
 	public void mapRightClicked(Position mapPosition) {
+		if (won || lost)
+			return;
 		selectAllie(null);
 		selectEnnemy(null);
 	}
 
+	/**
+	 * Do a selection of the given ally. Update the display etc
+	 * 
+	 * @param unit
+	 */
 	private void selectAllie(Unit unit) {
 		ArrayList<Position> pathToEnd;
 		ArrayList<Position> enemiesToHighlight = null;
 
+		if (won || lost)
+			return;
 		selectedAllie = unit;
 		selectedEnnemy = null;
 		updateEnemySelection();
@@ -246,17 +306,22 @@ public class Engine {
 	}
 
 	/**
-	 * set the given unit selected
+	 * set the given enemy selected
 	 * 
 	 * @param selectedEnnemy
 	 */
 	public void selectEnnemy(Unit selectedEnnemy) {
+		if (won || lost)
+			return;
 		selectAllie(null);
 		this.selectedEnnemy = selectedEnnemy;
 		updateEnemySelection();
 		sidePanel.setSelectedEnemy(selectedEnnemy);
 	}
 
+	/**
+	 * Update the selection of an enemy using its position
+	 */
 	private void updateEnemySelection() {
 		if (selectedEnnemy != null)
 			mapWidget.interfaceWidget.setSelectedEnemy(selectedEnnemy.getPosition());
@@ -271,16 +336,21 @@ public class Engine {
 		Unit unit;
 
 		playerUnits = new ArrayList<Unit>();
-		unit = new Wizard(map.getAlliePopArea(), context);
-		playerUnits.add(unit);
-		mapWidget.addUnitDisplayer(
-				new UnitDisplayer(unit, context.getSpriteHandler().getUnitStaticPositionSprites(unit)));
-		unit.moveTo(map.getEnnemyPopArea(), map);
 		unit = new Bird(map.getAlliePopArea(), context);
 		playerUnits.add(unit);
-		mapWidget.addUnitDisplayer(
-				new UnitDisplayer(unit, context.getSpriteHandler().getUnitStaticPositionSprites(unit)));
-		unit.moveTo(map.getEnnemyPopArea(), map);
+		unit = new Bowman(map.getAlliePopArea(), context);
+		playerUnits.add(unit);
+		unit = new Healer(map.getAlliePopArea(), context);
+		playerUnits.add(unit);
+		unit = new Knight(map.getAlliePopArea(), context);
+		playerUnits.add(unit);
+		unit = new Soldier(map.getAlliePopArea(), context);
+		playerUnits.add(unit);
+		unit = new Wizard(map.getAlliePopArea(), context);
+		playerUnits.add(unit);
+		for (Unit u: playerUnits)
+			mapWidget.addUnitDisplayer(
+					new UnitDisplayer(u, context.getSpriteHandler().getUnitStaticPositionSprites(u)));
 	}
 
 	/**
@@ -288,6 +358,7 @@ public class Engine {
 	 */
 	private void initEnnemyUnits() {
 		ennemyUnits = new ArrayList<Unit>();
+		makeEnemyPop(1);
 	}
 
 	/**
@@ -297,6 +368,8 @@ public class Engine {
 	 * @param unit
 	 */
 	private void displayAction(int action, Unit unit) {
+		if (won || lost)
+			return;
 		switch (action) {
 		case Unit.MOVE_ACTION:
 			setAnimation(unit.getCurrentWalkAnimation(), unit.getPreviousPosition());
@@ -339,6 +412,8 @@ public class Engine {
 		Position previous;
 		ArrayList<Position> currentPath;
 
+		if (won || lost)
+			return;
 		selectedAllie.moveTo(position.getX() / Map.squareWidth * Map.squareWidth,
 				position.getY() / Map.squareHeight * Map.squareHeight, map);
 		currentPath = selectedAllie.getPathToEnd();
@@ -367,13 +442,34 @@ public class Engine {
 	 * @param unit
 	 */
 	private void allieActOnEnnemy(Unit unit) {
+		if (won || lost)
+			return;
 		if (!selectedAllie.hasPlayed && unit.inAttackRangeOf(selectedAllie)) {
 			selectedAllie.hasPlayed = true;
 			if (selectedAllie.inflictDamage(unit)) {
-				ennemyUnits.remove(selectedAllie);
+				ennemyUnits.remove(unit);
+				mapWidget.removeEnnemyDisplayer(unit);
 			}
 		}
 		selectAllie(null);
+		if (ennemyUnits.size() == 0)
+			win();
+	}
+
+	/**
+	 * Trigger the win flag
+	 */
+	private void win() {
+		won = true;
+		mapWidget.win();
+	}
+
+	/**
+	 * Trigger the lose flag
+	 */
+	private void lose() {
+		lost = true;
+		mapWidget.lose();
 	}
 
 	/**

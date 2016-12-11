@@ -1,0 +1,48 @@
+all_animations_names = \
+  magos_walk;\
+  white_magican;\
+  red_wyvern;\
+  green_wyvern;\
+  beetle_walk
+
+beetle_walk_path = images/characters/beetle.png
+beetle_walk_x = 0
+beetle_walk_y = 0
+beetle_walk_end_x = 256
+beetle_walk_end_y = 192
+beetle_walk_same_diagonal = true
+beetle_walk_duration = 100
+
+magos_walk_path = images/characters/magos_walk.png
+magos_walk_x = 0
+magos_walk_y = 0
+magos_walk_end_x = 512
+magos_walk_end_y = 192
+magos_walk_same_diagonal = true
+magos_walk_duration = 50
+
+white_magican_path = images/characters/white_magican.png
+white_magican_x = 0
+white_magican_y = 0
+white_magican_end_x = 512
+white_magican_end_y = 192
+white_magican_same_diagonal = true
+white_magican_duration = 50
+
+red_wyvern_path = images/characters/red_wyvern.png
+red_wyvern_x = 0
+red_wyvern_y = 0
+red_wyvern_end_x = 512
+red_wyvern_end_y = 192
+red_wyvern_same_diagonal = true
+red_wyvern_resize=2
+red_wyvern_duration = 100
+
+green_wyvern_path = images/characters/green_wyvern.png
+green_wyvern_x = 0
+green_wyvern_y = 0
+green_wyvern_end_x = 512
+green_wyvern_end_y = 192
+green_wyvern_same_diagonal = true
+green_wyvern_resize=2
+green_wyvern_duration = 100

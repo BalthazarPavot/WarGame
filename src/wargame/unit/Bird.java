@@ -1,9 +1,13 @@
 package wargame.unit;
 
+import java.io.Serializable;
+
 import wargame.GameContext;
 import wargame.basic_types.Position;
 
-public class Bird extends Aerial {
+public class Bird extends Aerial implements Serializable{
+
+	private static final long serialVersionUID = 5963767788593190401L;
 
 	protected final static int LIFE = 50;
 
@@ -19,7 +23,7 @@ public class Bird extends Aerial {
 
 	protected final static int RANGE = 1;
 	protected final static int SIGHT = 7;
-	protected final static int MOVE_POINTS = 6*3;
+	protected final static int MOVE_POINTS = 6;
 
 	public Bird(Position position, GameContext gameContext) {
 		super(position, gameContext);

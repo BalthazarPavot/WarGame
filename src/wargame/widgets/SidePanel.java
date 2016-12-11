@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,7 +17,7 @@ import wargame.map.Map;
 import wargame.unit.Characteristic;
 import wargame.unit.Unit;
 
-public class SidePanel extends JPanel implements GameWidget {
+public class SidePanel extends JPanel implements GameWidget, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	protected Rectangle boundRect;

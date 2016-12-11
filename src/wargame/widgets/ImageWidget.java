@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,23 +16,25 @@ import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 
 import wargame.basic_types.Position;
+import wargame.basic_types.SerializableBufferedImage;
 
-public class ImageWidget extends JLabel implements GameWidget {
+public class ImageWidget extends JLabel implements GameWidget, Serializable {
 
-	private static HashMap<BufferedImage, ArrayList<BufferedImage>> zoomedImageBuffer = new HashMap<BufferedImage, ArrayList<BufferedImage>>();
-	private static HashMap<BufferedImage, BufferedImage> invertedImageBuffer = new HashMap<BufferedImage, BufferedImage>();
+	private static HashMap<SerializableBufferedImage, ArrayList<SerializableBufferedImage>> zoomedImageBuffer = new HashMap<SerializableBufferedImage, ArrayList<SerializableBufferedImage>>();
+	private static HashMap<SerializableBufferedImage, SerializableBufferedImage> invertedImageBuffer = new HashMap<SerializableBufferedImage, SerializableBufferedImage>();
 	private static final long serialVersionUID = 1L;
 	protected Rectangle boundRect;
-	protected BufferedImage image;
+	protected SerializableBufferedImage image;
 	protected Color bgColor;
 
-	public static BufferedImage loadImage(String path) {
+	public static SerializableBufferedImage loadImage(String path) {
 		BufferedImage image;
-		BufferedImage newImage = null;
+		SerializableBufferedImage newImage = null;
 
 		try {
 			image = ImageIO.read(Thread.currentThread().getContextClassLoader().getResourceAsStream(path));
-			newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			newImage = new SerializableBufferedImage(image.getWidth(), image.getHeight(),
+					SerializableBufferedImage.TYPE_INT_ARGB);
 			Graphics2D g = newImage.createGraphics();
 			g.drawImage(image, 0, 0, null);
 			g.dispose();
@@ -48,19 +51,39 @@ public class ImageWidget extends JLabel implements GameWidget {
 	 * @param zoom
 	 * @return
 	 */
-	public static BufferedImage zoomImage(BufferedImage image, int zoom) {
-		BufferedImage newImage = null;
-		ArrayList<BufferedImage> imageBuffer;
+	public static SerializableBufferedImage zoomImage(SerializableBufferedImage image, int zoom) {
+		return zoomImage(image, zoom, true);
+	}
+
+	/**
+	 * Return the zoomed image (1/zoom if unzoom)
+	 * 
+	 * @param image
+	 * @param zoom
+	 * @return
+	 */
+	public static SerializableBufferedImage zoomImage(SerializableBufferedImage image, int zoom,
+			boolean unzoom) {
+		SerializableBufferedImage newImage = null;
+		ArrayList<SerializableBufferedImage> imageBuffer;
 
 		imageBuffer = zoomedImageBuffer.get(image);
 		if (imageBuffer == null) {
-			imageBuffer = new ArrayList<BufferedImage>();
+			imageBuffer = new ArrayList<SerializableBufferedImage>();
 			zoomedImageBuffer.put(image, imageBuffer);
 			for (int x = 2; x < 8; x <<= 1) {
-				newImage = new BufferedImage(image.getWidth() / x, image.getHeight() / x,
-						BufferedImage.TYPE_INT_ARGB);
-				Graphics2D g = newImage.createGraphics();
-				g.drawImage(image, 0, 0, image.getWidth() / x, image.getHeight() / x, null);
+				Graphics2D g ;
+				if (unzoom) {
+					newImage = new SerializableBufferedImage(image.getWidth() / x, image.getHeight() / x,
+							SerializableBufferedImage.TYPE_INT_ARGB);
+					g = newImage.createGraphics();
+					g.drawImage(image, 0, 0, image.getWidth() / x, image.getHeight() / x, null);
+				} else {
+					newImage = new SerializableBufferedImage(image.getWidth() * x, image.getHeight() * x,
+							SerializableBufferedImage.TYPE_INT_ARGB);
+					g = newImage.createGraphics();
+					g.drawImage(image, 0, 0, image.getWidth() * x, image.getHeight() * x, null);
+				}
 				g.dispose();
 				imageBuffer.add(newImage);
 			}
@@ -79,17 +102,18 @@ public class ImageWidget extends JLabel implements GameWidget {
 	}
 
 	/**
-	 * Return the inverted image 
+	 * Return the inverted image
 	 * 
 	 * @param image
 	 * @return
 	 */
-	public static BufferedImage invertImage(BufferedImage image) {
-		BufferedImage inverted;
+	public static SerializableBufferedImage invertImage(SerializableBufferedImage image) {
+		SerializableBufferedImage inverted;
 
 		inverted = invertedImageBuffer.get(image);
 		if (inverted == null) {
-			inverted = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			inverted = new SerializableBufferedImage(image.getWidth(), image.getHeight(),
+					SerializableBufferedImage.TYPE_INT_ARGB);
 			invertedImageBuffer.put(image, inverted);
 			Graphics2D g = inverted.createGraphics();
 			g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
@@ -131,14 +155,14 @@ public class ImageWidget extends JLabel implements GameWidget {
 		this(boundRect, ImageWidget.loadImage(path));
 	}
 
-	public ImageWidget(int x, int y, int w, int h, BufferedImage image) {
+	public ImageWidget(int x, int y, int w, int h, SerializableBufferedImage image) {
 		this(new Rectangle(x, y, w, h), image);
 	}
 
-	public ImageWidget(Rectangle boundRect, BufferedImage image) {
+	public ImageWidget(Rectangle boundRect, SerializableBufferedImage image) {
 		// super(new ImageIcon(image));
 		this.boundRect = boundRect;
-		this.image = image;
+		this.image = (SerializableBufferedImage) image;
 	}
 
 	/**
@@ -171,7 +195,7 @@ public class ImageWidget extends JLabel implements GameWidget {
 	/**
 	 * Return widget's position
 	 */
-	public BufferedImage getImage() {
+	public SerializableBufferedImage getImage() {
 		return this.image;
 	}
 
@@ -266,5 +290,4 @@ public class ImageWidget extends JLabel implements GameWidget {
 
 		return totalR / nbPixel << 16 | totalG / nbPixel << 8 | totalB / nbPixel;
 	}
-
 }

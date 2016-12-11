@@ -3,6 +3,7 @@ package wargame.widgets;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import wargame.basic_types.Position;
@@ -15,7 +16,8 @@ import wargame.map.Map;
  * @author Balthazar Pavot
  *
  */
-public class InterfaceWidget {
+public class InterfaceWidget implements Serializable{
+	private static final long serialVersionUID = 3940437638758402909L;
 	private static final Color pathColor = new Color(0, 0, 255, 64);
 	private static final Color allieColor = new Color(0, 255, 0, 64);
 	private static final Color ennemyColor = new Color(255, 0, 0, 64);

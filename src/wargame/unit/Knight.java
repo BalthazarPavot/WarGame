@@ -5,6 +5,8 @@ import wargame.basic_types.Position;
 
 public class Knight extends Terrestre {
 
+	private static final long serialVersionUID = -8944817027393817236L;
+
 	protected final static int LIFE = 150;
 
 	protected final static int ATTACK_SLASH = 0;

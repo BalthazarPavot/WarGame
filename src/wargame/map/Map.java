@@ -2,6 +2,7 @@
 package wargame.map;
 
 import java.awt.Dimension;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +25,7 @@ import wargame.basic_types.Position;
  * elements having position (pos_x_2;pos_y) ] }, { pos_y_2 : [ elements having position (pos_x_2;pos_y_2) ] }
  * }
  */
-public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>>> {
+public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>>> implements Serializable {
 	private static final long serialVersionUID = 1L;
 	public final static int squareWidth = 64;
 	public final static int squareHeight = 64;

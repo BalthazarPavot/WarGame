@@ -3,16 +3,19 @@ package wargame.screens;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.JFileChooser;
+
 import wargame.GameContext;
+import wargame.basic_types.SerializableBufferedImage;
 import wargame.map.Map;
 import wargame.widgets.*;
 
 /**
  * This screen is the first screen of the game, the main menu.
+ * 
  * @author Balthazar Pavot
  *
  */
@@ -27,7 +30,7 @@ public class MainScreen extends GameScreen {
 
 	public MainScreen(GameContext gameContext) {
 		super(gameContext);
-		this.actionManager = new MainScreenActionManager(this);
+		this.actionManager = new MainScreenActionManager(this, gameContext);
 	}
 
 	/**
@@ -55,8 +58,8 @@ public class MainScreen extends GameScreen {
 	}
 
 	private void createBackground() {
-		ArrayList<BufferedImage> backgroundImageList;
-		ArrayList<BufferedImage> treeImageList;
+		ArrayList<SerializableBufferedImage> backgroundImageList;
+		ArrayList<SerializableBufferedImage> treeImageList;
 		Random rand;
 		int randint;
 
@@ -74,11 +77,12 @@ public class MainScreen extends GameScreen {
 					this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
 							gameContext.getSpriteHandler().get("rock_snow_set").get(0)));
 				else if (rand.nextInt(150) == 0) {
+					this.addWidgets(new ImageWidget(x + Map.squareWidth, y + Map.squareHeight,
+							Map.squareWidth, Map.squareHeight,
+							gameContext.getSpriteHandler().get("water_sand_curve_out").get(3)));
 					this.addWidgets(
-							new ImageWidget(x + Map.squareWidth, y + Map.squareHeight, Map.squareWidth,
-									Map.squareHeight, gameContext.getSpriteHandler().get("water_sand_curve_out").get(3)));
-					this.addWidgets(new ImageWidget(x, y + Map.squareHeight, Map.squareWidth,
-							Map.squareHeight, gameContext.getSpriteHandler().get("water_sand_curve_out").get(2)));
+							new ImageWidget(x, y + Map.squareHeight, Map.squareWidth, Map.squareHeight,
+									gameContext.getSpriteHandler().get("water_sand_curve_out").get(2)));
 					this.addWidgets(new ImageWidget(x + Map.squareWidth, y, Map.squareWidth, Map.squareHeight,
 							gameContext.getSpriteHandler().get("water_sand_curve_out").get(1)));
 					this.addWidgets(new ImageWidget(x, y, Map.squareWidth, Map.squareHeight,
@@ -93,13 +97,17 @@ public class MainScreen extends GameScreen {
 
 /**
  * Manage the actions of the buttons.
+ * 
  * @author Balthazar Pavot
  *
  */
 class MainScreenActionManager extends GameScreenActionManager {
 
-	public MainScreenActionManager(GameScreen gameScreen) {
+	private GameContext context;
+
+	public MainScreenActionManager(GameScreen gameScreen, GameContext context) {
 		super(gameScreen);
+		this.context = context ;
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -108,7 +116,18 @@ class MainScreenActionManager extends GameScreenActionManager {
 		} else if (e.getActionCommand().equals(MainScreen.NEW_GAME_STRING)) {
 			gameScreen.nextScreenID = GameScreen.NEW_GAME_SCREEN;
 		} else if (e.getActionCommand().equals(MainScreen.LOAD_GAME_STRING)) {
-			gameScreen.nextScreenID = GameScreen.LOAD_GAME_SCREEN;
+			JFileChooser fc = new JFileChooser() {
+				private static final long serialVersionUID = -718754014460685192L;
+			};
+			fc.setCurrentDirectory(new java.io.File("."));
+			fc.setDialogTitle("Choose a file name");
+			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			System.out.println("make save");
+			if (fc.showSaveDialog(gameScreen) == JFileChooser.APPROVE_OPTION) {
+				context.isLoaded = true;
+				context.loadedFile = fc.getSelectedFile() ;
+				gameScreen.nextScreenID = GameScreen.PLAY_GAME_SCREEN;
+			}
 		} else if (e.getActionCommand().equals(MainScreen.CONFIGURATION_STRING)) {
 			gameScreen.nextScreenID = GameScreen.CONFIGURATION_SCREEN;
 		} else if (e.getActionCommand().equals(MainScreen.QUIT_GAME_STRING)) {
@@ -120,4 +139,3 @@ class MainScreenActionManager extends GameScreenActionManager {
 	}
 
 }
-

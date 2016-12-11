@@ -5,6 +5,8 @@ import wargame.basic_types.Position;
 
 public class Bowman extends Terrestre {
 
+	private static final long serialVersionUID = 6988593977751181509L;
+
 	protected final static int LIFE = 75;
 
 	protected final static int ATTACK_SLASH = 0;

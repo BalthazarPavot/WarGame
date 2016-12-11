@@ -4,6 +4,8 @@ package wargame.screens;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 
+import javax.swing.JFileChooser;
+
 import wargame.GameContext;
 import wargame.widgets.*;
 
@@ -15,6 +17,7 @@ import wargame.widgets.*;
 public class LoadGameScreen extends GameScreen {
 
 	private static final long serialVersionUID = 1L;
+	private JFileChooser saveNameField;
 
 	public LoadGameScreen(GameContext gameContext) {
 		super(gameContext);
@@ -37,6 +40,12 @@ public class LoadGameScreen extends GameScreen {
 				new Color(128, 128, 128));
 		button.addActionListener(this.actionManager);
 		this.addWidgets(button);
+		saveNameField = new JFileChooser();
+		saveNameField.setBounds(150, gameContext.getHeight() / 10 * 2+50, gameContext.getWidth()-300, 400);
+		saveNameField.setCurrentDirectory(new java.io.File("."));
+		saveNameField.setDialogTitle("Choose a file name");
+		saveNameField.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		this.add(saveNameField) ;
 	}
 
 }

@@ -1,12 +1,13 @@
 package wargame.widgets;
 
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 import wargame.basic_types.Position;
+import wargame.basic_types.SerializableBufferedImage;
 
 /**
  * This class represents an animation to be displayed on the screen.
@@ -16,10 +17,10 @@ import wargame.basic_types.Position;
  * @author Balthazar Pavot
  *
  */
-public class AnimationWidget extends JPanel {
+public class AnimationWidget extends JPanel implements Serializable {
 	private static final long serialVersionUID = 5692785884158017868L;
 
-	protected ArrayList<BufferedImage> imageList;
+	protected ArrayList<SerializableBufferedImage> imageList;
 	protected ArrayList<Position> positionList;
 	protected long frameDuration;
 	private int currentImage = 0;
@@ -32,7 +33,7 @@ public class AnimationWidget extends JPanel {
 	 * @param frameDuration
 	 */
 	public AnimationWidget(long frameDuration) {
-		imageList = new ArrayList<BufferedImage>();
+		imageList = new ArrayList<SerializableBufferedImage>();
 		positionList = new ArrayList<Position>();
 		this.frameDuration = frameDuration;
 	}
@@ -41,7 +42,7 @@ public class AnimationWidget extends JPanel {
 	 * Add an image to the animation, in the same place to the first image.
 	 * @param image
 	 */
-	public void addImage(BufferedImage image) {
+	public void addImage(SerializableBufferedImage image) {
 		addImage(image, new Position(0, 0));
 	}
 
@@ -50,7 +51,7 @@ public class AnimationWidget extends JPanel {
 	 * @param image
 	 * @param p
 	 */
-	public void addImage(BufferedImage image, Position p) {
+	public void addImage(SerializableBufferedImage image, Position p) {
 		imageList.add(image);
 		positionList.add(p);
 	}

@@ -6,13 +6,14 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.io.Serializable;
 
 import javax.swing.JButton;
 
 import wargame.basic_types.Position;
 import wargame.screens.GameScreenActionManager;
 
-public class ButtonWidget extends JButton implements GameWidget {
+public class ButtonWidget extends JButton implements GameWidget, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	protected Rectangle boundRect;
@@ -157,5 +158,6 @@ public class ButtonWidget extends JButton implements GameWidget {
 
 	@Override
 	public void paintComponent(Graphics g, int zoom, int x, int y) {
+		super.paintComponent(g);
 	}
 }

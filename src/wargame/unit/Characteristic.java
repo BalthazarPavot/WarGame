@@ -1,7 +1,13 @@
 package wargame.unit;
 
-public class Characteristic {
+import java.io.Serializable;
 
+public class Characteristic implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1728114758306849409L;
 	public int life;
 	public int currentLife;
 	public int attackSlashing;

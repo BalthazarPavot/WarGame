@@ -5,6 +5,8 @@ import wargame.basic_types.Position;
 
 public abstract class Terrestre extends Unit {
 
+	private static final long serialVersionUID = 2253238873598482222L;
+
 	public Terrestre(Position position, GameContext gameContext) {
 		super (position, gameContext) ;
 	}

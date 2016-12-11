@@ -1,27 +1,28 @@
 
 package wargame.map;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
 import wargame.ErrorManager;
 import wargame.basic_types.Position;
+import wargame.basic_types.SerializableBufferedImage;
 import wargame.unit.*;
 import wargame.widgets.AnimationWidget;
 import wargame.widgets.ImageWidget;
 
 /**
  * The aim of this class is to load the animations and contain them. <br />
- * One can access a animation by giving the animation sheet name, and the number of the animation.
+ * One can access a animation by giving the animation sheet name, and the number (id) of the animation.
  * 
  * @author Balthazar Pavot
  *
  */
-public class AnimationHandler extends HashMap<String, ArrayList<AnimationWidget>> {
+public class AnimationHandler extends HashMap<String, ArrayList<AnimationWidget>> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private final static String animationIndex = "/animationIndex.data";
@@ -134,11 +135,12 @@ public class AnimationHandler extends HashMap<String, ArrayList<AnimationWidget>
 		int h = 0;
 		int initX = 0;
 		int initY = 0;
+		int resize = 1;
 		int frameDuration = 0;
 		float frameNumber;
 		boolean sameDiagonals;
 		AnimationWidget currentAnimation;
-		BufferedImage wholeImage;
+		SerializableBufferedImage wholeImage;
 		double[] framePosition = { 0., 0. };
 		int vectorNumber;
 		Double[][] vector = new Double[][] { { 0., -1.0 }, { 0., 1.0 }, { 1.0, 0. }, { -1.0, 0. },
@@ -167,6 +169,11 @@ public class AnimationHandler extends HashMap<String, ArrayList<AnimationWidget>
 		} catch (NumberFormatException e) {
 			errorManager.exitError(String
 					.format("Couln not find property %s_height in animation index file\n", animationName));
+		}
+		try {
+			resize = Integer.parseInt(confProperties.getProperty(animationName + "_resize"));
+		} catch (NumberFormatException e) {
+			resize = 1;
 		}
 		try {
 			w = Integer.parseInt(confProperties.getProperty(animationName + "_width"));
@@ -202,7 +209,8 @@ public class AnimationHandler extends HashMap<String, ArrayList<AnimationWidget>
 			animationList.add(currentAnimation);
 			while (x <= end_x) {
 				currentAnimation.addImage(
-						ImageWidget.zoomImage(wholeImage.getSubimage(x, y, w, h), w / Map.squareWidth),
+						ImageWidget.zoomImage(wholeImage.getSubimage(x, y, w, h), resize, false)
+								.getSubimage(w - w / resize, h - h / resize, w, h),
 						new Position((int) framePosition[0], (int) framePosition[1]));
 				System.out.printf("Load animation %s %d;%d\n", animationName, x, y);
 				framePosition[0] += vector[vectorNumber][0] * Map.squareWidth / frameNumber;
@@ -216,19 +224,18 @@ public class AnimationHandler extends HashMap<String, ArrayList<AnimationWidget>
 		if (sameDiagonals) {
 			y = initY;
 			x = initX;
-			for (Integer y2 : new int[] {0, h, h, 0}) {
+			for (Integer y2 : new int[] { 0, h, h, 0 }) {
 				currentAnimation = new AnimationWidget(frameDuration);
 				framePosition[0] = framePosition[1] = 0.;
 				animationList.add(currentAnimation);
 				while (x <= end_x) {
 					currentAnimation.addImage(
-							ImageWidget.zoomImage(wholeImage.getSubimage(x, y2, w, h), w / Map.squareWidth),
+							ImageWidget.zoomImage(wholeImage.getSubimage(x, y2, w, h), resize, false)
+									.getSubimage(w - w / resize, h - h / resize, w, h),
 							new Position((int) framePosition[0], (int) framePosition[1]));
 					System.out.printf("Load animation %s %d;%d\n", animationName, x, y2);
-					framePosition[0] += vector[vectorNumber][0] * Map.squareWidth
-							/ frameNumber;
-					framePosition[1] += vector[vectorNumber][1] * Map.squareHeight
-							/ frameNumber;
+					framePosition[0] += vector[vectorNumber][0] * Map.squareWidth / frameNumber;
+					framePosition[1] += vector[vectorNumber][1] * Map.squareHeight / frameNumber;
 					x += w;
 				}
 				vectorNumber += 1;
@@ -245,10 +252,12 @@ public class AnimationHandler extends HashMap<String, ArrayList<AnimationWidget>
 	 * @return
 	 */
 	public ArrayList<AnimationWidget> getUnitWalkSprites(Unit unit) {
-		if (unit.getClass() == Wizard.class || unit.getClass() == Bird.class) {
-			return get("magos_walk");
+		if (unit.getClass() == Bird.class) {
+			return get("red_wyvern");
+		} else if (unit.getClass() == Healer.class) {
+			return get("white_magican");
 		}
-		return null;
+		return get("magos_walk");
 	}
 
 	/**
@@ -258,9 +267,9 @@ public class AnimationHandler extends HashMap<String, ArrayList<AnimationWidget>
 	 * @return
 	 */
 	public ArrayList<AnimationWidget> getEnemyWalkSprites(Unit unit) {
-		if (unit.getClass() == Soldier.class || unit.getClass() == Bird.class) {
-			return get("beetle_walk");
+		if (unit.getClass() == Bird.class) {
+			return get("green_wyvern");
 		}
-		return null;
+		return get("beetle_walk");
 	}
 }

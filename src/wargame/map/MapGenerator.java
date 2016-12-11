@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
+import wargame.basic_types.SerializableBufferedImage;
 import wargame.widgets.ImageWidget;
 
 /**
@@ -108,7 +109,7 @@ public class MapGenerator {
 	}
 
 	private void generateGround() {
-		ArrayList<BufferedImage> groundImages;
+		ArrayList<SerializableBufferedImage> groundImages;
 		Dimension mapDimensions;
 
 		mapDimensions = parameters.getDimensions();
@@ -142,8 +143,8 @@ public class MapGenerator {
 
 	private void applySprites(ArrayList<TreeShape> treeShapes, ArrayList<RockShape> rockShapes,
 			ArrayList<WaterShape> waterShapes) {
-		ArrayList<BufferedImage> treeImageList;
-		ArrayList<BufferedImage> rockImageList;
+		ArrayList<SerializableBufferedImage> treeImageList;
+		ArrayList<SerializableBufferedImage> rockImageList;
 
 		switch (parameters.climate) {
 		case MapGeneratorParameter.TOUNDRA_CLIMATE:

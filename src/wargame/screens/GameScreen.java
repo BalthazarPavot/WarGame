@@ -12,7 +12,7 @@ import wargame.GameContext;
 import wargame.widgets.*;
 
 /**
- * Defines a screen of the game.
+ * Defines a screen of the game and the methods it implements/overwrites.
  * 
  * @author Balthazar Pavot
  *
@@ -49,12 +49,10 @@ public abstract class GameScreen extends JPanel {
 	 * @return The id of the next game screen.
 	 */
 	public int run() throws IllegalStateException {
-		// frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		if (actionManager == null)
 			throw new IllegalStateException();
 		this.initRun();
 		while (!this.screenHasFinished) {
-			// this.display () ;
 			windowManagement();
 			display();
 			try {
@@ -76,7 +74,7 @@ public abstract class GameScreen extends JPanel {
 	}
 
 	/**
-	 * Must be overwritten. TODO: export this into an interface?
+	 * Must be overwritten.
 	 */
 	public void prepare() throws IllegalStateException {
 		throw new IllegalStateException("The screen did not overwite the method prepare");
@@ -85,6 +83,7 @@ public abstract class GameScreen extends JPanel {
 	public void screenTermination() {
 		for (Component widget : gameWidgets)
 			this.remove(widget);
+		this.removeAll();
 		screenHasFinished = true;
 	}
 
@@ -114,7 +113,7 @@ public abstract class GameScreen extends JPanel {
 	}
 
 	protected void windowManagement() {
-		// Do nothing here.y
+		// Do nothing here.
 	}
 
 	/**
@@ -130,8 +129,6 @@ public abstract class GameScreen extends JPanel {
 	 * Remove all widgets, add again all the widgets to their position.
 	 */
 	protected void display() {
-		// this.removeAll();
-		// this.revalidate();
 		this.repaint();
 	}
 

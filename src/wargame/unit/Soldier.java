@@ -5,6 +5,8 @@ import wargame.basic_types.Position;
 
 public class Soldier extends Terrestre {
 
+	private static final long serialVersionUID = 2097758820331198919L;
+
 	protected final static int LIFE = 100 ;
 
 	protected final static int ATTACK_SLASH = 25 ;

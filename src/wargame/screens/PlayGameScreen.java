@@ -9,8 +9,15 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 
 import wargame.GameContext;
@@ -54,8 +61,15 @@ public class PlayGameScreen extends GameScreen {
 		this.mouseMotionManager = new PlayGameScreenMouseMotionManager(this);
 		this.keyboardManager = new PlayGameScreenKeyboardManager(this,
 				KeyboardFocusManager.getCurrentKeyboardFocusManager());
-		this.mapWidget = new MapWidget(this.gameContext.getMap(), this.gameContext.getWidth() - 150,
-				this.gameContext.getHeight(), gameContext.getSpriteHandler());
+		if (gameContext.isLoaded) {
+			load(gameContext.loadedFile);
+			nextScreenID = GameScreen.MAIN_MENU_SCREEN ;
+			screenTermination();
+			return ;
+		} else {
+			this.mapWidget = new MapWidget(this.gameContext.getMap(), this.gameContext.getWidth() - 150,
+					this.gameContext.getHeight(), gameContext.getSpriteHandler(), actionManager);
+		}
 		this.sidePanel = new SidePanel(gameContext.getMap(), this.gameContext.getWidth() - 150, 0, 150,
 				this.gameContext.getHeight(), gameContext.getSpriteHandler().get("side_panel_texture").get(0),
 				mapWidget.getFrame());
@@ -73,6 +87,9 @@ public class PlayGameScreen extends GameScreen {
 	 * Prepare the play game screen, displayed when the player is ... playing.
 	 */
 	public void prepare() {
+		// the loading doesn't work.
+		if (gameContext.isLoaded)
+			return ;
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyboardManager);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(sidePanelKeyboardManager);
 		buildMapWidget();
@@ -112,6 +129,10 @@ public class PlayGameScreen extends GameScreen {
 				20 + index++ * 30 + sidePanel.getMinimapHeight(), sidePanel.getMinimapWidth(), 20, 12,
 				Color.black, sidePanelActionManager));
 		descCtnt = new HashMap<String, GameWidget>();
+		sidePanel.addWidget(new ButtonWidget("Save", 10, 20 + index++ * 30 + sidePanel.getMinimapHeight(),
+				sidePanel.getMinimapWidth(), 20, 12, Color.black, actionManager));
+		sidePanel.addWidget(new ButtonWidget("Quit", 10, 20 + index++ * 30 + sidePanel.getMinimapHeight(),
+				sidePanel.getMinimapWidth(), 20, 12, Color.black, actionManager));
 		index++;
 		for (String name : new String[] { "name", "life", "attack", "defPierce", "defBlunt", "defSlash",
 				"defMagic" }) {
@@ -184,6 +205,47 @@ public class PlayGameScreen extends GameScreen {
 				engine.currentActingUnit = 0;
 			if (engine.getEnnemyUnits().size() != 0)
 				engine.currentActingEnemy = 0;
+		}
+	}
+
+	public void save(File selectedFile) {
+		ObjectOutputStream oos = null;
+		try {
+			final FileOutputStream fichier = new FileOutputStream(selectedFile);
+			oos = new ObjectOutputStream(fichier);
+			oos.writeObject(mapWidget);
+		} catch (final java.io.IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (oos != null) {
+					oos.flush();
+					oos.close();
+				}
+			} catch (final IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	private void load(File file) {
+		ObjectInputStream ois = null;
+		try {
+			final FileInputStream fichier = new FileInputStream(file);
+			ois = new ObjectInputStream(fichier);
+			mapWidget = (MapWidget) ois.readObject();
+		} catch (final java.io.IOException e) {
+			e.printStackTrace();
+		} catch (final ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (ois != null) {
+					ois.close();
+				}
+			} catch (final IOException ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 }
@@ -262,6 +324,23 @@ class PlayGameScreenActionManager extends GameScreenActionManager {
 
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
+		if (e.getActionCommand().equals("YOU WIN") || e.getActionCommand().equals("YOU LOSE")) {
+			this.gameScreen.nextScreenID = GameScreen.MAIN_MENU_SCREEN;
+			this.gameScreen.screenTermination();
+		} else if (e.getActionCommand().equals("Save")) {
+			JFileChooser fc = new JFileChooser() {
+				private static final long serialVersionUID = -718754014460685192L;
+			};
+			fc.setCurrentDirectory(new java.io.File("."));
+			fc.setDialogTitle("Choose a file name");
+			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			System.out.println("make save");
+			if (fc.showSaveDialog(gameScreen) == JFileChooser.APPROVE_OPTION)
+				gameScreen.save(fc.getSelectedFile());
+		} else if (e.getActionCommand().equals("Quit")) {
+			this.gameScreen.nextScreenID = GameScreen.MAIN_MENU_SCREEN;
+			this.gameScreen.screenTermination();
+		}
 	}
 
 }
@@ -325,7 +404,6 @@ class SidePanelActionManager extends GameScreenActionManager {
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
 		if (e.getActionCommand().equals("Next turn")) {
-			// engine.nextTurn();
 			gameScreen.setPassingToNextTurn(true);
 		} else if (e.getActionCommand().equals("Auto-play: on")) {
 			((ButtonWidget) e.getSource()).setText("Auto-play: off");
@@ -408,8 +486,7 @@ class SidePanelMouseManager extends GameScreenMouseManager {
 					(int) (event.getY() - sidePanel.getMinimapFrame().getHeight() / 2));
 			mapWidget.updateFramePositionFromMinimap(sidePanel.getMinimapFrame(),
 					sidePanel.getMinimapRectangle());
-		} else
-			System.out.println("Clicked! (panel)");
+		}
 	}
 }
 
