@@ -86,9 +86,9 @@ public class Engine {
 			actionCode = activeUnit.play(playerUnits, ennemyUnits, map);
 			displayAction(actionCode, activeUnit);
 			if (actionCode == Unit.NO_ACTION) {
-				if (activeUnit.getCharacteristics().currentMovePoints == activeUnit
-						.getCharacteristics().movePoints)
-					activeUnit.gainLife(activeUnit.getCharacteristics().life / 10);
+//				if (activeUnit.getCharacteristics().currentMovePoints >= activeUnit
+//						.getCharacteristics().movePoints)
+//					activeUnit.gainLife(activeUnit.getCharacteristics().life / 10);
 				currentActingEnemy += 1;
 				activeUnit.hasPlayed = true;
 			} else

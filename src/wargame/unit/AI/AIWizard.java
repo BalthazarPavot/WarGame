@@ -1,6 +1,7 @@
 package wargame.unit.AI;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import wargame.basic_types.Position;
 import wargame.map.Map;
@@ -21,21 +22,17 @@ public class AIWizard extends AI implements IAI {
 	/**
 	 * Execute the list of action contained in the AI's attribute.
 	 */
-	public void executeActions(ArrayList<Unit> allyList,
-			ArrayList<Unit> enemyList) {
+	public void executeActions(ArrayList<Unit> allyList, ArrayList<Unit> enemyList) {
 		Unit u;
 		int i;
 		for (Action action : this.getActList()) {
 			if (action.ope == operation.MOVE) {
-				this.unitLinked.setMove(action.position);
+				this.unitLinked.setMove((ArrayList<Position>) Arrays.asList(action.position));
 				this.unitLinked.move();
 			} else if (action.ope == operation.ATTACK) {
-				u = getUnitAtPos(
-						action.position.get(action.position.size() - 1),
-						enemyList);
+				u = getUnitAtPos(action.position, enemyList);
 				i = enemyList.indexOf(u);
-				enemyList.get(i).takeMagicDamages(
-						this.unitLinked.getCharacteristics().attackMagic);
+				enemyList.get(i).takeMagicDamages(this.unitLinked.getCharacteristics().attackMagic);
 				if (enemyList.get(i).getCharacteristics().currentLife == 0)
 					enemyList.remove(i);
 			}
@@ -52,8 +49,7 @@ public class AIWizard extends AI implements IAI {
 		if (isSafe(enemyList, map)
 				&& (this.getLife() == healhPoint.LOW || this.getLife() == healhPoint.VERY_LOW))
 			rest();
-		else if (!this.blocked
-				&& (this.getLife() == healhPoint.LOW || this.getLife() == healhPoint.VERY_LOW))
+		else if (!this.blocked && (this.getLife() == healhPoint.LOW || this.getLife() == healhPoint.VERY_LOW))
 			flee(enemyList, allyList, map);
 		else
 			fight(enemyList, allyList, map);
@@ -88,8 +84,7 @@ public class AIWizard extends AI implements IAI {
 			bestDamageLifeRate = 0;
 			if (!enemyInRangeCopy.isEmpty()) {
 				for (Unit u : enemyInRangeCopy) {
-					damageLifeRate = getDamage(u)
-							/ u.getCharacteristics().currentLife;
+					damageLifeRate = getDamage(u) / u.getCharacteristics().currentLife;
 					if (bestDamageLifeRate <= damageLifeRate) {
 						bestTarget = u;
 						bestDamageLifeRate = damageLifeRate;
@@ -113,14 +108,14 @@ public class AIWizard extends AI implements IAI {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public ArrayList<Action> getBestAction(ArrayList<Unit> enemyInRangeSorted,
-			ArrayList<Unit> enemyList, ArrayList<Unit> allyList, Map map) {
+	public ArrayList<Action> getBestAction(ArrayList<Unit> enemyInRangeSorted, ArrayList<Unit> enemyList,
+			ArrayList<Unit> allyList, Map map) {
 		ArrayList<Action> bestActionList = new ArrayList<Action>();
 		float currentScore;
 		float bestScore;
-		ArrayList<Unit> units ;
-		units = (ArrayList<Unit>) allyList.clone() ;
-		units.addAll(enemyList) ;
+		ArrayList<Unit> units;
+		units = (ArrayList<Unit>) allyList.clone();
+		units.addAll(enemyList);
 
 		Position oldPos = this.unitLinked.position;
 		bestScore = 0;
@@ -133,10 +128,9 @@ public class AIWizard extends AI implements IAI {
 					if (canKill(u)) {
 						this.unitLinked.position = oldPos;
 						return getActionAttackList(map, oldPos, pos, u, units);
-					} else if (this.unitLinked.canHit(map, enemyList).contains(
-							u)) {
-						currentScore += ((this.unitLinked.getCharacteristics().attackMagic - u
-								.getCharacteristics().defenseMagic) * getDamage(u))
+					} else if (this.unitLinked.canHit(map, enemyList).contains(u)) {
+						currentScore += ((this.unitLinked.getCharacteristics().attackMagic
+								- u.getCharacteristics().defenseMagic) * getDamage(u))
 								/ u.getCharacteristics().life;
 					} else {
 						currentScore += SCORE_GO_TO_THE_FIGHT;
@@ -145,8 +139,7 @@ public class AIWizard extends AI implements IAI {
 				if (currentScore > bestScore) {
 					bestScore = currentScore;
 					if (currentScore != SCORE_GO_TO_THE_FIGHT)
-						bestActionList = getActionAttackList(map, oldPos, pos,
-								u, units);
+						bestActionList = getActionAttackList(map, oldPos, pos, u, units);
 				}
 			}
 		}
@@ -158,23 +151,13 @@ public class AIWizard extends AI implements IAI {
 		return bestActionList;
 	}
 
-	public ArrayList<Action> getActionAttackList(Map map, Position oldPos,
-			Position pos, Unit u, ArrayList<Unit>units) {
+	public ArrayList<Action> getActionAttackList(Map map, Position oldPos, Position pos, Unit u,
+			ArrayList<Unit> units) {
 		ArrayList<Action> actionList = new ArrayList<Action>();
-		ArrayList<Position> moveList = new ArrayList<Position>();
-		ArrayList<Position> attackList = new ArrayList<Position>();
 
-		Action act1 = new Action();
-		Action act2 = new Action();
-
-		act1.position = map.pathByWalking(oldPos, pos, units);
-		act1.ope = operation.MOVE;
-		actionList.add(act1);
-		moveList.add(u.position);
-		act2.ope = operation.ATTACK;
-		attackList.add(u.position);
-		act2.position = attackList;
-		actionList.add(act2);
+		for (Position position : map.pathByWalking(oldPos, pos, units))
+			actionList.add(new Action(position, operation.MOVE));
+		actionList.add(new Action(u.position, operation.ATTACK));
 		return actionList;
 	}
 
@@ -182,7 +165,7 @@ public class AIWizard extends AI implements IAI {
 	 * Indicate if the AI can kill the unit given in parameter.
 	 */
 	public boolean canKill(Unit u) {
-		return this.unitLinked.getCharacteristics().attackMagic >= (u
-				.getCharacteristics().defenseMagic + u.getCharacteristics().currentLife);
+		return this.unitLinked.getCharacteristics().attackMagic >= (u.getCharacteristics().defenseMagic
+				+ u.getCharacteristics().currentLife);
 	}
 }

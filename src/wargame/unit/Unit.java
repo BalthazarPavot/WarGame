@@ -314,7 +314,7 @@ public abstract class Unit implements IUnit, Serializable {
 			Map map) {
 		if (!hasPlayed) {
 			if (ai != null)
-				ai.play(enemyUnits, playerUnits, map);
+				return ai.play(enemyUnits, playerUnits, map);
 			return move() ? MOVE_ACTION : NO_ACTION;
 		}
 		return NO_ACTION;

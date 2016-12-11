@@ -1,6 +1,7 @@
 package wargame.unit.AI;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import wargame.basic_types.Position;
 import wargame.map.Map;
@@ -27,12 +28,10 @@ public class AISoldier extends AI implements IAI {
 		int i;
 		for (Action action : this.getActList()) {
 			if (action.ope == operation.MOVE) {
-				this.unitLinked.setMove(action.position);
+				this.unitLinked.setMove((ArrayList<Position>) Arrays.asList(action.position));
 				this.unitLinked.move();
 			} else if (action.ope == operation.ATTACK) {
-				u = getUnitAtPos(
-						action.position.get(action.position.size() - 1),
-						enemyList);
+				u = getUnitAtPos(action.position, enemyList);
 				i = enemyList.indexOf(u);
 				enemyList.get(i).takeSlachingDamages(
 						this.unitLinked.getCharacteristics().attackSlashing);
@@ -161,20 +160,10 @@ public class AISoldier extends AI implements IAI {
 	public ArrayList<Action> getActionAttackList(Map map, Position oldPos,
 			Position pos, Unit u, ArrayList<Unit>units) {
 		ArrayList<Action> actionList = new ArrayList<Action>();
-		ArrayList<Position> moveList = new ArrayList<Position>();
-		ArrayList<Position> attackList = new ArrayList<Position>();
 
-		Action act1 = new Action();
-		Action act2 = new Action();
-
-		act1.position = map.pathByWalking(oldPos, pos, units);
-		act1.ope = operation.MOVE;
-		actionList.add(act1);
-		moveList.add(u.position);
-		act2.ope = operation.ATTACK;
-		attackList.add(u.position);
-		act2.position = attackList;
-		actionList.add(act2);
+		for (Position position : map.pathByWalking(oldPos, pos, units))
+			actionList.add (new Action (position, operation.MOVE)) ;
+		actionList.add (new Action (u.position, operation.ATTACK)) ;
 		return actionList;
 	}
 

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 import wargame.basic_types.Position;
 import wargame.unit.Unit;

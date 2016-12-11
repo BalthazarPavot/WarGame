@@ -1,6 +1,7 @@
 package wargame.unit.AI;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import wargame.basic_types.Position;
 import wargame.map.Map;
@@ -12,30 +13,26 @@ import wargame.unit.AI.Action.operation;
  * @author Romain Pelegrin
  *
  */
-public class AIBird extends AI implements IAI {	//TODO
+public class AIBird extends AI implements IAI {
 
-	public AIBird(Unit unit) {//TODO
+	public AIBird(Unit unit) {
 		super(unit);
 	}
 
 	/**
 	 * Execute the list of action contained in the AI's attribute.
 	 */
-	public void executeActions(ArrayList<Unit> allyList,
-			ArrayList<Unit> enemyList) {
+	public void executeActions(ArrayList<Unit> allyList, ArrayList<Unit> enemyList) {
 		Unit u;
 		int i;
 		for (Action action : this.getActList()) {
 			if (action.ope == operation.MOVE) {
-				this.unitLinked.setMove(action.position);
+				this.unitLinked.setMove((ArrayList<Position>) Arrays.asList(action.position));
 				this.unitLinked.move();
 			} else if (action.ope == operation.ATTACK) {
-				u = getUnitAtPos(
-						action.position.get(action.position.size() - 1),
-						enemyList);
+				u = getUnitAtPos(action.position, enemyList);
 				i = enemyList.indexOf(u);
-				enemyList.get(i).takeBluntDamages(//TODO
-						this.unitLinked.getCharacteristics().attackBlunt);//TODO
+				enemyList.get(i).takeBluntDamages(this.unitLinked.getCharacteristics().attackBlunt);
 				if (enemyList.get(i).getCharacteristics().currentLife == 0)
 					enemyList.remove(i);
 			}
@@ -49,13 +46,11 @@ public class AIBird extends AI implements IAI {	//TODO
 	 */
 	public void fillAction(ArrayList<Unit> enemyList, ArrayList<Unit> allyList, Map map) {
 		this.actList.clear();
-		if (isSafe(enemyList, map)
-				&& (this.getLife() == healhPoint.MEDIUM
-						|| this.getLife() == healhPoint.LOW || this.getLife() == healhPoint.VERY_LOW))//TODO
+		if (isSafe(enemyList, map) && (this.getLife() == healhPoint.MEDIUM || this.getLife() == healhPoint.LOW
+				|| this.getLife() == healhPoint.VERY_LOW))
 			rest();
-		else if (!this.blocked
-				&& (this.getLife() == healhPoint.MEDIUM
-						|| this.getLife() == healhPoint.LOW || this.getLife() == healhPoint.VERY_LOW))//TODO
+		else if (!this.blocked && (this.getLife() == healhPoint.MEDIUM || this.getLife() == healhPoint.LOW
+				|| this.getLife() == healhPoint.VERY_LOW))
 			flee(enemyList, allyList, map);
 		else
 			fight(enemyList, allyList, map);
@@ -90,8 +85,7 @@ public class AIBird extends AI implements IAI {	//TODO
 			bestDamageLifeRate = 0;
 			if (!enemyInRangeCopy.isEmpty()) {
 				for (Unit u : enemyInRangeCopy) {
-					damageLifeRate = getDamage(u)
-							/ u.getCharacteristics().currentLife;
+					damageLifeRate = getDamage(u) / u.getCharacteristics().currentLife;
 					if (bestDamageLifeRate <= damageLifeRate) {
 						bestTarget = u;
 						bestDamageLifeRate = damageLifeRate;
@@ -115,14 +109,14 @@ public class AIBird extends AI implements IAI {	//TODO
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public ArrayList<Action> getBestAction(ArrayList<Unit> enemyInRangeSorted,
-			ArrayList<Unit> enemyList, ArrayList<Unit> allyList, Map map) {
+	public ArrayList<Action> getBestAction(ArrayList<Unit> enemyInRangeSorted, ArrayList<Unit> enemyList,
+			ArrayList<Unit> allyList, Map map) {
 		ArrayList<Action> bestActionList = new ArrayList<Action>();
 		float currentScore;
 		float bestScore;
-		ArrayList<Unit> units ;
-		units = (ArrayList<Unit>) allyList.clone() ;
-		units.addAll(enemyList) ;
+		ArrayList<Unit> units;
+		units = (ArrayList<Unit>) allyList.clone();
+		units.addAll(enemyList);
 
 		Position oldPos = this.unitLinked.position;
 		bestScore = 0;
@@ -131,14 +125,13 @@ public class AIBird extends AI implements IAI {	//TODO
 			for (Position pos : this.unitLinked.movePossibilities(map, units)) {
 				currentScore = 0;
 				if (isSafe(enemyList, map)) {
-					currentScore += SCORE_SAFE_BIRD;//TODO
+					currentScore += SCORE_SAFE_BIRD;
 					if (canKill(u)) {
 						this.unitLinked.position = oldPos;
 						return getActionAttackList(map, oldPos, pos, u, units);
-					} else if (this.unitLinked.canHit(map, enemyList).contains(
-							u)) {
-						currentScore += ((this.unitLinked.getCharacteristics().attackBlunt - u//TODO
-								.getCharacteristics().defenseBlunt) * getDamage(u))//TODO
+					} else if (this.unitLinked.canHit(map, enemyList).contains(u)) {
+						currentScore += ((this.unitLinked.getCharacteristics().attackBlunt
+								- u.getCharacteristics().defenseBlunt) * getDamage(u))
 								/ u.getCharacteristics().life;
 					} else {
 						currentScore += SCORE_GO_TO_THE_FIGHT;
@@ -147,8 +140,7 @@ public class AIBird extends AI implements IAI {	//TODO
 				if (currentScore > bestScore) {
 					bestScore = currentScore;
 					if (currentScore != SCORE_GO_TO_THE_FIGHT)
-						bestActionList = getActionAttackList(map, oldPos, pos,
-								u, units);
+						bestActionList = getActionAttackList(map, oldPos, pos, u, units);
 				}
 			}
 		}
@@ -160,23 +152,13 @@ public class AIBird extends AI implements IAI {	//TODO
 		return bestActionList;
 	}
 
-	public ArrayList<Action> getActionAttackList(Map map, Position oldPos,
-			Position pos, Unit u, ArrayList<Unit>units) {
+	public ArrayList<Action> getActionAttackList(Map map, Position oldPos, Position pos, Unit u,
+			ArrayList<Unit> units) {
 		ArrayList<Action> actionList = new ArrayList<Action>();
-		ArrayList<Position> moveList = new ArrayList<Position>();
-		ArrayList<Position> attackList = new ArrayList<Position>();
 
-		Action act1 = new Action();
-		Action act2 = new Action();
-
-		act1.position = map.pathByFlying(oldPos, pos, units);//TODO
-		act1.ope = operation.MOVE;
-		actionList.add(act1);
-		moveList.add(u.position);
-		act2.ope = operation.ATTACK;
-		attackList.add(u.position);
-		act2.position = attackList;
-		actionList.add(act2);
+		for (Position position : map.pathByFlying(oldPos, pos, units))
+			actionList.add (new Action (position, operation.MOVE)) ;
+		actionList.add(new Action (u.position, operation.ATTACK));
 		return actionList;
 	}
 
@@ -184,7 +166,7 @@ public class AIBird extends AI implements IAI {	//TODO
 	 * Indicate if the AI can kill the unit given in parameter.
 	 */
 	public boolean canKill(Unit u) {
-		return this.unitLinked.getCharacteristics().attackBlunt >= (u//TODO
-				.getCharacteristics().defenseBlunt + u.getCharacteristics().currentLife);//TODO
+		return this.unitLinked.getCharacteristics().attackBlunt >= (u.getCharacteristics().defenseBlunt
+				+ u.getCharacteristics().currentLife);
 	}
 }

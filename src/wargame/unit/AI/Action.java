@@ -1,6 +1,5 @@
 package wargame.unit.AI;
 
-import java.util.ArrayList;
 
 import wargame.basic_types.Position;
 
@@ -17,20 +16,28 @@ public class Action {
 	}
 
 	/* Attribute of the class */
-	public ArrayList<Position> position;
+	public Position position;
 	public operation ope;
 	
 	/* Methods */
-	
-	public String toString (){
-		String out = "";
-		out += ope + " ";
-		if (this.position != null){
-			for (Position pos : this.position)
-				out += pos.toString();
-		} else {
-			out += " No position for that action !";
-		}
-		return out;
+
+	public Action ()  {
 	}
+
+	public Action (Position pos, operation operation)  {
+		ope = operation ;
+		position = pos ;
+	}
+
+//	public String toString (){
+//		String out = "";
+//		out += ope + " ";
+//		if (this.position != null){
+//			for (Position pos : this.position)
+//				out += pos.toString();
+//		} else {
+//			out += " No position for that action !";
+//		}
+//		return out;
+//	}
 }

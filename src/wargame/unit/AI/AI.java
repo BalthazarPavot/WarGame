@@ -40,10 +40,7 @@ public abstract class AI implements IAI {
 	protected static final int LIMIT_LIFE_LOW = 10;
 
 	/* Attribute of the class */
-	protected boolean blocked; /*
-								 * blocked is true when the unit can't flee
-								 * (because of the map and enemy)
-								 */
+	protected boolean blocked; /* blocked is true when the unit can't flee (because of the map and enemy) */
 	protected healhPoint life;
 	protected Unit unitLinked;
 	public Squad squad;
@@ -53,6 +50,7 @@ public abstract class AI implements IAI {
 	/* Constructor */
 	public AI(Unit unit) {
 		this.unitLinked = unit;
+		setActList(new ArrayList<Action>());
 	}
 
 	/**
@@ -61,6 +59,8 @@ public abstract class AI implements IAI {
 	 * @param c
 	 */
 	public void setLife() {
+		System.out.println(unitLinked + new Object() {
+		}.getClass().getEnclosingMethod().getName());
 		int hitPointRate;
 		Characteristic c;
 
@@ -91,17 +91,17 @@ public abstract class AI implements IAI {
 	}
 
 	/**
-	 * Group near unit in squad, it allows unit to make a better choice of
-	 * action.
+	 * Group near unit in squad, it allows unit to make a better choice of action.
 	 * 
 	 * @param allyList
 	 * @param map
 	 */
 	public void searchSquad(ArrayList<Unit> allyList, Map map, ArrayList<Unit> units) {
+		System.out.println(unitLinked + new Object() {
+		}.getClass().getEnclosingMethod().getName());
 		for (Unit ally : allyList) {
-			if (ally != this.unitLinked
-					&& (ally.canReach(map, this.unitLinked.getPosition(), units) || (this.unitLinked
-							.canReach(map, ally.getPosition(), units)))) {
+			if (ally != this.unitLinked && (ally.canReach(map, this.unitLinked.getPosition(), units)
+					|| (this.unitLinked.canReach(map, ally.getPosition(), units)))) {
 				if (this.squad == null && ally.ai.squad != null)
 					ally.ai.squad.add(this.unitLinked);
 				else if (this.squad != null && this.squad == null)
@@ -125,9 +125,11 @@ public abstract class AI implements IAI {
 	 */
 	@SuppressWarnings("unchecked")
 	public void setBlocked(ArrayList<Unit> enemyList, ArrayList<Unit> allyList, Map map) {
-		ArrayList<Unit> units ;
-		units = (ArrayList<Unit>) allyList.clone() ;
-		units.addAll(enemyList) ;
+		System.out.println(unitLinked + new Object() {
+		}.getClass().getEnclosingMethod().getName());
+		ArrayList<Unit> units;
+		units = (ArrayList<Unit>) allyList.clone();
+		units.addAll(enemyList);
 
 		ArrayList<Position> reachablePosition = new ArrayList<Position>();
 		ArrayList<Position> remainingPosition = new ArrayList<Position>();
@@ -136,8 +138,8 @@ public abstract class AI implements IAI {
 		reachablePosition.add(this.unitLinked.getPosition());
 		for (Position pos : reachablePosition) {
 			for (Unit u : enemyList) {
-				if (this.unitLinked.getPosition().distance(u.getPosition()) > u
-						.getCharacteristics().currentMovePoints)
+				if (this.unitLinked.getPosition()
+						.distance(u.getPosition()) > u.getCharacteristics().currentMovePoints)
 					remainingPosition.add(pos);
 			}
 		}
@@ -150,26 +152,37 @@ public abstract class AI implements IAI {
 	/* Methods */
 
 	/**
-	 * Methods called for each unit, it set its states, search the best action
-	 * it can do and then execute it.
+	 * Methods called for each unit, it set its states, search the best action it can do and then execute it.
 	 * 
 	 * @param allyList
 	 * @param enemyList
 	 * @param map
 	 */
 	@SuppressWarnings("unchecked")
-	public void play(ArrayList<Unit> allyList, ArrayList<Unit> enemyList,
-			Map map) {
-		ArrayList<Unit> units ;
-		units = (ArrayList<Unit>) allyList.clone() ;
-		units.addAll(enemyList) ;
-		setActList(new ArrayList<Action>());
-		searchSquad(allyList, map, units);
-		setLife();
-		setBlocked(enemyList, allyList, map);
-		fillAction(enemyList, allyList, map);
-		executeActions(allyList, enemyList);
-		this.unitLinked.hasPlayed = true;
+	public int play(ArrayList<Unit> allyList, ArrayList<Unit> enemyList, Map map) {
+		System.out.println(unitLinked + new Object() {
+		}.getClass().getEnclosingMethod().getName());
+		ArrayList<Unit> units;
+		Action currentAction ;
+		units = (ArrayList<Unit>) allyList.clone();
+		units.addAll(enemyList);
+		if (! getActList().isEmpty ()) {
+			executeActions(allyList, enemyList);
+			currentAction = getActList().get(0) ;
+			setActList(new ArrayList<>(getActList().subList(0, getActList().size ())));
+			return currentAction.ope == Action.operation.ATTACK ? Unit.ATTACK_ACTION
+					: currentAction.ope == Action.operation.MOVE ? Unit.MOVE_ACTION : Unit.NO_ACTION;
+		} else {
+			setActList(new ArrayList<Action>());
+			searchSquad(allyList, map, units);
+			setLife();
+			setBlocked(enemyList, allyList, map);
+			fillAction(enemyList, allyList, map);
+			executeActions(allyList, enemyList);
+			this.unitLinked.hasPlayed = true;
+		}
+		return actList.get(0).ope == Action.operation.ATTACK ? Unit.ATTACK_ACTION
+				: actList.get(0).ope == Action.operation.MOVE ? Unit.MOVE_ACTION : Unit.NO_ACTION;
 	}
 
 	/**
@@ -179,6 +192,8 @@ public abstract class AI implements IAI {
 	 * @return movementPerimeter
 	 */
 	public ArrayList<Position> getMovemmentPerimeter(Map map, ArrayList<Unit> units) {
+		System.out.println(unitLinked + new Object() {
+		}.getClass().getEnclosingMethod().getName());
 		ArrayList<Position> movementPerimeter = new ArrayList<Position>();
 		int dx;
 		int dy;
@@ -229,6 +244,8 @@ public abstract class AI implements IAI {
 	 * @return boolean
 	 */
 	public boolean isSafe(ArrayList<Unit> enemyList, Map map) {
+		System.out.println(unitLinked + new Object() {
+		}.getClass().getEnclosingMethod().getName());
 		ArrayList<Unit> allyList = new ArrayList<Unit>();
 		allyList.add(this.unitLinked);
 		for (Unit enemy : enemyList) {
@@ -239,20 +256,21 @@ public abstract class AI implements IAI {
 	}
 
 	/**
-	 * Method which return a list of target who can be reached by the AI, using
-	 * it's movement + range but ignoring obstacle (to decrease the complexity
-	 * of the algorithm. This methods have to be used as a first test and then
-	 * be completed by an other to take care of obstacles
+	 * Method which return a list of target who can be reached by the AI, using it's movement + range but
+	 * ignoring obstacle (to decrease the complexity of the algorithm. This methods have to be used as a first
+	 * test and then be completed by an other to take care of obstacles
 	 * 
 	 * @param enemyList
 	 * @return targetList
 	 */
 	public ArrayList<Unit> getAllTargetInRange(ArrayList<Unit> enemyList) {
+		System.out.println(unitLinked + new Object() {
+		}.getClass().getEnclosingMethod().getName());
 		ArrayList<Unit> targetList = new ArrayList<Unit>();
 		for (Unit enemy : enemyList) {
-			if (enemy.position.distance(this.unitLinked.position) <= (this.unitLinked
-					.getCharacteristics().currentMovePoints + this.unitLinked
-					.getCharacteristics().range * Map.squareWidth))
+			if (enemy.position.distance(
+					this.unitLinked.position) <= (this.unitLinked.getCharacteristics().currentMovePoints
+							+ this.unitLinked.getCharacteristics().range * Map.squareWidth))
 				targetList.add(enemy);
 		}
 		return targetList;
@@ -267,31 +285,29 @@ public abstract class AI implements IAI {
 	}
 
 	/**
-	 * Make the AI flee when the unit is low life. It go in the opposite
-	 * direction of the enemy
+	 * Make the AI flee when the unit is low life. It go in the opposite direction of the enemy
 	 * 
 	 * @param enemyList
 	 * @param map
 	 */
 	@SuppressWarnings("unchecked")
 	public void flee(ArrayList<Unit> enemyList, ArrayList<Unit> allyList, Map map) {
+		System.out.println(unitLinked + new Object() {
+		}.getClass().getEnclosingMethod().getName());
 		Position enemyCenter = new Position();
 		Position finalPos = new Position();
 		ArrayList<Position> path;
 		ArrayList<Position> pathMax = new ArrayList<Position>();
 		ArrayList<Action> actionList = new ArrayList<Action>();
-		Action act = new Action();
-		ArrayList<Unit> units ;
-		units = (ArrayList<Unit>) allyList.clone() ;
-		units.addAll(enemyList) ;
+		ArrayList<Unit> units;
+		units = (ArrayList<Unit>) allyList.clone();
+		units.addAll(enemyList);
 
 		int xFinalPos;
 		int yFinalPos;
 		enemyCenter = searchEnemyCenter(enemyList);
-		xFinalPos = this.unitLinked.position.getX()
-				+ (this.unitLinked.position.getX() - enemyCenter.getX());
-		yFinalPos = this.unitLinked.position.getY()
-				+ (this.unitLinked.position.getY() - enemyCenter.getY());
+		xFinalPos = this.unitLinked.position.getX() + (this.unitLinked.position.getX() - enemyCenter.getX());
+		yFinalPos = this.unitLinked.position.getY() + (this.unitLinked.position.getY() - enemyCenter.getY());
 		/* Check limits of the map */
 		if (xFinalPos < 0)
 			finalPos.setX(0);
@@ -314,20 +330,18 @@ public abstract class AI implements IAI {
 		path = this.unitLinked.canMove(map, finalPos, units);
 		if (path != null) {
 			try {
-				pathMax = new ArrayList<Position>(path.subList(0,
-						this.unitLinked.getCharacteristics().movePoints));
+				pathMax = new ArrayList<Position>(
+						path.subList(0, this.unitLinked.getCharacteristics().movePoints));
 			} catch (java.lang.IndexOutOfBoundsException e) {
 				pathMax = new ArrayList<Position>(path);
 			}
-			act.position = pathMax;
-			act.ope = operation.MOVE;
-			actionList.add(act);
+			for (Position pos : pathMax) 
+				actionList.add(new Action (pos, operation.MOVE)) ;
 		} else {
 			path = new ArrayList<Position>();
 			path.add(this.unitLinked.position);
-			act.position = path;
-			act.ope = operation.REST;
-			actionList.add(act);
+			for (Position pos : path) 
+				actionList.add(new Action (pos, operation.MOVE)) ;
 		}
 		this.actList = actionList;
 	}
@@ -339,6 +353,8 @@ public abstract class AI implements IAI {
 	 * @return
 	 */
 	static public int getDamage(Unit u) {
+		System.out.println(u + new Object() {
+		}.getClass().getEnclosingMethod().getName());
 		if (u instanceof Bird || u instanceof Knight)
 			return u.getCharacteristics().attackBlunt;
 		if (u instanceof Wizard || u instanceof Healer)
@@ -354,10 +370,10 @@ public abstract class AI implements IAI {
 	 * Make the AI heal itself
 	 */
 	public void rest() {
-		Action act = new Action();
-		act.ope = operation.REST;
-		act.position.add(this.unitLinked.position);
-		this.actList.add(act);
+		System.out.println(unitLinked + new Object() {
+		}.getClass().getEnclosingMethod().getName());
+		unitLinked.gainLife(unitLinked.getCharacteristics().life / 10);
+		this.actList.add(new Action(this.unitLinked.position, operation.REST) );
 	}
 
 	/**
@@ -369,6 +385,8 @@ public abstract class AI implements IAI {
 	 */
 	@SuppressWarnings("unchecked")
 	public ArrayList<Action> goToTheFight(ArrayList<Unit> enemyList, ArrayList<Unit> allyList, Map map) {
+		System.out.println(unitLinked + new Object() {
+		}.getClass().getEnclosingMethod().getName());
 		ArrayList<Position> path = new ArrayList<Position>();
 		ArrayList<Position> safePos = new ArrayList<Position>();
 		ArrayList<Action> actionList = new ArrayList<Action>();
@@ -377,9 +395,9 @@ public abstract class AI implements IAI {
 		int j;
 		Position posEnemy = new Position();
 		Position oldPos;
-		ArrayList<Unit> units ;
-		units = (ArrayList<Unit>) allyList.clone() ;
-		units.addAll(enemyList) ;
+		ArrayList<Unit> units;
+		units = (ArrayList<Unit>) allyList.clone();
+		units.addAll(enemyList);
 
 		oldPos = this.unitLinked.position;
 		i = 0;
@@ -390,8 +408,7 @@ public abstract class AI implements IAI {
 			path = this.unitLinked.canMove(map, enemyList.get(j).position, units);
 		}
 		if (path != null) {
-			while (i < this.unitLinked.getCharacteristics().movePoints
-					&& path != null && i < path.size()) {
+			while (i < this.unitLinked.getCharacteristics().movePoints && path != null && i < path.size()) {
 				this.unitLinked.position = path.get(i);
 				if (isSafe(enemyList, map))
 					safePos.add(path.get(i));
@@ -399,9 +416,9 @@ public abstract class AI implements IAI {
 			}
 			this.unitLinked.position = oldPos;
 			if (safePos != null) {
-				act.position = safePos;
-				act.ope = operation.MOVE;
-				actionList.add(act);
+				for (Position position : safePos) {
+					actionList.add(new Action (position, operation.MOVE));
+				}
 			}
 			return actionList;
 		} else {
@@ -419,6 +436,8 @@ public abstract class AI implements IAI {
 	 * @return
 	 */
 	public Position searchEnemyCenter(ArrayList<Unit> enemyList) {
+		System.out.println(unitLinked + new Object() {
+		}.getClass().getEnclosingMethod().getName());
 		Position centerEnemy = new Position();
 		int x;
 		int y;
@@ -440,13 +459,14 @@ public abstract class AI implements IAI {
 	}
 
 	/**
-	 * Search the closest enemy from the squad to make unit of it focusing that
-	 * target.
+	 * Search the closest enemy from the squad to make unit of it focusing that target.
 	 * 
 	 * @param enemyList
 	 * @return
 	 */
 	public Position closestEnemyFromSquad(ArrayList<Unit> enemyList) {
+		System.out.println(unitLinked + new Object() {
+		}.getClass().getEnclosingMethod().getName());
 		double shortestDistance;
 		double currentDistance;
 		Position closestPosition;
