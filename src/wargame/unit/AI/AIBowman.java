@@ -43,6 +43,7 @@ public class AIBowman extends AI implements IAI, IMarksman {
 	 * @param enemyList
 	 */
 	public void fillAction(ArrayList<Unit> enemyList, Map map) {
+		this.actList.clear();
 		if (isSafe(enemyList, map)
 				&& (this.getLife() == healhPoint.LOW || this.getLife() == healhPoint.VERY_LOW))
 			rest();
