@@ -139,8 +139,10 @@ public class AIBowman extends AI implements IAI, IMarksman {
 				}
 			}
 		}
-		if (bestScore <= SCORE_GO_TO_THE_FIGHT)
+		if (bestScore <= SCORE_GO_TO_THE_FIGHT){
+			bestActionList.clear();
 			bestActionList = goToTheFight(enemyList, map);
+		}
 		this.unitLinked.position = oldPos;
 		return bestActionList;
 	}
@@ -149,6 +151,8 @@ public class AIBowman extends AI implements IAI, IMarksman {
 			Position pos, Unit u) {
 		ArrayList<Action> actionList = new ArrayList<Action>();
 		ArrayList<Position> moveList = new ArrayList<Position>();
+		ArrayList<Position> attackList = new ArrayList<Position>();
+
 		Action act1 = new Action();
 		Action act2 = new Action();
 
@@ -158,6 +162,8 @@ public class AIBowman extends AI implements IAI, IMarksman {
 		moveList.add(u.position);
 		act2.position = moveList;
 		act2.ope = operation.ATTACK;
+		attackList.add(u.position);
+		act2.position = attackList;
 		actionList.add(act2);
 
 		return actionList;
