@@ -14,6 +14,10 @@ import wargame.unit.Unit;
 import wargame.unit.Wizard;
 import wargame.unit.AI.Action.operation;
 
+/**
+ * That class regroup methods and attribute common with all AI
+ * 
+ */
 public abstract class AI implements IAI {
 
 	protected final static int SCORE_GO_TO_THE_FIGHT = 0;
