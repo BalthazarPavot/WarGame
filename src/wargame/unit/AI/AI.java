@@ -159,6 +159,7 @@ public abstract class AI implements IAI {
 		setBlocked(enemyList, map);
 		fillAction(enemyList, map);
 		executeActions(allyList, enemyList);
+		this.unitLinked.hasPlayed = true;
 	}
 
 	/**
