@@ -13,4 +13,7 @@ public interface IAI {
 			ArrayList<Unit> enemyList);
 
 	public boolean canKill(Unit u);
+	
+	public abstract void fight(ArrayList<Unit> enemyList, Map map);
+
 }
