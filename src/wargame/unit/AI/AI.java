@@ -359,13 +359,18 @@ public abstract class AI implements IAI {
 		ArrayList<Action> actionList = new ArrayList<Action>();
 		Action act = new Action();
 		int i;
+		int j;
 		Position posEnemy = new Position();
 		Position oldPos;
 
 		oldPos = this.unitLinked.position;
 		i = 0;
+		j = 0;
 		posEnemy = closestEnemyFromSquad(enemyList);
 		path = this.unitLinked.canMove(map, posEnemy);
+		while (path == null && j < enemyList.size()) {
+			path = this.unitLinked.canMove(map, enemyList.get(j).position);
+		}
 		if (path != null) {
 			while (i < this.unitLinked.getCharacteristics().movePoints
 					&& path != null && i < path.size()) {
@@ -375,13 +380,17 @@ public abstract class AI implements IAI {
 				++i;
 			}
 			this.unitLinked.position = oldPos;
-			act.position = safePos;
-			act.ope = operation.MOVE;
-			actionList.add(act);
+			if (safePos != null) {
+				act.position = safePos;
+				act.ope = operation.MOVE;
+				actionList.add(act);
+			}
 			return actionList;
+		} else {
+			act.ope = operation.REST;
+			actionList.add(act);
 		}
-		act.ope = operation.REST;
-		actionList.add(act);
+		this.unitLinked.position = oldPos;
 		return actionList;
 	}
 
