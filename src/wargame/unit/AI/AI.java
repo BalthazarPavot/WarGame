@@ -124,17 +124,18 @@ public abstract class AI implements IAI {
 	public void setBlocked(ArrayList<Unit> enemyList, Map map) {
 
 		ArrayList<Position> reachablePosition = new ArrayList<Position>();
+		ArrayList<Position> remainingPosition = new ArrayList<Position>();
 
 		reachablePosition = getMovemmentPerimeter(map);
 		reachablePosition.add(this.unitLinked.getPosition());
 		for (Position pos : reachablePosition) {
 			for (Unit u : enemyList) {
-				if (this.unitLinked.getPosition().distance(u.getPosition()) <= u
+				if (this.unitLinked.getPosition().distance(u.getPosition()) > u
 						.getCharacteristics().currentMovePoints)
-					reachablePosition.remove(pos);
+					remainingPosition.add(pos);
 			}
 		}
-		if (reachablePosition.size() != 0)
+		if (remainingPosition.size() != 0)
 			this.blocked = false;
 		else
 			this.blocked = true;
