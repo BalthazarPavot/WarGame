@@ -313,8 +313,9 @@ public abstract class Unit implements IUnit, Serializable {
 	public int play(ArrayList<Unit> playerUnits, ArrayList<Unit> enemyUnits,
 			Map map) {
 		if (!hasPlayed) {
-			if (ai != null)
-				ai.play(enemyUnits, playerUnits, map);
+			if (ai != null) {
+				return ai.play(enemyUnits, playerUnits, map);
+			}
 			return move() ? MOVE_ACTION : NO_ACTION;
 		}
 		return NO_ACTION;

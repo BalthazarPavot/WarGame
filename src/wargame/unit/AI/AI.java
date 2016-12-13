@@ -158,7 +158,7 @@ public abstract class AI implements IAI {
 	 * @param map
 	 */
 	@SuppressWarnings("unchecked")
-	public void play(ArrayList<Unit> allyList, ArrayList<Unit> enemyList,
+	public int play(ArrayList<Unit> allyList, ArrayList<Unit> enemyList,
 			Map map) {
 		ArrayList<Unit> units ;
 		units = (ArrayList<Unit>) allyList.clone() ;
@@ -170,6 +170,9 @@ public abstract class AI implements IAI {
 		fillAction(enemyList, allyList, map);
 		executeActions(allyList, enemyList);
 		this.unitLinked.hasPlayed = true;
+		if (getActList().get(0).ope == operation.MOVE)
+			return Unit.MOVE_ACTION ;
+		return Unit.NO_ACTION ;
 	}
 
 	/**
@@ -354,10 +357,10 @@ public abstract class AI implements IAI {
 	 * Make the AI heal itself
 	 */
 	public void rest() {
-		Action act = new Action();
-		act.ope = operation.REST;
-		act.position.add(this.unitLinked.position);
-		this.actList.add(act);
+//		Action act = new Action();
+//		act.ope = operation.REST;
+//		act.position.add(this.unitLinked.position);
+//		this.actList.add(act);
 	}
 
 	/**
