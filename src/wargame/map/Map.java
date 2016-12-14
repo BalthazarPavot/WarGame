@@ -32,7 +32,7 @@ public class Map extends HashMap<Integer, HashMap<Integer, ArrayList<MapElement>
 	public final static int squareWidth = 64;
 	public final static int squareHeight = 64;
 	public final static int defaultSquareNumberWidth = 60;
-	public final static int defaultSquareNumberHeight = 10;
+	public final static int defaultSquareNumberHeight = 40;
 	public final static int defaultWidth = squareWidth * defaultSquareNumberWidth;
 	public final static int defaultHeight = squareHeight * defaultSquareNumberHeight;
 	public final static int infScore = Integer.MAX_VALUE;

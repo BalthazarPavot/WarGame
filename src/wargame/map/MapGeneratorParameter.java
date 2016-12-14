@@ -92,6 +92,7 @@ public class MapGeneratorParameter {
 	 */
 	private void generateRandomClimate() {
 		climate = rand.nextInt() % CLIMATE_NUMBER;
+		climate = SWAMP_CLIMATE ;
 	}
 
 	/**

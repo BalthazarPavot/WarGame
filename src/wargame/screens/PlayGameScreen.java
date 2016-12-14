@@ -80,7 +80,7 @@ public class PlayGameScreen extends GameScreen {
 		sidePanelKeyboardManager = new SidePanelKeyboardManager(this,
 				KeyboardFocusManager.getCurrentKeyboardFocusManager(), sidePanel);
 		turnTimer = System.currentTimeMillis();
-//		mapWidget.setRevealed();
+		mapWidget.setRevealed();
 	}
 
 	/**
